@@ -63,9 +63,9 @@ local function updateValueUpgrades(player, profile, holder, key)
 				if not holder:FindFirstChild(name) then
 					local createdValue = Instance.new("NumberValue")
 					createdValue.Name = name
-					createdValue.Value = profile.Data[key][name]
 					createdValue.Parent = holder
 				end
+				holder:WaitForChild(name).Value = profile.Data[key][name]
 			end
 		end
 	end
@@ -156,6 +156,7 @@ local function playerAdded(player)
 		if player:IsDescendantOf(Players) == true then
 			Profiles[player] = profile
 			-- A profile has been successfully loaded:
+			print(profile.Data)
 			createReplicatedData(player, profile)
 			createLeaderstats(player, profile)
 			createTemporaryData(player)
