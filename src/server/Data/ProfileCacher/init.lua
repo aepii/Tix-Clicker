@@ -40,7 +40,6 @@ end
 
 local function updateUpgrades(player, profile, holder, key)
 	local upgrades = require(ReplicatedStorage.Data.Upgrades)
-
 	while task.wait() and player:IsDescendantOf(Players) do
 		for name, _ in upgrades do
 			if table.find(profile.Data[key], name) then
@@ -56,7 +55,6 @@ end
 
 local function updateValueUpgrades(player, profile, holder, key)
 	local valueUpgrades = require(ReplicatedStorage.Data.ValueUpgrades)
-
 	while task.wait() and player:IsDescendantOf(Players) do
 		for name, _ in valueUpgrades do
 			if profile.Data[key][name] then
@@ -71,6 +69,21 @@ local function updateValueUpgrades(player, profile, holder, key)
 	end
 end
 
+local function updateInventory(player, profile, holder, key)
+	local cases = require(ReplicatedStorage.Data.Cases)
+	while task.wait() and player:IsDescendantOf(Players) do
+		for name, _ in cases do
+			if profile.Data[key][name] then
+				if not holder:FindFirstChild(name) then
+					local createdValue = Instance.new("NumberValue")
+					createdValue.Name = name
+					createdValue.Parent = holder
+				end
+				holder:WaitForChild(name).Value = profile.Data[key][name]
+			end
+		end
+	end
+end
 local function createReplicatedData(player, profile)
 	local dataProfile = ProfileData.Data
 	local replicatedData = Instance.new("Folder")
@@ -99,6 +112,8 @@ local function createReplicatedData(player, profile)
 				task.spawn(updateUpgrades, player, profile, createdValue, key)
 			elseif key == "ValueUpgrades" then
 				task.spawn(updateValueUpgrades, player, profile, createdValue, key)
+			elseif key == "Inventory" then
+				task.spawn(updateInventory, player, profile, createdValue, key)
 			end
 		end
 	end

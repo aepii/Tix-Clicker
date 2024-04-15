@@ -15,6 +15,9 @@ ProfileData.Data = {
 	["ValueUpgrades"] = {
 	};
 	
+	["Accessories"] = {
+	};
+
 	["Inventory"] = {
 	};
 	
