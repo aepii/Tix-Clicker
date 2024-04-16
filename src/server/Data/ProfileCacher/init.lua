@@ -38,11 +38,11 @@ local function updateReplicatedData(player, profile, createdValue, key)
 	end
 end
 
-local function updateUpgrades(player, profile, holder, key)
+local function updateUpgrades(player, profile, holder)
 	local upgrades = require(ReplicatedStorage.Data.Upgrades)
 	while task.wait() and player:IsDescendantOf(Players) do
 		for name, _ in upgrades do
-			if table.find(profile.Data[key], name) then
+			if table.find(profile.Data.Upgrades, name) then
 				if not holder:FindFirstChild(name) then
 					local createdValue = Instance.new("BoolValue")
 					createdValue.Name = name
@@ -53,37 +53,51 @@ local function updateUpgrades(player, profile, holder, key)
 	end
 end
 
-local function updateValueUpgrades(player, profile, holder, key)
+local function updateValueUpgrades(player, profile, holder)
 	local valueUpgrades = require(ReplicatedStorage.Data.ValueUpgrades)
 	while task.wait() and player:IsDescendantOf(Players) do
 		for name, _ in valueUpgrades do
-			if profile.Data[key][name] then
+			if profile.Data.ValueUpgrades[name] then
 				if not holder:FindFirstChild(name) then
 					local createdValue = Instance.new("NumberValue")
 					createdValue.Name = name
 					createdValue.Parent = holder
 				end
-				holder:WaitForChild(name).Value = profile.Data[key][name]
+				holder:WaitForChild(name).Value = profile.Data.ValueUpgrades[name]
 			end
 		end
 	end
 end
 
-local function updateInventory(player, profile, holder, key)
+local function updateInventory(player, profile, holder)
 	local cases = require(ReplicatedStorage.Data.Cases)
 	while task.wait() and player:IsDescendantOf(Players) do
 		for name, _ in cases do
-			if profile.Data[key][name] then
+			if profile.Data.Inventory[name] then
 				if not holder:FindFirstChild(name) then
 					local createdValue = Instance.new("NumberValue")
 					createdValue.Name = name
 					createdValue.Parent = holder
 				end
-				holder:WaitForChild(name).Value = profile.Data[key][name]
+				holder:WaitForChild(name).Value = profile.Data.Inventory[name]
 			end
 		end
 	end
 end
+
+local function updateAccessories(player, profile, holder)
+	while task.wait() and player:IsDescendantOf(Players) do
+		for GUID, ID in profile.Data.Accessories do
+			if not holder:FindFirstChild(GUID) then
+				local createdValue = Instance.new("StringValue")
+				createdValue.Name = GUID
+				createdValue.Parent = holder
+				createdValue.Value = ID
+			end
+		end
+	end
+end
+
 local function createReplicatedData(player, profile)
 	local dataProfile = ProfileData.Data
 	local replicatedData = Instance.new("Folder")
@@ -109,11 +123,13 @@ local function createReplicatedData(player, profile)
 			task.spawn(updateReplicatedData, player, profile, createdValue, key)
 		else
 			if key == "Upgrades" then
-				task.spawn(updateUpgrades, player, profile, createdValue, key)
+				task.spawn(updateUpgrades, player, profile, createdValue)
 			elseif key == "ValueUpgrades" then
-				task.spawn(updateValueUpgrades, player, profile, createdValue, key)
+				task.spawn(updateValueUpgrades, player, profile, createdValue)
 			elseif key == "Inventory" then
-				task.spawn(updateInventory, player, profile, createdValue, key)
+				task.spawn(updateInventory, player, profile, createdValue)
+			elseif key == "Accessories" then
+				task.spawn(updateAccessories, player, profile, createdValue)
 			end
 		end
 	end
