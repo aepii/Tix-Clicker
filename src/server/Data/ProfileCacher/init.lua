@@ -19,6 +19,7 @@ local Data = ProfileData.Data
 local Modules = ReplicatedStorage:WaitForChild("Modules")
 local ProfileService = require(script.ProfileService)
 local SuffixHandler = require(Modules.SuffixHandler)
+local Accessories = require(ReplicatedStorage.Data.Accessories)
 
 ----- Private Variables -----
 
@@ -85,6 +86,11 @@ local function updateInventory(player, profile, holder)
 	end
 end
 
+local function updateValue(player, profile, ID)
+	local accessory = Accessories[ID]
+	player.TemporaryData["Value"].Value += accessory.Value
+end
+
 local function updateAccessories(player, profile, holder)
 	while task.wait() and player:IsDescendantOf(Players) do
 		for GUID, ID in profile.Data.Accessories do
@@ -93,10 +99,26 @@ local function updateAccessories(player, profile, holder)
 				createdValue.Name = GUID
 				createdValue.Parent = holder
 				createdValue.Value = ID
+				updateValue(player, profile, ID)
 			end
 		end
 	end
 end
+
+local function updateEquippedAccessories(player, profile, holder)
+	while task.wait() and player:IsDescendantOf(Players) do
+		for ID, GUID in profile.Data.EquippedAccessories do
+			if not holder:FindFirstChild(ID) then
+				local createdValue = Instance.new("StringValue")
+				createdValue.Name = ID
+				createdValue.Parent = holder
+				createdValue.Value = GUID
+			end
+		end
+	end
+end
+
+
 
 local function createReplicatedData(player, profile)
 	local dataProfile = ProfileData.Data
@@ -130,6 +152,8 @@ local function createReplicatedData(player, profile)
 				task.spawn(updateInventory, player, profile, createdValue)
 			elseif key == "Accessories" then
 				task.spawn(updateAccessories, player, profile, createdValue)
+			elseif key == "EquippedAccessories" then
+				task.spawn(updateEquippedAccessories, player, profile, createdValue)
 			end
 		end
 	end
@@ -138,7 +162,7 @@ end
 local function updateLeaderstats(player, profile, createdValue, key)
 	while task.wait() and player:IsDescendantOf(Players) do
 		if key == "Value" then
-			createdValue.Value = SuffixHandler:Convert(player.TemporaryData[key].Value)
+			createdValue.Value = SuffixHandler:Convert(player.TemporaryData["Value"].Value)
 		else
 			createdValue.Value = SuffixHandler:Convert(profile.Data[key])
 		end

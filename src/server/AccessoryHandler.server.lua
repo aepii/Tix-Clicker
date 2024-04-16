@@ -3,16 +3,24 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
 local ProfileCacher = require(ServerScriptService.Data.ProfileCacher)
-local Upgrades = require(ReplicatedStorage.Data.Upgrades)
+local Accessories = require(ReplicatedStorage.Data.Accessories)
 
 local function playerAdded(player)
     local temporaryData = player:WaitForChild("TemporaryData")
     local data = ProfileCacher:GetProfile(player).Data
     coroutine.resume(coroutine.create(function()
         while task.wait() and player:IsDescendantOf(Players) do
-			local upgrade = Upgrades[data.ToolEquipped]
-			temporaryData.TixPerClick.Value = (1 + temporaryData.AddPerClick.Value) * (upgrade.Reward + temporaryData.MultPerClick.Value)
-            temporaryData.TixStorage.Value = (20 + temporaryData.AddStorage.Value) * (1 + temporaryData.MultStorage.Value)
+            local addPerClick = 0
+            local addStorage = 0 
+            for ID, GUID in data.EquippedAccessories do
+                local accessory = Accessories[ID]
+                local rewards = accessory.Reward
+                
+                addPerClick += rewards.AddPerClick or 0
+                addStorage += rewards.AddStorage or 0
+            end
+            temporaryData.AddPerClick.Value = addPerClick
+            temporaryData.AddStorage.Value = addStorage
 		end
     end))
 end

@@ -49,7 +49,16 @@ local camera = workspace.CurrentCamera
 
 
 
+--|| CUSTOM ||--
 
+local function disableUIStrokes(instance: Instance)
+	if instance:IsA("UIStroke") and not instance.Parent:IsA("TextLabel") then
+		instance.Enabled = false
+	end
+	for _, child in ipairs(instance:GetChildren()) do
+		disableUIStrokes(child)
+	end
+end
 
 --|| Utility Functions ||--
 
@@ -99,12 +108,15 @@ local ScreenStrokes = {}
 -- Recurisvely tags UIStrokes in ScreenGui
 CollectionService:GetInstanceAddedSignal(Screen_Gui_Tag):Connect(function(screenGui: ScreenGui)
 	tagRecursive(screenGui, "UIStroke", Screen_Stroke_Tag)
+	disableUIStrokes(screenGui)
 end)
 
 -- Indexes UIStroke in ScreenStrokes to update
 CollectionService:GetInstanceAddedSignal(Screen_Stroke_Tag):Connect(function(uiStroke: UIStroke)
 	ScreenStrokes[uiStroke] = uiStroke.Thickness
 	uiStroke.Thickness *= getScreenRatio()
+	local parent = uiStroke.Parent
+    parent.Size = parent.Size + UDim2.new(0, uiStroke.Thickness*2, 0, uiStroke.Thickness*2)
 end)
 
 -- Updates ScreenGui strokes
@@ -115,6 +127,8 @@ local function updateScreenGuiStrokes()
 		else
 			uiStroke.Thickness = originalThickness * getScreenRatio()
 		end
+		local parent = uiStroke.Parent
+    	parent.Size = UDim2.new(parent.Size.X.Scale, uiStroke.Thickness*2, parent.Size.Y.Scale, uiStroke.Thickness*2)
 	end
 end
 

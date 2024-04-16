@@ -7,7 +7,15 @@ ProfileData.Data = {
 	["Level"] = 1;
 	["XP"] = 0;
 
-	["Equipped"] = "Upgrade1";
+	["Lifetime Tix"] = 0;
+	["Lifetime Rocash"] = 0;
+	["Lifetime Rebirth Tix"] = 0;
+	["Lifetime Level"] = 1;
+	["Lifetime XP"] = 0;
+
+	["ToolEquipped"] = "Upgrade1";
+	["EquippedAccessories"] = {};
+
 	["AlphaTester"] = true;
 	
 	["Upgrades"] = {"Upgrade1"};
@@ -20,7 +28,6 @@ ProfileData.Data = {
 
 	["Inventory"] = {
 	};
-	
 }
 
 ProfileData.TemporaryData = {
@@ -38,6 +45,23 @@ ProfileData.TemporaryData = {
 	};
 	["TixStorage"] = {
 		Value = 20,
+		Type = "Number"
+	};
+
+	["AddPerClick"] = {
+		Value = 0,
+		Type = "Number"
+	};
+	["AddStorage"] = {
+		Value = 0,
+		Type = "Number"
+	};
+	["MultPerClick"] = {
+		Value = 0,
+		Type = "Number"
+	};
+	["MultStorage"] = {
+		Value = 0,
 		Type = "Number"
 	};
 }
