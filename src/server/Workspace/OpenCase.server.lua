@@ -7,6 +7,8 @@ local ProfileCacher = require(ServerScriptService.Data.ProfileCacher)
 local Cases = require(ReplicatedStorage.Data.Cases)
 local Accessories = require(ReplicatedStorage.Data.Accessories)
 
+local UpdateAccessoriesEvent = ReplicatedStorage.Networking.UpdateAccessories
+
 local part = Workspace.OpenCasePart
 
 local CASE = "C1"
@@ -16,6 +18,7 @@ local function addToAccessories(player, ID)
     local data = ProfileCacher:GetProfile(player).Data
     local result = HttpService:GenerateGUID(false)
     data.Accessories[result] = ID
+    UpdateAccessoriesEvent:FireClient(player, ID, result, "ADD")
 end
 
 local function pickWinner(rarity, caseName)

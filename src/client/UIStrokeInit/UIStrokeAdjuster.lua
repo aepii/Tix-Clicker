@@ -116,7 +116,7 @@ CollectionService:GetInstanceAddedSignal(Screen_Stroke_Tag):Connect(function(uiS
 	ScreenStrokes[uiStroke] = uiStroke.Thickness
 	uiStroke.Thickness *= getScreenRatio()
 	local parent = uiStroke.Parent
-    parent.Size = parent.Size + UDim2.new(0, uiStroke.Thickness*2, 0, uiStroke.Thickness*2)
+    parent.Size = UDim2.new(parent.Size.X.Scale, uiStroke.Thickness*2, parent.Size.Y.Scale, uiStroke.Thickness*2)
 end)
 
 -- Updates ScreenGui strokes

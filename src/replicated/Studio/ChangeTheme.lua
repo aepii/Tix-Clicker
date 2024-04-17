@@ -1,8 +1,6 @@
 local StarterGui = game:GetService("StarterGui")
 local UIS = StarterGui.UI.ColorThemes
 
-
-
 local function applyColorThemeToUI(ui)
     
     local attributes = ui:GetAttributes()
