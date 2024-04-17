@@ -20,7 +20,7 @@ ClickSound.Parent = Frame
 
 local ExitButton = script.Parent.ExitButton
 local ExitButton_OriginalSize = ExitButton.Size
-local SCALE = 1.25
+local SCALE = 1.15
 local TIME = 0.1
 
 local InvFrame = Frame.InvFrame
@@ -34,7 +34,7 @@ local EquipFrame = Frame.EquipFrame
 local EquipButton = EquipFrame.EquipButton
 local EquipButton_OriginalSize = EquipButton.Size
 
-local EquipAccessoryEvent = Networking.EquipAccessory
+local EquipAccessoryFunction = Networking.EquipAccessory
 
 local function exitMouseDown()
     ClickSound:Play()
@@ -96,7 +96,7 @@ UpdateAccessoriesEvent.OnClientEvent:Connect(updateInventory)
 initInventory()
 
 local function equipAccessory()
-    EquipAccessoryEvent:InvokeServer(EquipFrame.CurrentGUID.Value)
+    EquipAccessoryFunction:InvokeServer(EquipFrame.CurrentGUID.Value)
 end
 
 local function equipMouseDown()

@@ -115,10 +115,13 @@ local function updateEquippedAccessories(player, profile, holder)
 				createdValue.Value = GUID
 			end
 		end
+		for _, accessory in holder:GetChildren() do
+			if not profile.Data.EquippedAccessories[accessory.Name] then
+				accessory:Destroy()
+			end
+		end
 	end
 end
-
-
 
 local function createReplicatedData(player, profile)
 	local dataProfile = ProfileData.Data

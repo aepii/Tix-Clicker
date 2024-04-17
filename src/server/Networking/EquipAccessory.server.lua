@@ -1,7 +1,9 @@
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 local Networking = ReplicatedStorage.Networking
 local EquipAccessoryFunction = Networking.EquipAccessory
+local EquipAccessoryBindableFunction = Networking.BindableEquipAccessory
 local ProfileCacher = require(ServerScriptService.Data.ProfileCacher)
 local Accessories = require(ReplicatedStorage.Data.Accessories)
 
@@ -12,9 +14,11 @@ local function physicalEquip(ID, humanoid)
         asset.Name = accessory.Name
         humanoid:AddAccessory(asset)
     elseif accessory and accessory.Type == "Face" then
-        humanoid.parent.Head.face.Texture = "rbxassetid://"..accessory.AssetID
+        humanoid.parent.Head.face.Texture = accessory.AssetID
     end
 end
+
+EquipAccessoryBindableFunction.Event:Connect(physicalEquip)
 
 local function physicalUnequip(ID, humanoid)
     local accessory = Accessories[ID]
@@ -25,7 +29,7 @@ local function physicalUnequip(ID, humanoid)
                 asset:Destroy()
             end
         elseif accessory.Type == "Face" then
-            humanoid.parent.Head.face.Texture = "rbxassetid://144075659"
+            humanoid.parent.Head.face.Texture = "rbxasset://textures/face.png"
         end
     end
 end
@@ -51,9 +55,7 @@ local function equipAccessory(player, GUID, data)
     if count < player.TemporaryData.EquippedAccessoriesLimit.Value then
         if not equippedAccessories[ID] then
             local GUID = getAccessoryToEquip(ID, accessoriesInventory)
-            print(equippedAccessories)
             equippedAccessories[ID] = GUID
-            print(equippedAccessories)
             physicalEquip(ID, player.Character.Humanoid)
         else
             equippedAccessories[ID] = nil
@@ -69,3 +71,4 @@ EquipAccessoryFunction.OnServerInvoke = function(player, GUID)
         equipAccessory(player, GUID, data)
     end
 end
+

@@ -16,6 +16,22 @@ local ClickSound = Button.Parent.Parent.Parent.ClickSound
 local Frame = Button.Parent.Parent.Parent.EquipFrame
 local InvFrame = Button.Parent.Parent.Parent.InvFrame
 
+local function equipStatus(ID, GUID)
+    for _, accessory in Player.ReplicatedData.EquippedAccessories:GetChildren() do
+        if accessory.Name == ID and accessory.Value == GUID then
+            Frame.EquipButton.EquipText.Text = "Unequip"
+            Frame.EquipButton.BackgroundColor3 = Color3.fromRGB(170, 85, 89)
+            Frame.EquipButton.Shadow.BackgroundColor3 = Color3.fromRGB(102, 63, 64)
+            Frame.EquipButton.EquipText.UIStroke.Color = Color3.fromRGB(102, 63, 64)
+            return
+        end
+    end
+    Frame.EquipButton.EquipText.Text = "Equip"
+    Frame.EquipButton.BackgroundColor3 = Color3.fromRGB(85, 170, 127)
+    Frame.EquipButton.Shadow.BackgroundColor3 = Color3.fromRGB(34, 68, 50)
+    Frame.EquipButton.EquipText.UIStroke.Color = Color3.fromRGB(34, 68, 50)
+end
+
 local function updateEquipFrame()
     local GUID = script.Parent.Name
     local ID = Player.ReplicatedData.Accessories[GUID].Value
@@ -37,6 +53,7 @@ local function updateEquipFrame()
             else
                 rewardFrame.Visible = false
             end
+            equipStatus(ID, GUID)
         end
     end
 
