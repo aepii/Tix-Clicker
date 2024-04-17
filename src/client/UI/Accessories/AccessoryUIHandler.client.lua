@@ -1,6 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Networking = ReplicatedStorage.Networking
-local UpdateAccessoriesEvent = ReplicatedStorage.Networking.UpdateAccessories
+local UpdateAccessoriesEvent = Networking.UpdateAccessories
 
 local Accessories = require(ReplicatedStorage.Data.Accessories)
 
@@ -20,8 +20,8 @@ ClickSound.Parent = Frame
 
 local ExitButton = script.Parent.ExitButton
 local ExitButton_OriginalSize = ExitButton.Size
-local ExitButton_Scale = 1.25
-local ExitButton_Time = 0.1
+local SCALE = 1.25
+local TIME = 0.1
 
 local InvFrame = Frame.InvFrame
 local Holder = InvFrame.Holder
@@ -30,34 +30,40 @@ local IconCopy = Holder.IconCopy
 IconScript.Parent = IconCopy
 IconScript.Enabled = true
 
+local EquipFrame = Frame.EquipFrame
+local EquipButton = EquipFrame.EquipButton
+local EquipButton_OriginalSize = EquipButton.Size
+
+local EquipAccessoryEvent = Networking.EquipAccessory
+
 local function exitMouseDown()
     ClickSound:Play()
     local newScaledSize = UDim2.new(
-        ExitButton_OriginalSize.X.Scale / ExitButton_Scale,
+        ExitButton_OriginalSize.X.Scale / SCALE,
         0,
-        ExitButton_OriginalSize.Y.Scale / ExitButton_Scale,
+        ExitButton_OriginalSize.Y.Scale / SCALE,
         0
     )
-    ExitButton:TweenSize(newScaledSize, Enum.EasingDirection.In, Enum.EasingStyle.Quad, ExitButton_Time, true)
+    ExitButton:TweenSize(newScaledSize, Enum.EasingDirection.In, Enum.EasingStyle.Quad, TIME, true)
 end
 
 local function exitMouseUp()
-    ExitButton:TweenSize(ExitButton_OriginalSize, Enum.EasingDirection.In, Enum.EasingStyle.Quad, ExitButton_Time, true)
-    Frame:TweenPosition(UDim2.new(0.5,0,2,0), Enum.EasingDirection.In, Enum.EasingStyle.Quad, ExitButton_Time, true)
+    ExitButton:TweenSize(ExitButton_OriginalSize, Enum.EasingDirection.In, Enum.EasingStyle.Quad, TIME, true)
+    Frame:TweenPosition(UDim2.new(0.5,0,2,0), Enum.EasingDirection.In, Enum.EasingStyle.Quad, TIME, true)
 end
 
 local function exitHover()
     local newScaledSize = UDim2.new(
-        ExitButton_OriginalSize.X.Scale * ExitButton_Scale,
+        ExitButton_OriginalSize.X.Scale * SCALE,
         0,
-        ExitButton_OriginalSize.Y.Scale * ExitButton_Scale,
+        ExitButton_OriginalSize.Y.Scale * SCALE,
         0
     )
-    ExitButton:TweenSize(newScaledSize, Enum.EasingDirection.In, Enum.EasingStyle.Quad, ExitButton_Time, true)
+    ExitButton:TweenSize(newScaledSize, Enum.EasingDirection.In, Enum.EasingStyle.Quad, TIME, true)
 end
 
 local function exitLeave()
-    ExitButton:TweenSize(ExitButton_OriginalSize, Enum.EasingDirection.In, Enum.EasingStyle.Quad, ExitButton_Time, true)
+    ExitButton:TweenSize(ExitButton_OriginalSize, Enum.EasingDirection.In, Enum.EasingStyle.Quad, TIME, true)
 end
 
 ExitButton.ClickDetector.MouseEnter:Connect(exitHover)
@@ -88,3 +94,42 @@ end
 
 UpdateAccessoriesEvent.OnClientEvent:Connect(updateInventory)
 initInventory()
+
+local function equipAccessory()
+    EquipAccessoryEvent:InvokeServer(EquipFrame.CurrentGUID.Value)
+end
+
+local function equipMouseDown()
+    ClickSound:Play()
+    local newScaledSize = UDim2.new(
+        EquipButton_OriginalSize.X.Scale / SCALE,
+        0,
+        EquipButton_OriginalSize.Y.Scale / SCALE,
+        0
+    )
+    EquipButton:TweenSize(newScaledSize, Enum.EasingDirection.In, Enum.EasingStyle.Quad, TIME, true)
+end
+
+local function equipMouseUp()
+    EquipButton:TweenSize(EquipButton_OriginalSize, Enum.EasingDirection.In, Enum.EasingStyle.Quad, TIME, true)
+    equipAccessory()
+end
+
+local function equipHover()
+    local newScaledSize = UDim2.new(
+        EquipButton_OriginalSize.X.Scale * SCALE,
+        0,
+        EquipButton_OriginalSize.Y.Scale * SCALE,
+        0
+    )
+    EquipButton:TweenSize(newScaledSize, Enum.EasingDirection.In, Enum.EasingStyle.Quad, TIME, true)
+end
+
+local function equipLeave()
+    EquipButton:TweenSize(EquipButton_OriginalSize, Enum.EasingDirection.In, Enum.EasingStyle.Quad, TIME, true)
+end
+
+EquipButton.ClickDetector.MouseEnter:Connect(equipHover)
+EquipButton.ClickDetector.MouseLeave:Connect(equipLeave)
+EquipButton.ClickDetector.MouseButton1Down:Connect(equipMouseDown)
+EquipButton.ClickDetector.MouseButton1Up:Connect(equipMouseUp)

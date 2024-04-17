@@ -47,7 +47,16 @@ ProfileData.TemporaryData = {
 		Value = 20,
 		Type = "Number"
 	};
-
+	["EquippedAccessoriesLimit"] = {
+		Value = 3,
+		Type = "Number"
+	};
+	["AccessoriesLimit"] = {
+		Value = 20,
+		Type = "Number"
+	};
+	
+	
 	["AddPerClick"] = {
 		Value = 0,
 		Type = "Number"
