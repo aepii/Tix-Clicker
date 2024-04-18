@@ -22,11 +22,11 @@ ProfileData.Data = {
 	
 	["ValueUpgrades"] = {
 	};
-	
 	["Accessories"] = {
 	};
-
-	["Inventory"] = {
+	["Cases"] = {
+	};
+	["Materials"] = {
 	};
 }
 
@@ -55,8 +55,6 @@ ProfileData.TemporaryData = {
 		Value = 20,
 		Type = "Number"
 	};
-	
-	
 	["AddPerClick"] = {
 		Value = 0,
 		Type = "Number"
