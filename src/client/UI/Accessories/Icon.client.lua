@@ -15,61 +15,83 @@ local ClickSound = Button.Parent.Parent.Parent.ClickSound
 
 local Frame = Button.Parent.Parent.Parent.EquipFrame
 local InvFrame = Button.Parent.Parent.Parent.InvFrame
+local EquipButton = Frame.EquipButton
 
-local function equipStatus(ID, GUID)
-    for _, accessory in Player.ReplicatedData.EquippedAccessories:GetChildren() do
-        if accessory.Name == ID and accessory.Value == GUID then
-            Frame.EquipButton.EquipText.Text = "Unequip"
-            Frame.EquipButton.BackgroundColor3 = Color3.fromRGB(170, 85, 89)
-            Frame.EquipButton.Shadow.BackgroundColor3 = Color3.fromRGB(102, 63, 64)
-            Frame.EquipButton.EquipText.UIStroke.Color = Color3.fromRGB(102, 63, 64)
-            return
+local function setEquipButtonStatus()
+    local GUID = Frame.CurrentGUID.Value
+    local ID = Player.ReplicatedData.Accessories[GUID].Value
+    local accessory = Player.ReplicatedData.EquippedAccessories:FindFirstChild(ID)
+    local equipText, backgroundColor, shadowColor, strokeColor
+
+    if accessory then
+        if accessory.Value == GUID then
+            equipText = "Unequip"
+            backgroundColor = Color3.fromRGB(170, 85, 89)
+            shadowColor = Color3.fromRGB(102, 63, 64)
+            strokeColor = Color3.fromRGB(102, 63, 64)
+        else
+            equipText = "Unavailable"
+            backgroundColor = Color3.fromRGB(82, 81, 81)
+            shadowColor = Color3.fromRGB(36, 35, 35)
+            strokeColor = Color3.fromRGB(36, 35, 35)
         end
+    else
+        equipText = "Equip"
+        backgroundColor = Color3.fromRGB(85, 170, 127)
+        shadowColor = Color3.fromRGB(34, 68, 50)
+        strokeColor = Color3.fromRGB(34, 68, 50)
     end
-    Frame.EquipButton.EquipText.Text = "Equip"
-    Frame.EquipButton.BackgroundColor3 = Color3.fromRGB(85, 170, 127)
-    Frame.EquipButton.Shadow.BackgroundColor3 = Color3.fromRGB(34, 68, 50)
-    Frame.EquipButton.EquipText.UIStroke.Color = Color3.fromRGB(34, 68, 50)
+
+    Frame.EquipButton.EquipText.Text = equipText
+    Frame.EquipButton.BackgroundColor3 = backgroundColor
+    Frame.EquipButton.Shadow.BackgroundColor3 = shadowColor
+    Frame.EquipButton.EquipText.UIStroke.Color = strokeColor
 end
 
 local function updateEquipFrame()
     local GUID = script.Parent.Name
     local ID = Player.ReplicatedData.Accessories[GUID].Value
     local accessory = Accessories[ID]
+    
+    if InvFrame.Holder:FindFirstChild(Frame.CurrentGUID.Value) then
+        InvFrame.Holder[Frame.CurrentGUID.Value].Shadow.BackgroundColor3 = Color3.fromRGB(0, 83, 125)
+    end
 
-    for _, rewardFrame in Frame.RewardsFrame:GetChildren() do
+    for _, rewardFrame in ipairs(Frame.RewardsFrame:GetChildren()) do
         if rewardFrame:IsA("Frame") then
             local reward = accessory.Reward[rewardFrame.Name]
             if reward then
-                if string.find(rewardFrame.Name, "Add") then
-                    prefix = "+" 
-                elseif string.find(rewardFrame.Name, "Mult") then
-                    prefix = "x"
-                end
+                local prefix = string.find(rewardFrame.Name, "Add") and "+" or "x"
                 Frame.CurrentGUID.Value = GUID
+                InvFrame.Holder[GUID].Shadow.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
                 rewardFrame.RewardText.Text = prefix .. SuffixHandler:Convert(reward)
                 rewardFrame.Visible = true
                 rewardFrame.Parent = Frame.RewardsFrame
             else
                 rewardFrame.Visible = false
             end
-            equipStatus(ID, GUID)
         end
     end
+
+    setEquipButtonStatus()
 
     Frame.ItemName.Title.Text = accessory.Name
     Frame.Icon.ImageLabel.Image = "http://www.roblox.com/Thumbs/Asset.ashx?Width=256&Height=256&AssetID="..accessory.AssetID
 end
 
-local function iconMouseDown()
-    ClickSound:Play()
+local function iconTweenSize(scale)
     local newScaledSize = UDim2.new(
-        Icon_OriginalSize.X.Scale / Icon_Scale,
+        Icon_OriginalSize.X.Scale * scale,
         0,
-        Icon_OriginalSize.Y.Scale / Icon_Scale,
+        Icon_OriginalSize.Y.Scale * scale,
         0
     )
     Icon:TweenSize(newScaledSize, Enum.EasingDirection.In, Enum.EasingStyle.Quad, Icon_Time, true)
+end
+
+local function iconMouseDown()
+    ClickSound:Play()
+    iconTweenSize(1 / Icon_Scale)
 end
 
 local function iconMouseUp()
@@ -79,22 +101,13 @@ local function iconMouseUp()
     updateEquipFrame()
 end
 
-local function iconHover()
-    local newScaledSize = UDim2.new(
-        Icon_OriginalSize.X.Scale * Icon_Scale,
-        0,
-        Icon_OriginalSize.Y.Scale * Icon_Scale,
-        0
-    )
-    print(newScaledSize)
-    Icon:TweenSize(newScaledSize, Enum.EasingDirection.In, Enum.EasingStyle.Quad, Icon_Time, true)
-end
+Button.MouseEnter:Connect(function()
+    iconTweenSize(Icon_Scale)
+end)
 
-local function iconLeave()
+Button.MouseLeave:Connect(function()
     Icon:TweenSize(Icon_OriginalSize, Enum.EasingDirection.In, Enum.EasingStyle.Quad, Icon_Time, true)
-end
+end)
 
-Button.ClickDetector.MouseEnter:Connect(iconHover)
-Button.ClickDetector.MouseLeave:Connect(iconLeave)
 Button.ClickDetector.MouseButton1Down:Connect(iconMouseDown)
 Button.ClickDetector.MouseButton1Up:Connect(iconMouseUp)

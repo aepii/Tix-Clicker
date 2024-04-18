@@ -1,6 +1,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Networking = ReplicatedStorage.Networking
 local UpdateAccessoriesEvent = Networking.UpdateAccessories
+local EquipAccessoryFunction = Networking.EquipAccessory
 
 local Accessories = require(ReplicatedStorage.Data.Accessories)
 
@@ -10,15 +11,14 @@ local UI = PlayerGui:WaitForChild("UI")
 local Frame = UI:WaitForChild("Accessories")
 
 local IconScript = script.Parent.Icon
-
-script.Parent = Frame
+IconScript.Parent = Frame
 
 local ClickSound = Instance.new("Sound")
 ClickSound.Name = "ClickSound"
 ClickSound.SoundId = "rbxassetid://8755719003"
 ClickSound.Parent = Frame
 
-local ExitButton = script.Parent.ExitButton
+local ExitButton = Frame.ExitButton
 local ExitButton_OriginalSize = ExitButton.Size
 local SCALE = 1.15
 local TIME = 0.1
@@ -34,36 +34,40 @@ local EquipFrame = Frame.EquipFrame
 local EquipButton = EquipFrame.EquipButton
 local EquipButton_OriginalSize = EquipButton.Size
 
-local EquipAccessoryFunction = Networking.EquipAccessory
-
-local function exitMouseDown()
+local function playClickSound()
     ClickSound:Play()
-    local newScaledSize = UDim2.new(
-        ExitButton_OriginalSize.X.Scale / SCALE,
-        0,
-        ExitButton_OriginalSize.Y.Scale / SCALE,
-        0
-    )
-    ExitButton:TweenSize(newScaledSize, Enum.EasingDirection.In, Enum.EasingStyle.Quad, TIME, true)
 end
 
-local function exitMouseUp()
-    ExitButton:TweenSize(ExitButton_OriginalSize, Enum.EasingDirection.In, Enum.EasingStyle.Quad, TIME, true)
-    Frame:TweenPosition(UDim2.new(0.5,0,2,0), Enum.EasingDirection.In, Enum.EasingStyle.Quad, TIME, true)
+local function tweenButtonSize(button, originalSize)
+    local newScaledSize = UDim2.new(
+        originalSize.X.Scale / SCALE,
+        0,
+        originalSize.Y.Scale / SCALE,
+        0
+    )
+    button:TweenSize(newScaledSize, Enum.EasingDirection.In, Enum.EasingStyle.Quad, TIME, true)
+end
+
+local function resetButtonSize(button, originalSize)
+    button:TweenSize(originalSize, Enum.EasingDirection.In, Enum.EasingStyle.Quad, TIME, true)
 end
 
 local function exitHover()
-    local newScaledSize = UDim2.new(
-        ExitButton_OriginalSize.X.Scale * SCALE,
-        0,
-        ExitButton_OriginalSize.Y.Scale * SCALE,
-        0
-    )
-    ExitButton:TweenSize(newScaledSize, Enum.EasingDirection.In, Enum.EasingStyle.Quad, TIME, true)
+    tweenButtonSize(ExitButton, ExitButton_OriginalSize)
 end
 
 local function exitLeave()
-    ExitButton:TweenSize(ExitButton_OriginalSize, Enum.EasingDirection.In, Enum.EasingStyle.Quad, TIME, true)
+    resetButtonSize(ExitButton, ExitButton_OriginalSize)
+end
+
+local function exitMouseDown()
+    playClickSound()
+    tweenButtonSize(ExitButton, ExitButton_OriginalSize)
+end
+
+local function exitMouseUp()
+    resetButtonSize(ExitButton, ExitButton_OriginalSize)
+    Frame:TweenPosition(UDim2.new(0.5, 0, 2, 0), Enum.EasingDirection.In, Enum.EasingStyle.Quad, TIME, true)
 end
 
 ExitButton.ClickDetector.MouseEnter:Connect(exitHover)
@@ -76,7 +80,7 @@ local function updateInventory(ID, GUID, method)
         local icon = IconCopy:Clone()
         icon.Visible = true
         icon.Name = GUID
-        icon.ImageLabel.Image = "http://www.roblox.com/Thumbs/Asset.ashx?Width=256&Height=256&AssetID="..Accessories[ID].AssetID
+        icon.ImageLabel.Image = "http://www.roblox.com/Thumbs/Asset.ashx?Width=256&Height=256&AssetID=" .. Accessories[ID].AssetID
         icon.Parent = Holder
     elseif method == "DEL" then
         local icon = Holder:FindFirstChild(GUID)
@@ -87,7 +91,7 @@ local function updateInventory(ID, GUID, method)
 end
 
 local function initInventory()
-    for _, accessory in Player.ReplicatedData.Accessories:GetChildren() do
+    for _, accessory in ipairs(Player.ReplicatedData.Accessories:GetChildren()) do
         updateInventory(accessory.Value, accessory.Name, "ADD")
     end
 end
@@ -99,37 +103,60 @@ local function equipAccessory()
     EquipAccessoryFunction:InvokeServer(EquipFrame.CurrentGUID.Value)
 end
 
-local function equipMouseDown()
-    ClickSound:Play()
-    local newScaledSize = UDim2.new(
-        EquipButton_OriginalSize.X.Scale / SCALE,
-        0,
-        EquipButton_OriginalSize.Y.Scale / SCALE,
-        0
-    )
-    EquipButton:TweenSize(newScaledSize, Enum.EasingDirection.In, Enum.EasingStyle.Quad, TIME, true)
+local function setEquipButtonStatus()
+    local GUID = EquipFrame.CurrentGUID.Value
+    local ID = Player.ReplicatedData.Accessories[GUID].Value
+    local accessory = Player.ReplicatedData.EquippedAccessories:FindFirstChild(ID)
+    local equipText, backgroundColor, shadowColor, strokeColor
+
+    if accessory then
+        if accessory.Value == GUID then
+            equipText = "Unequip"
+            backgroundColor = Color3.fromRGB(170, 85, 89)
+            shadowColor = Color3.fromRGB(102, 63, 64)
+            strokeColor = Color3.fromRGB(102, 63, 64)
+        else
+            equipText = "Unavailable"
+            backgroundColor = Color3.fromRGB(82, 81, 81)
+            shadowColor = Color3.fromRGB(36, 35, 35)
+            strokeColor = Color3.fromRGB(36, 35, 35)
+        end
+    else
+        equipText = "Equip"
+        backgroundColor = Color3.fromRGB(85, 170, 127)
+        shadowColor = Color3.fromRGB(34, 68, 50)
+        strokeColor = Color3.fromRGB(34, 68, 50)
+    end
+
+    EquipButton.EquipText.Text = equipText
+    EquipButton.BackgroundColor3 = backgroundColor
+    EquipButton.Shadow.BackgroundColor3 = shadowColor
+    EquipButton.EquipText.UIStroke.Color = strokeColor
 end
 
-local function equipMouseUp()
-    EquipButton:TweenSize(EquipButton_OriginalSize, Enum.EasingDirection.In, Enum.EasingStyle.Quad, TIME, true)
-    equipAccessory()
+local function equipButtonInteraction(isMouseDown)
+    playClickSound()
+    if isMouseDown then
+        tweenButtonSize(EquipButton, EquipButton_OriginalSize)
+    else
+        equipAccessory()
+        setEquipButtonStatus()
+        resetButtonSize(EquipButton, EquipButton_OriginalSize)
+    end
 end
 
-local function equipHover()
-    local newScaledSize = UDim2.new(
-        EquipButton_OriginalSize.X.Scale * SCALE,
-        0,
-        EquipButton_OriginalSize.Y.Scale * SCALE,
-        0
-    )
-    EquipButton:TweenSize(newScaledSize, Enum.EasingDirection.In, Enum.EasingStyle.Quad, TIME, true)
-end
+EquipButton.ClickDetector.MouseEnter:Connect(function()
+    tweenButtonSize(EquipButton, EquipButton_OriginalSize)
+end)
 
-local function equipLeave()
-    EquipButton:TweenSize(EquipButton_OriginalSize, Enum.EasingDirection.In, Enum.EasingStyle.Quad, TIME, true)
-end
+EquipButton.ClickDetector.MouseLeave:Connect(function()
+    resetButtonSize(EquipButton, EquipButton_OriginalSize)
+end)
 
-EquipButton.ClickDetector.MouseEnter:Connect(equipHover)
-EquipButton.ClickDetector.MouseLeave:Connect(equipLeave)
-EquipButton.ClickDetector.MouseButton1Down:Connect(equipMouseDown)
-EquipButton.ClickDetector.MouseButton1Up:Connect(equipMouseUp)
+EquipButton.ClickDetector.MouseButton1Down:Connect(function()
+    equipButtonInteraction(true)
+end)
+
+EquipButton.ClickDetector.MouseButton1Up:Connect(function()
+    equipButtonInteraction(false)
+end)

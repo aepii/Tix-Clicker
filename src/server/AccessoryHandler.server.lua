@@ -17,6 +17,7 @@ local function playerAdded(player)
     character.Head.face.Texture = "rbxasset://textures/face.png"
 
     for ID, GUID in data.EquippedAccessories do
+        print(ID)
         EquipAccessoryBindableFunction:Fire(ID, player.Character.Humanoid)
     end
 

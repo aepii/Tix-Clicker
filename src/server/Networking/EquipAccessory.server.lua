@@ -14,7 +14,9 @@ local function physicalEquip(ID, humanoid)
         asset.Name = accessory.Name
         humanoid:AddAccessory(asset)
     elseif accessory and accessory.Type == "Face" then
-        humanoid.parent.Head.face.Texture = accessory.AssetID
+        print(accessory.AssetID)
+        local asset = game:GetService("InsertService"):LoadAsset(accessory.AssetID).face.Texture
+        humanoid.parent.Head.face.Texture = asset
     end
 end
 
@@ -34,14 +36,6 @@ local function physicalUnequip(ID, humanoid)
     end
 end
 
-local function getAccessoryToEquip(ID, accessoriesInventory)
-    for GUID, _ID in accessoriesInventory do
-        if _ID == ID then
-            return GUID
-        end
-    end
-end
-
 local function equipAccessory(player, GUID, data)
     local equippedAccessories = data.EquippedAccessories
     local accessoriesInventory = data.Accessories
@@ -52,16 +46,16 @@ local function equipAccessory(player, GUID, data)
         count += 1
     end
 
-    if count < player.TemporaryData.EquippedAccessoriesLimit.Value then
-        if not equippedAccessories[ID] then
-            local GUID = getAccessoryToEquip(ID, accessoriesInventory)
-            equippedAccessories[ID] = GUID
-            physicalEquip(ID, player.Character.Humanoid)
-        else
-            equippedAccessories[ID] = nil
-            physicalUnequip(ID, player.Character.Humanoid)
-        end
+    if equippedAccessories[ID] == GUID then
+        equippedAccessories[ID] = nil
+        physicalUnequip(ID, player.Character.Humanoid)
+    elseif equippedAccessories[ID] then
+        return
+    elseif count < player.TemporaryData.EquippedAccessoriesLimit.Value then
+        equippedAccessories[ID] = GUID
+        physicalEquip(ID, player.Character.Humanoid)
     end
+
 end
 
 EquipAccessoryFunction.OnServerInvoke = function(player, GUID)
