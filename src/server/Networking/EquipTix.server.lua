@@ -58,13 +58,11 @@ end)
 ---- Setup ----
 
 local function animateTool(player)
-	
 	local character = player.Character
 	local humanoid = character.Humanoid
 	
 	local animationTrack = humanoid:LoadAnimation(character.Animate.toolnone.ToolNoneAnim) 
 	animationTrack:Play()
-		
 end
 
 local function playerAdded(player)

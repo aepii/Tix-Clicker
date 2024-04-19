@@ -18,5 +18,8 @@ function TemporaryData:CalculateTixStorage(data)
     return TemporaryProfileData.TixStorage
 end
 
+function TemporaryData:CalculateValue(data)
+    return 0
+end
 
 return TemporaryData

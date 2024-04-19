@@ -12,6 +12,7 @@ local TemporaryData = require(Modules.TemporaryData)
 
 local ProfileCacher = require(ServerScriptService.Data.ProfileCacher)
 local Upgrades = require(ReplicatedStorage.Data.Upgrades)
+local ReplicatedProfile = require(ServerScriptService.Data.ReplicatedProfile)
 
 ---- Networking ----
 
@@ -19,7 +20,8 @@ local Networking = ReplicatedStorage.Networking
 local ClickTixRemote = Networking.ClickTix
 
 ClickTixRemote.OnServerInvoke = (function(player)
-    local data = ProfileCacher:GetProfile(player).Data
+    local profile = ProfileCacher:GetProfile(player)
+    local data = profile.Data
 
     local replicatedData = player.ReplicatedData
 
@@ -32,6 +34,8 @@ ClickTixRemote.OnServerInvoke = (function(player)
 
         replicatedData.Tix.Value = data.Tix
         replicatedData["Lifetime Tix"].Value = data["Lifetime Tix"]
+
+        ReplicatedProfile:UpdateLeaderstats(player, profile, "Tix")
 
         return true
     end

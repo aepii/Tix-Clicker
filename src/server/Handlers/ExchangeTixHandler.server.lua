@@ -8,10 +8,12 @@ local Workspace = game:GetService("Workspace")
 ---- Data ----
 
 local ProfileCacher = require(ServerScriptService.Data.ProfileCacher)
+local ReplicatedProfile = require(ServerScriptService.Data.ReplicatedProfile)
 
 ---- Exchange Tix ----
 
 local function exchangeTix(player)
+    local profile = ProfileCacher:GetProfile(player)
     local data = ProfileCacher:GetProfile(player).Data
 
     local replicatedData = player.ReplicatedData
@@ -22,6 +24,9 @@ local function exchangeTix(player)
 
         replicatedData.Rocash.Value = data.Rocash
         replicatedData.Tix.Value = data.Tix
+
+        ReplicatedProfile:UpdateLeaderstats(player, profile, "Tix")
+        ReplicatedProfile:UpdateLeaderstats(player, profile, "Rocash")
     end
 end
 

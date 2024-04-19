@@ -16,7 +16,7 @@ local ProfileTemplate = ProfileData.Data
 ---- Loaded Modules ----
 
 local ProfileService = require(script.ProfileService)
-local ReplicatedData = require(script.Parent.ReplicatedData)
+local ReplicatedProfile = require(script.Parent.ReplicatedProfile)
 
 ---- Private Variables ----
 
@@ -43,7 +43,7 @@ local function playerAdded(player)
 		if player:IsDescendantOf(Players) == true then
 			Profiles[player] = profile
 			-- A profile has been successfully loaded:
-			ReplicatedData:Create(player, profile)
+			ReplicatedProfile:Create(player, profile)
 		else
 			-- Player left before the profile loaded:
 			profile:Release()

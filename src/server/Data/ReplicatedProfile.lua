@@ -10,6 +10,7 @@ local ProfileData = require(ReplicatedStorage.Data.ProfileData)
 ---- Loaded Modules ----
 
 local Modules = ReplicatedStorage:WaitForChild("Modules")
+local TemporaryData = require(Modules.TemporaryData)
 local SuffixHandler = require(Modules.SuffixHandler)
 local Accessories = require(ReplicatedStorage.Data.Accessories)
 
@@ -30,7 +31,7 @@ local tableMap = {
 	["EquippedAccessories"] = "string"
 }
 
-local ReplicatedData = {}
+local ReplicatedProfile = {}
 
 ---- Private Functions ----
 
@@ -72,9 +73,10 @@ local function createReplicatedData(player, profile)
 	end
 end
 
-local function initLeaderstats(player, profile, createdValue, key)
+local function updateLeaderstats(player, profile, createdValue, key)
 	if key == "Value" then
-		createdValue.Value = 0
+		local Value = TemporaryData:CalculateValue(profile)
+		createdValue.Value = SuffixHandler:Convert(Value)
 	else
 		createdValue.Value = SuffixHandler:Convert(profile.Data[key])
 	end
@@ -90,15 +92,24 @@ local function createLeaderstats(player, profile)
 		local createdValue = Instance.new("StringValue")
 		createdValue.Name = data.DisplayName
 		createdValue.Parent = leaderstats
-		initLeaderstats(player, profile, createdValue, data.ID)
+		updateLeaderstats(player, profile, createdValue, data.ID)
 	end
 end
 
----- Replicated Data ----
+---- Replicated Profile ----
 
-function ReplicatedData:Create(player, profile)
+function ReplicatedProfile:Create(player, profile)
     createReplicatedData(player, profile)
     createLeaderstats(player, profile)
 end
 
-return ReplicatedData
+function ReplicatedProfile:UpdateLeaderstats(player, profile, key)
+	local leaderstatsProfile = ProfileData.leaderstats
+	for index, data in leaderstatsProfile do
+		if data.ID == key then
+			updateLeaderstats(player, profile, player.leaderstats[data.DisplayName], key)
+		end
+	end
+end
+
+return ReplicatedProfile
