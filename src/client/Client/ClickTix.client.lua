@@ -15,7 +15,7 @@ local ClickSound = Instance.new("Sound")
 ClickSound.SoundId = "rbxassetid://177266782"
 ClickSound.Parent = game.Players.LocalPlayer
 
-----  Click Tix ----
+---- Click Tix ----
 
 UserInputService.InputBegan:Connect(function(input,_gameProcessed)
     if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
