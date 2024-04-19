@@ -1,19 +1,19 @@
 
------ Services -----
+---- Services ----
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
------ Data -----
+---- Data ----
 
 local ProfileData = require(ReplicatedStorage.Data.ProfileData)
 
------ Loaded Modules -----
+---- Loaded Modules ----
 
 local Modules = ReplicatedStorage:WaitForChild("Modules")
 local SuffixHandler = require(Modules.SuffixHandler)
 local Accessories = require(ReplicatedStorage.Data.Accessories)
 
------ Private Variables -----
+---- Private Variables ----
 
 local typeMap = {
 	number = "NumberValue",
@@ -32,12 +32,7 @@ local tableMap = {
 
 local ReplicatedData = {}
 
------ Private Functions -----
-
-local function initPlayerValue(player, ID)
-	local accessory = Accessories[ID]
-	player.TemporaryData["Value"].Value += accessory.Value
-end
+---- Private Functions ----
 
 local function initData(player, profile, holder, valueType)
 	local dataHolder = profile.Data[holder.Name]
@@ -49,9 +44,6 @@ local function initData(player, profile, holder, valueType)
 			createdValue.Name = index
 		else
 			createdValue.Name = value
-		end
-		if holder.Name == "Accessories" then
-			initPlayerValue(player, value)
 		end
 		createdValue.Parent = holder
 	end
@@ -82,7 +74,7 @@ end
 
 local function initLeaderstats(player, profile, createdValue, key)
 	if key == "Value" then
-		createdValue.Value = SuffixHandler:Convert(player.TemporaryData["Value"].Value)
+		createdValue.Value = 0
 	else
 		createdValue.Value = SuffixHandler:Convert(profile.Data[key])
 	end
@@ -102,24 +94,9 @@ local function createLeaderstats(player, profile)
 	end
 end
 
-local function createTemporaryData(player)
-	local temporaryProfile = ProfileData.TemporaryData
-	local temporaryData = Instance.new("Folder")
-	temporaryData.Name = "TemporaryData"
-	temporaryData.Parent = player
-
-	for key, data in temporaryProfile do
-		local createdValue = Instance.new(data.Type.."Value")
-		createdValue.Name = key
-		createdValue.Value = data.Value
-		createdValue.Parent = temporaryData
-	end
-end
-
------ Replicated Data -----
+---- Replicated Data ----
 
 function ReplicatedData:Create(player, profile)
-    createTemporaryData(player)
     createReplicatedData(player, profile)
     createLeaderstats(player, profile)
 end

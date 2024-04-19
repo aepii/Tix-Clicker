@@ -2,23 +2,23 @@
 -- Updating the template will not include missing template values
 --   in existing player profiles!
 
------ Services -----
+---- Services ----
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 local Players = game:GetService("Players")
 
------ Data -----
+---- Data ----
 
 local ProfileData = require(ReplicatedStorage.Data.ProfileData)
 local ProfileTemplate = ProfileData.Data
 
------ Loaded Modules -----
+---- Loaded Modules ----
 
 local ProfileService = require(script.ProfileService)
 local ReplicatedData = require(script.Parent.ReplicatedData)
 
------ Private Variables -----
+---- Private Variables ----
 
 local ProfileStore = ProfileService.GetProfileStore(
 	"PlayerData",
@@ -28,7 +28,7 @@ local ProfileStore = ProfileService.GetProfileStore(
 local Profiles = {} -- [player] = profile
 local ProfileManager = {}
 
------ Private Functions -----
+---- Private Functions ----
 
 local function playerAdded(player)
 	local profile = ProfileStore:LoadProfileAsync("Player_" .. player.UserId)
@@ -55,7 +55,7 @@ local function playerAdded(player)
 	end
 end
 
------ Initialize -----
+---- Initialize ----
 
 function ProfileManager:Init()
 	-- In case Players have joined the server earlier than this script ran:
@@ -63,7 +63,7 @@ function ProfileManager:Init()
 		task.spawn(playerAdded, player)
 	end
 
-	----- Connections -----
+	---- Connections ----
 
 	Players.PlayerAdded:Connect(playerAdded)
 
