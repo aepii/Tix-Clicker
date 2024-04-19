@@ -1,5 +1,6 @@
 ---- Services ----
 
+local Player = game.Players.LocalPlayer
 local UserInputService = game:GetService("UserInputService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local SoundService = game:GetService("SoundService")
@@ -11,9 +12,8 @@ local ClickTixRemote = Networking.ClickTix
 
 ---- Sound ----
 
-local ClickSound = Instance.new("Sound")
-ClickSound.SoundId = "rbxassetid://177266782"
-ClickSound.Parent = game.Players.LocalPlayer
+local Sounds = Player:WaitForChild("Sounds")
+local ClickSound = Sounds:WaitForChild("ClickSound")
 
 ---- Click Tix ----
 

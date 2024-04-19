@@ -8,6 +8,7 @@ local SoundService = game:GetService("SoundService")
 
 local Modules = ReplicatedStorage.Modules
 local TweenButton = require(Modules.TweenButton)
+local EquipButtonStatus = require(Modules.EquipButtonStatus)
 local Upgrades = require(ReplicatedStorage.Data.Upgrades)
 
 ---- UI ----
@@ -20,11 +21,19 @@ local InvHolder = TixInventory.InvFrame.Holder
 local EquipFrame = TixInventory.EquipFrame
 local IconCopy = InvHolder.IconCopy
 
+local IconScript = script.Parent.Icon
+IconScript.Parent = IconCopy
+IconScript.Enabled = true
+
+---- UI Values ----
+
+local CurrentUpgrade = EquipFrame.CurrentUpgrade
+
 ---- Sound ----
 
-local ClickSound = Instance.new("Sound")
-ClickSound.SoundId = "rbxassetid://177266782"
-ClickSound.Parent = TixInventory
+local Sounds = Player:WaitForChild("Sounds")
+local ClickSound = Sounds:WaitForChild("ClickSound")
+
 
 ---- Private Functions ----
 
@@ -32,8 +41,8 @@ local function updateInventory(upgrade, method)
     if method == "ADD" then
         local icon = IconCopy:Clone()
         icon.Visible = true
-        icon.Name = upgrade.Title
-        icon.ImageLabel.Image = upgrade.Image
+        icon.Name = upgrade.Name
+        icon.IconImage.Image = upgrade.Image
         icon.Parent = InvHolder
     elseif method == "DEL" then
         local icon = InvHolder:FindFirstChild(upgrade.Title)
@@ -78,6 +87,7 @@ end
 
 local function exitMouseUp()
     TweenButton:Reset(ExitButton, EXITBUTTON_ORIGINALSIZE)
+    TixInventory:TweenPosition(UDim2.new(0.5, 0, 2, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
 end
 
 local function equipHover()
@@ -95,6 +105,7 @@ end
 
 local function equipMouseUp()
     TweenButton:Reset(EquipButton, EQUIPBUTTON_ORIGINALSIZE)
+    EquipButtonStatus:TixInventory(Player, CurrentUpgrade.Value, EquipButton)
 end
 
 ExitButton.ClickDetector.MouseEnter:Connect(exitHover)

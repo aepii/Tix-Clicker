@@ -13,7 +13,7 @@ local Upgrades = require(ReplicatedStorage.Data.Upgrades)
 
 local function equipTool(player, tool)
     local character = player.Character
-    local rightHand = character.RightHand
+    local rightHand = character:WaitForChild("RightHand")
     local toolClone = tool:Clone()
     toolClone.Name = "Upgrade"
     toolClone.Parent = rightHand
@@ -29,7 +29,7 @@ end
 
 local function unequipTool(player)
     local character = player.Character
-    local rightHand = character.RightHand
+    local rightHand = character:WaitForChild("RightHand")
 
     local tool = rightHand:FindFirstChild("Upgrade")
     if tool then
