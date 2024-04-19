@@ -18,7 +18,7 @@ local Upgrades = require(ReplicatedStorage.Data.Upgrades)
 local Networking = ReplicatedStorage.Networking
 local ClickTixRemote = Networking.ClickTix
 
-ClickTixRemote.OnServerEvent:Connect(function(player)
+ClickTixRemote.OnServerInvoke = (function(player)
     local data = ProfileCacher:GetProfile(player).Data
 
     local replicatedData = player.ReplicatedData
@@ -32,5 +32,7 @@ ClickTixRemote.OnServerEvent:Connect(function(player)
 
         replicatedData.Tix.Value = data.Tix
         replicatedData["Lifetime Tix"].Value = data["Lifetime Tix"]
+
+        return true
     end
 end)

@@ -1,4 +1,4 @@
 {
     "Name": "ClickTix",
-    "ClassName": "RemoteEvent"
+    "ClassName": "RemoteFunction"
 }
