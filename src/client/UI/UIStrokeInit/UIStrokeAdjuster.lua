@@ -126,6 +126,7 @@ local function updateScreenGuiStrokes()
 			ScreenStrokes[uiStroke] = nil
 		else
 			uiStroke.Thickness = originalThickness * getScreenRatio()
+			uiStroke.Enabled = false
 		end
 		local parent = uiStroke.Parent
     	parent.Size = UDim2.new(parent.Size.X.Scale, uiStroke.Thickness*2, parent.Size.Y.Scale, uiStroke.Thickness*2)
@@ -175,7 +176,11 @@ CollectionService:GetInstanceAddedSignal(Billboard_Tag):Connect(function(billboa
 				if not stroke.Parent then
 					BillboardStrokes[stroke] = nil
 				else
-					stroke.Thickness = originalThickness * distanceRatio * getScreenRatio()
+					stroke.Thickness = originalThickness * distanceRatio * getScreenRatio() * 1.75
+					if not stroke.Parent:IsA("TextLabel") then
+						stroke.Parent.Size = UDim2.new(stroke.Parent.Size.X.Scale, stroke.Thickness*1.75, stroke.Parent.Size.Y.Scale, stroke.Thickness*1.75)
+						stroke.Enabled = false
+					end
 				end
 			end
 		end

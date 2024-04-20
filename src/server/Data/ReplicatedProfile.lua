@@ -96,11 +96,26 @@ local function createLeaderstats(player, profile)
 	end
 end
 
+local function createTemporaryData(player, profile)
+	local temporaryProfile = ProfileData.TemporaryData
+	local temporaryData = Instance.new("Folder")
+	temporaryData.Name = "TemporaryData"
+	temporaryData.Parent = player
+
+	for index, data in temporaryProfile do
+		local createdValue = Instance.new(data.Type.."Value")
+		createdValue.Name = index
+		createdValue.Value = data.Value
+		createdValue.Parent = temporaryData
+	end
+end
+
 ---- Replicated Profile ----
 
 function ReplicatedProfile:Create(player, profile)
     createReplicatedData(player, profile)
     createLeaderstats(player, profile)
+	createTemporaryData(player, profile)
 end
 
 function ReplicatedProfile:UpdateLeaderstats(player, profile, key)

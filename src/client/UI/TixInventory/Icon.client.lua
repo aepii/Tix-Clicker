@@ -7,7 +7,7 @@ local SoundService = game:GetService("SoundService")
 ---- Modules ----
 
 local Modules = ReplicatedStorage.Modules
-local EquipButtonStatus = require(Modules.EquipButtonStatus)
+local ButtonStatus = require(Modules.ButtonStatus)
 local TweenButton = require(Modules.TweenButton)
 local Upgrades = require(ReplicatedStorage.Data.Upgrades)
 local SuffixHandler = require(Modules.SuffixHandler)
@@ -66,7 +66,7 @@ local function updateEquipFrame()
     EquipFrame.ItemName.Title.Text = upgrade.Title
     IconImage.Image = upgrade.Image
 
-    EquipButtonStatus:TixInventory(Player, CurrentUpgrade.Value, EquipButton)
+    ButtonStatus:TixInventory(Player, CurrentUpgrade.Value, EquipButton)
 end
 
 ---- Buttons ----
@@ -77,20 +77,20 @@ local function playClickSound()
     SoundService:PlayLocalSound(ClickSound)
 end
 
-local function exitHover()
+local function iconHover()
     TweenButton:Grow(IconImage, ICONIMAGE_ORIGINALSIZE)
 end
 
-local function exitLeave()
+local function iconLeave()
     TweenButton:Reset(IconImage, ICONIMAGE_ORIGINALSIZE)
 end
 
-local function exitMouseDown()
+local function iconMouseDown()
     playClickSound()
     TweenButton:Shrink(IconImage, ICONIMAGE_ORIGINALSIZE)
 end
 
-local function exitMouseUp()
+local function iconMouseUp()
     TweenButton:Reset(IconImage, ICONIMAGE_ORIGINALSIZE)
     updateEquipFrame()
     if UIVisible.Value == false then
@@ -104,9 +104,9 @@ local function exitMouseUp()
     end
 end
 
-IconButton.ClickDetector.MouseEnter:Connect(exitHover)
-IconButton.ClickDetector.MouseLeave:Connect(exitLeave)
-IconButton.ClickDetector.MouseButton1Down:Connect(exitMouseDown)
-IconButton.ClickDetector.MouseButton1Up:Connect(exitMouseUp)
+IconButton.ClickDetector.MouseEnter:Connect(iconHover)
+IconButton.ClickDetector.MouseLeave:Connect(iconLeave)
+IconButton.ClickDetector.MouseButton1Down:Connect(iconMouseDown)
+IconButton.ClickDetector.MouseButton1Up:Connect(iconMouseUp)
 
 

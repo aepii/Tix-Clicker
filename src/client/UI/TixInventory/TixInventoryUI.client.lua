@@ -8,8 +8,12 @@ local SoundService = game:GetService("SoundService")
 
 local Modules = ReplicatedStorage.Modules
 local TweenButton = require(Modules.TweenButton)
-local EquipButtonStatus = require(Modules.EquipButtonStatus)
+local ButtonStatus = require(Modules.ButtonStatus)
 local Upgrades = require(ReplicatedStorage.Data.Upgrades)
+
+---- Data ----
+
+local ReplicatedData = Player:WaitForChild("ReplicatedData")
 
 ---- UI ----
 
@@ -34,7 +38,6 @@ local CurrentUpgrade = EquipFrame.CurrentUpgrade
 local Sounds = Player:WaitForChild("Sounds")
 local ClickSound = Sounds:WaitForChild("ClickSound")
 
-
 ---- Private Functions ----
 
 local function updateInventory(upgrade, method)
@@ -53,7 +56,7 @@ local function updateInventory(upgrade, method)
 end
 
 local function initInventory()
-    for _, upgrade in Player.ReplicatedData.Upgrades:GetChildren() do
+    for _, upgrade in ReplicatedData.Upgrades:GetChildren() do
         updateInventory(Upgrades[upgrade.Name], "ADD")
     end
 end
@@ -105,7 +108,7 @@ end
 
 local function equipMouseUp()
     TweenButton:Reset(EquipButton, EQUIPBUTTON_ORIGINALSIZE)
-    EquipButtonStatus:TixInventory(Player, CurrentUpgrade.Value, EquipButton)
+    ButtonStatus:TixInventory(Player, CurrentUpgrade.Value, EquipButton)
 end
 
 ExitButton.ClickDetector.MouseEnter:Connect(exitHover)

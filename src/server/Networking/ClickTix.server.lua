@@ -20,24 +20,41 @@ local ReplicatedProfile = require(ServerScriptService.Data.ReplicatedProfile)
 local Networking = ReplicatedStorage.Networking
 local ClickTixRemote = Networking.ClickTix
 
+
+---- Private Functions ----
+
+local function replicateData(player, profile, replicatedData)
+    local data = profile.Data
+
+    replicatedData.Tix.Value = data.Tix
+    replicatedData["Lifetime Tix"].Value = data["Lifetime Tix"]
+    replicatedData.XP.Value = data.XP
+    replicatedData.Level.Value = data.Level
+
+    ReplicatedProfile:UpdateLeaderstats(player, profile, "Tix")
+    ReplicatedProfile:UpdateLeaderstats(player, profile, "Level")
+end
+
 ClickTixRemote.OnServerInvoke = (function(player)
     local profile = ProfileCacher:GetProfile(player)
     local data = profile.Data
 
     local replicatedData = player.ReplicatedData
 
-    local tixStorage = TemporaryData:CalculateTixStorage(data)
-    local tixPerClick = TemporaryData:CalculateTixPerClick(data)
+    local tixStorage = TemporaryData:CalculateTixStorage(player, data)
+    local tixPerClick = TemporaryData:CalculateTixPerClick(player, data)
     
     if data.Tix < tixStorage.Value then
         data.Tix = math.min(data.Tix + tixPerClick.Value, tixStorage.Value)
         data["Lifetime Tix"] = math.min(data.Tix + tixPerClick.Value, tixStorage.Value)
+        data.XP += 1
+        
+        if data.XP >= TemporaryData:CalculateRequiredXP(data.Level) then
+            data.Level += 1
+            data.XP = 0
+        end
 
-        replicatedData.Tix.Value = data.Tix
-        replicatedData["Lifetime Tix"].Value = data["Lifetime Tix"]
-
-        ReplicatedProfile:UpdateLeaderstats(player, profile, "Tix")
-
+        replicateData(player, profile, replicatedData)
         return true
     end
 end)
