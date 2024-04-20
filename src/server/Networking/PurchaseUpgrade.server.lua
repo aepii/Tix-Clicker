@@ -19,7 +19,7 @@ local ReplicatedProfile = require(ServerScriptService.Data.ReplicatedProfile)
 
 local Networking = ReplicatedStorage.Networking
 local PurchaseUpgradeRemote = Networking.PurchaseUpgrade
-
+local UpdateClientInventoryRemote = Networking.UpdateClientInventory
 
 ---- Private Functions ----
 
@@ -49,6 +49,8 @@ PurchaseUpgradeRemote.OnServerInvoke = (function(player, upgradeName)
             data.Rocash -= cost
 
             replicateData(player, profile, replicatedData, upgradeName)
+            print(player, upgrade, "SERVER")
+            UpdateClientInventoryRemote:FireClient(player, upgrade)
         end
     end
     

@@ -21,7 +21,7 @@ local ReplicatedProfile = require(script.Parent.ReplicatedProfile)
 ---- Private Variables ----
 
 local ProfileStore = ProfileService.GetProfileStore(
-	"PlayerData",
+	"PlayerData02STTTTTTT",
 	ProfileTemplate
 )
 

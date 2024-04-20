@@ -35,9 +35,10 @@ local function playerAdded(player)
         while task.wait() and player:IsDescendantOf(Players) do
             local tixStorage = TemporaryData:CalculateTixStorage(player, data)
             local tixPerSecond = TemporaryData:CalculateTixPerSecond(player, data)
-            print(data.Tix)
-            data.Tix = math.min(data.Tix + tixPerSecond, tixStorage)
-            replicateData(player, profile, replicatedData)
+            if data.Tix < tixStorage then
+                data.Tix = math.min(data.Tix + tixPerSecond, tixStorage)
+                replicateData(player, profile, replicatedData)
+            end
             task.wait(1)
 		end
     end))

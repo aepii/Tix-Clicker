@@ -48,6 +48,8 @@ local function updateEquipFrame()
         return
     end
 
+    CurrentUpgrade.Value = upgradeName
+
     for _, rewardFrame in RewardsFrame:GetChildren() do
         if rewardFrame:IsA("Frame") then
             local reward = upgrade.Reward[rewardFrame.Name]
@@ -62,7 +64,6 @@ local function updateEquipFrame()
         end
     end
 
-    CurrentUpgrade.Value = upgradeName
     InvFrame.Holder[upgradeName].Shadow.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     EquipFrame.ItemName.Title.Text = upgrade.Title
     IconImage.Image = upgrade.Image
@@ -89,10 +90,6 @@ end
 local function iconMouseDown()
     playClickSound()
     TweenButton:Shrink(IconButtonImage, ICONIMAGE_ORIGINALSIZE)
-end
-
-local function iconMouseUp()
-    TweenButton:Reset(IconButtonImage, ICONIMAGE_ORIGINALSIZE)
     if UIVisible.Value == false or CurrentUpgrade.Value ~= IconButton.Name then
         EquipFrame:TweenPosition(UDim2.new(0,0,.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
         InvFrame:TweenSizeAndPosition(UDim2.new(0.75,0,0.8,0), UDim2.new(0.575,0,0.56,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
@@ -103,6 +100,10 @@ local function iconMouseUp()
         UIVisible.Value = false
     end
     updateEquipFrame()
+end
+
+local function iconMouseUp()
+    TweenButton:Reset(IconButtonImage, ICONIMAGE_ORIGINALSIZE)
 end
 
 IconButton.ClickDetector.MouseEnter:Connect(iconHover)

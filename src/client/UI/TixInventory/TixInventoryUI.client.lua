@@ -42,11 +42,12 @@ local ClickSound = Sounds:WaitForChild("ClickSound")
 
 local Networking = ReplicatedStorage.Networking
 local EquipTixRemote = Networking.EquipTix
+local UpdateClientInventoryRemote = Networking.UpdateClientInventory
 
 ---- Private Functions ----
 
 local function equipTix(upgradeName)
-    EquipTixRemote:FireServer(upgradeName)
+    EquipTixRemote:InvokeServer(upgradeName)
 end
 
 local function updateInventory(upgrade, method)
@@ -66,12 +67,15 @@ end
 
 local function initInventory()
     for _, upgrade in ReplicatedData.Upgrades:GetChildren() do
-        print(upgrade.Name)
         updateInventory(Upgrades[upgrade.Name], "ADD")
     end
 end
 
 initInventory()
+
+UpdateClientInventoryRemote.OnClientEvent:Connect(function(upgrade)
+    updateInventory(upgrade, "ADD")
+end)
 
 ---- Buttons ----
 
@@ -96,11 +100,11 @@ end
 local function exitMouseDown()
     playClickSound()
     TweenButton:Shrink(ExitButton, EXITBUTTON_ORIGINALSIZE)
+    TixInventory:TweenPosition(UDim2.new(0.5, 0, 2, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
 end
 
 local function exitMouseUp()
     TweenButton:Reset(ExitButton, EXITBUTTON_ORIGINALSIZE)
-    TixInventory:TweenPosition(UDim2.new(0.5, 0, 2, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
 end
 
 local function equipHover()
@@ -115,11 +119,11 @@ local function equipMouseDown()
     playClickSound()
     TweenButton:Shrink(EquipButton, EQUIPBUTTON_ORIGINALSIZE)
     equipTix(CurrentUpgrade.Value)
+    ButtonStatus:TixInventory(Player, CurrentUpgrade.Value, EquipButton)
 end
 
 local function equipMouseUp()
     TweenButton:Reset(EquipButton, EQUIPBUTTON_ORIGINALSIZE)
-    ButtonStatus:TixInventory(Player, CurrentUpgrade.Value, EquipButton)
 end
 
 ExitButton.ClickDetector.MouseEnter:Connect(exitHover)

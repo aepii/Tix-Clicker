@@ -46,7 +46,7 @@ local function replicateData(player, data, replicatedData)
     replicatedData.ToolEquipped.Value = data.ToolEquipped
 end
 
-EquipTixRemote.OnServerEvent:Connect(function(player, upgradeName)
+EquipTixRemote.OnServerInvoke = (function(player, upgradeName)
     local data = ProfileCacher:GetProfile(player).Data
     local replicatedData = player.ReplicatedData
 
@@ -54,11 +54,12 @@ EquipTixRemote.OnServerEvent:Connect(function(player, upgradeName)
 
     if table.find(data.Upgrades, upgradeName) then
         if data.ToolEquipped ~= upgradeName then
+            data.ToolEquipped = upgradeName
+            replicateData(player, data, replicatedData)
             unequipTool(player)
             local tool = upgrade.Tool
             equipTool(player, tool)
-            data.ToolEquipped = upgradeName
-            replicateData(player, data, replicatedData)
+            return true
         end
     end
 end)

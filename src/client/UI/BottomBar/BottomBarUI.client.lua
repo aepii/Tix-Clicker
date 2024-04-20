@@ -64,11 +64,11 @@ end
 local function toolMouseDown()
     playClickSound()
     TweenButton:Shrink(ToolButton, TOOLBUTTON_ORIGINALSIZE)
+    TixInventory:TweenPosition(UDim2.new(0.5, 0, 0.5, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
 end
 
 local function toolMouseUp()
     TweenButton:Reset(ToolButton, TOOLBUTTON_ORIGINALSIZE)
-    TixInventory:TweenPosition(UDim2.new(0.5, 0, 0.5, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
 end
 
 ToolButton.MouseEnter:Connect(toolHover)

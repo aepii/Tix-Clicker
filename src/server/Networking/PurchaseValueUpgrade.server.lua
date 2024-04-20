@@ -19,7 +19,7 @@ local ReplicatedProfile = require(ServerScriptService.Data.ReplicatedProfile)
 
 local Networking = ReplicatedStorage.Networking
 local PurchaseValueUpgradeRemote = Networking.PurchaseValueUpgrade
-
+local UpdateClientShopInfoRemote = Networking.UpdateClientShopInfo
 
 ---- Private Functions ----
 
@@ -33,6 +33,7 @@ local function replicateData(player, profile, replicatedData, upgradeName)
     else
         replicatedUpgrade = Instance.new("NumberValue")
         replicatedUpgrade.Name = upgradeName
+        replicatedUpgrade.Value = 1
         replicatedUpgrade.Parent = replicatedData["ValueUpgrades"]
     end
 
@@ -58,6 +59,7 @@ PurchaseValueUpgradeRemote.OnServerInvoke = (function(player, upgradeName)
         data.ValueUpgrades[upgradeName] = (data.ValueUpgrades[upgradeName] or 0) + 1
         data.Rocash -= cost
         replicateData(player, profile, replicatedData, upgradeName)
+        UpdateClientShopInfoRemote:FireClient(player)
     end
     
 end)

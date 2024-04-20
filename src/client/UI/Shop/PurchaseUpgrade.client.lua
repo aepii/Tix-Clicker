@@ -64,11 +64,11 @@ local function purchaseMouseDown()
     playClickSound()
     purchaseUpgrade(CurrentUI.Value)
     TweenButton:Shrink(PurchaseButton, PURCHASEBUTTON_ORIGINALSIZE)
+    ButtonStatus:Upgrade(Player, CurrentUI.Value, PurchaseButton)
 end
 
 local function purchaseMouseUp()
     TweenButton:Reset(PurchaseButton, PURCHASEBUTTON_ORIGINALSIZE)
-    ButtonStatus:Upgrade(Player, CurrentUI.Value, PurchaseButton)
 end
 
 PurchaseButton.ClickDetector.MouseEnter:Connect(purchaseHover)

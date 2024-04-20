@@ -17,6 +17,7 @@ local leaderstats = Player:WaitForChild("leaderstats")
 
 local Tix = leaderstats[TemporaryData:GetDisplayName("Tix")]
 local Rocash = leaderstats[TemporaryData:GetDisplayName("Rocash")]
+local TixStorage = ReplicatedTemporaryData.TixStorage
 
 ---- UI ----
 
@@ -30,9 +31,8 @@ local RocashHolder = Stats["2"]
 ---- Private Functions ----
 
 local function animateTixBar()
-    local tixStorage = ReplicatedTemporaryData.TixStorage
     local tix = ReplicatedData.Tix
-    TixHolder.TixBar:TweenSize(UDim2.new(math.min((tix.Value/tixStorage.Value)*0.95, 0.95), 0, 0.7, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.25, true)
+    TixHolder.TixBar:TweenSize(UDim2.new(math.min((tix.Value/TixStorage.Value)*0.95, 0.95), 0, 0.7, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.25, true)
 end
 
 
@@ -42,6 +42,7 @@ local function updateTixHolder()
 end
 
 Tix.Changed:Connect(updateTixHolder)
+TixStorage.Changed:Connect(updateTixHolder)
 
 local function updateRocashHolder()
     RocashHolder.Amount.Text = Rocash.Value

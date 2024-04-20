@@ -108,6 +108,7 @@ local function createTemporaryData(player, profile)
 		createdValue.Value = data.Value
 		createdValue.Parent = temporaryData
 	end
+	TemporaryData:Setup(player, profile.Data)
 end
 
 ---- Replicated Profile ----

@@ -2,7 +2,7 @@ local ProfileData = {}
 
 ProfileData.Data = {
 	["Tix"] = 0;
-	["Rocash"] = 100;
+	["Rocash"] = 1000;
 	["Rebirth Tix"] = 0;
 	["Level"] = 1;
 	["XP"] = 0;

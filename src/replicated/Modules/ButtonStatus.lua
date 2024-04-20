@@ -3,7 +3,7 @@ local ButtonStatus = {}
 function ButtonStatus:TixInventory(player, currentUpgrade, equipButton)
     local upgradeEquipped = player.ReplicatedData.ToolEquipped
     local equipText, backgroundColor, shadowColor, strokeColor
-
+    print( upgradeEquipped.Value, currentUpgrade)
     if upgradeEquipped.Value == currentUpgrade then
         equipText = "Equipped"
         backgroundColor = Color3.fromRGB(82, 81, 81)

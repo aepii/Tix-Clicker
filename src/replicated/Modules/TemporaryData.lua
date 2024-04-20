@@ -71,4 +71,10 @@ function TemporaryData:GetDisplayName(key)
 	end
 end
 
+function TemporaryData:Setup(player, data)
+    TemporaryData:CalculateTixStorage(player, data)
+	TemporaryData:CalculateTixPerClick(player, data)
+	TemporaryData:CalculateTixPerSecond(player, data)
+end
+
 return TemporaryData

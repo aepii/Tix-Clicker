@@ -34,6 +34,13 @@ local UpgradeInfo = InfoUI.UpgradeInfo
 
 local CurrentUI = InfoUI.CurrentUI
 
+local PurchaseValueButton = PerSecInfo.InfoFrame.PurchaseButton
+
+---- Networking ----
+
+local Networking = ReplicatedStorage.Networking
+local UpdateClientShopInfoRemote = Networking.UpdateClientShopInfo
+
 ---- Private Functions ----
 
 local function getShopInfo(nearest)
@@ -99,8 +106,10 @@ local function getNearest()
     end
 end
 
-Humanoid:GetPropertyChangedSignal("MoveDirection"):Connect(function()
-	if Humanoid.MoveDirection.Magnitude > 0 then
-		getNearest()
-	end
+RunService.RenderStepped:Connect(function()
+	getNearest()
+end)
+
+UpdateClientShopInfoRemote.OnClientEvent:Connect(function()
+    updateShopInfo(CurrentUI.Value,PerSecInfo)
 end)
