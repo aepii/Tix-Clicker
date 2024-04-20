@@ -40,13 +40,19 @@ local function replicateData(player, profile, replicatedData, upgradeName)
 end
 
 PurchaseValueUpgradeRemote.OnServerInvoke = (function(player, upgradeName)
+    local cost;
     local profile = ProfileCacher:GetProfile(player)
     local data = profile.Data
 
     local replicatedData = player.ReplicatedData
-
     local valueUpgrade = ValueUpgrades[upgradeName]
-    local cost = valueUpgrade.Cost
+    local upgradeData = data.ValueUpgrades[upgradeName]
+
+    if upgradeData then
+        cost = TemporaryData:CalculateTixPerSecondCost(upgradeData, upgradeName, 1)
+    else
+        cost = valueUpgrade.Cost
+    end
 
     if data.Rocash >= cost then
         data.ValueUpgrades[upgradeName] = (data.ValueUpgrades[upgradeName] or 0) + 1

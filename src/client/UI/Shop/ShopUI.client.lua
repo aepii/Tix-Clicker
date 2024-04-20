@@ -24,6 +24,7 @@ local ValueUpgrades = require(ReplicatedStorage.Data.ValueUpgrades)
 
 local Modules = ReplicatedStorage.Modules
 local ButtonStatus = require(Modules.ButtonStatus)
+local TemporaryData = require(Modules.TemporaryData)
 
 ---- UI ----
 
@@ -49,9 +50,8 @@ local function updateShopInfo(nearest, shopInfo)
     local upgrade;
     if shopInfo.Name == "PerSecInfo" then
         upgrade = ValueUpgrades[nearest]
-        PurchaseButton.PriceFrame.PriceText.Text = upgrade.Cost
-        print(nearest)
         local levelValue = Player.ReplicatedData.ValueUpgrades:FindFirstChild(nearest) and Player.ReplicatedData.ValueUpgrades[nearest].Value or 0
+        PurchaseButton.PriceFrame.PriceText.Text = TemporaryData:CalculateTixPerSecondCost(levelValue, nearest, 1)
         InfoFrame.LevelFrame.Level.Text = "Level " .. levelValue  
         RewardsFrame.TixPerSec.RewardText.Text = "+"..upgrade.Reward
     elseif shopInfo.Name == "UpgradeInfo" then

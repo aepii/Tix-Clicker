@@ -32,7 +32,7 @@ local RocashHolder = Stats["2"]
 local function animateTixBar()
     local tixStorage = ReplicatedTemporaryData.TixStorage
     local tix = ReplicatedData.Tix
-    TixHolder.TixBar:TweenSize(UDim2.new((tix.Value/tixStorage.Value)*0.95, 0, 0.7, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Linear, 0.1, true)
+    TixHolder.TixBar:TweenSize(UDim2.new(math.min((tix.Value/tixStorage.Value)*0.95, 0.95), 0, 0.7, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.25, true)
 end
 
 

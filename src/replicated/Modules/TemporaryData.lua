@@ -8,6 +8,7 @@ local ServerScriptService = game:GetService("ServerScriptService")
 
 local ProfileData = require(ReplicatedStorage.Data.ProfileData)
 local Upgrades = require(ReplicatedStorage.Data.Upgrades)
+local ValueUpgrades = require(ReplicatedStorage.Data.ValueUpgrades)
 
 local TemporaryProfileData = ProfileData.TemporaryData
 
@@ -18,20 +19,40 @@ local TemporaryData = {}
 function TemporaryData:CalculateTixPerClick(player, data)
     local toolEquipped = data.ToolEquipped
     local toolReward = Upgrades[toolEquipped].Reward["MultPerClick"]
-    local value = TemporaryProfileData.TixPerClick.Value * toolReward
+    local tixPerClick = TemporaryProfileData.TixPerClick.Value * toolReward
 
-    player.TemporaryData.TixPerClick.Value = value
-    return value
+    player.TemporaryData.TixPerClick.Value = tixPerClick
+    return tixPerClick
 end
 
 function TemporaryData:CalculateTixStorage(player, data)
     local toolEquipped = data.ToolEquipped
     local toolReward = Upgrades[toolEquipped].Reward["MultStorage"]
-    local value = TemporaryProfileData.TixStorage.Value * toolReward
+    local tixStorage = TemporaryProfileData.TixStorage.Value * toolReward
 
-    player.TemporaryData.TixStorage.Value = value
-    return value
+    player.TemporaryData.TixStorage.Value = tixStorage
+    return tixStorage
 end
+
+function TemporaryData:CalculateTixPerSecondCost(owned, upgrade, amount)
+	local cost = ValueUpgrades[upgrade].Cost
+	local modifier = ValueUpgrades[upgrade].Modifier
+	return math.ceil(cost * modifier^(owned + amount - 1))
+end
+
+function TemporaryData:CalculateTixPerSecond(player, data)
+	local tixPerSecond = 0
+    local ownedUpgrades = data.ValueUpgrades
+	for upgrade, value in ownedUpgrades do
+        if ValueUpgrades[upgrade] then
+            local reward = ValueUpgrades[upgrade].Reward
+            tixPerSecond += value * reward
+        end
+	end
+    player.TemporaryData.TixPerSecond.Value = tixPerSecond
+	return tixPerSecond
+end
+	
 
 function TemporaryData:CalculateValue(data)
     return 0
