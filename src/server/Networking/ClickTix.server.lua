@@ -44,9 +44,9 @@ ClickTixRemote.OnServerInvoke = (function(player)
     local tixStorage = TemporaryData:CalculateTixStorage(player, data)
     local tixPerClick = TemporaryData:CalculateTixPerClick(player, data)
     
-    if data.Tix < tixStorage.Value then
-        data.Tix = math.min(data.Tix + tixPerClick.Value, tixStorage.Value)
-        data["Lifetime Tix"] = math.min(data.Tix + tixPerClick.Value, tixStorage.Value)
+    if data.Tix < tixStorage then
+        data.Tix = math.min(data.Tix + tixPerClick, tixStorage)
+        data["Lifetime Tix"] = math.min(data.Tix + tixPerClick, tixStorage)
         data.XP += 1
         
         if data.XP >= TemporaryData:CalculateRequiredXP(data.Level) then

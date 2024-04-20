@@ -19,7 +19,7 @@ local upgrades = {
 		Image = "rbxassetid://17206299335"
 	};
 	["Upgrade3"] = {
-		Name = "Upgrade2";
+		Name = "Upgrade3";
 		Title = "Tix Wallet";
 		Cost = {Rocash = 100, Basic = 3};
 		Reward = {MultPerClick = 4, MultStorage = 4};

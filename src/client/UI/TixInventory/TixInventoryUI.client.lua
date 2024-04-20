@@ -38,7 +38,16 @@ local CurrentUpgrade = EquipFrame.CurrentUpgrade
 local Sounds = Player:WaitForChild("Sounds")
 local ClickSound = Sounds:WaitForChild("ClickSound")
 
+---- Networking ----
+
+local Networking = ReplicatedStorage.Networking
+local EquipTixRemote = Networking.EquipTix
+
 ---- Private Functions ----
+
+local function equipTix(upgradeName)
+    EquipTixRemote:FireServer(upgradeName)
+end
 
 local function updateInventory(upgrade, method)
     if method == "ADD" then
@@ -57,6 +66,7 @@ end
 
 local function initInventory()
     for _, upgrade in ReplicatedData.Upgrades:GetChildren() do
+        print(upgrade.Name)
         updateInventory(Upgrades[upgrade.Name], "ADD")
     end
 end
@@ -104,6 +114,7 @@ end
 local function equipMouseDown()
     playClickSound()
     TweenButton:Shrink(EquipButton, EQUIPBUTTON_ORIGINALSIZE)
+    equipTix(CurrentUpgrade.Value)
 end
 
 local function equipMouseUp()

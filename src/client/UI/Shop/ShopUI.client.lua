@@ -50,7 +50,8 @@ local function updateShopInfo(nearest, shopInfo)
     if shopInfo.Name == "PerSecInfo" then
         upgrade = ValueUpgrades[nearest]
         PurchaseButton.PriceFrame.PriceText.Text = upgrade.Cost
-        local levelValue = Player.ReplicatedData:FindFirstChild(nearest) and Player.ReplicatedData[nearest].Value or 0
+        print(nearest)
+        local levelValue = Player.ReplicatedData.ValueUpgrades:FindFirstChild(nearest) and Player.ReplicatedData.ValueUpgrades[nearest].Value or 0
         InfoFrame.LevelFrame.Level.Text = "Level " .. levelValue  
         RewardsFrame.TixPerSec.RewardText.Text = "+"..upgrade.Reward
     elseif shopInfo.Name == "UpgradeInfo" then

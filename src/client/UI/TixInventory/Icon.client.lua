@@ -15,11 +15,12 @@ local SuffixHandler = require(Modules.SuffixHandler)
 ---- UI ----
 
 local IconButton = script.Parent
+local IconButtonImage = IconButton.IconImage
 local InvHolder = IconButton.Parent
 local InvFrame = InvHolder.Parent
 local TixInventory = InvFrame.Parent
 local EquipFrame = TixInventory.EquipFrame
-local IconImage = IconButton.IconImage
+local IconImage = EquipFrame.Icon.IconImage
 local RewardsFrame = EquipFrame.RewardsFrame
 local EquipButton = EquipFrame.EquipButton
 
@@ -43,7 +44,7 @@ local function updateEquipFrame()
         InvFrame.Holder[CurrentUpgrade.Value].Shadow.BackgroundColor3 = Color3.fromRGB(0, 83, 125)
     end
 
-    if CurrentUpgrade.Value == upgradeName and UIVisible.Value == true then
+    if CurrentUpgrade.Value == upgradeName and UIVisible.Value == false then
         return
     end
 
@@ -52,8 +53,6 @@ local function updateEquipFrame()
             local reward = upgrade.Reward[rewardFrame.Name]
             if reward then
                 local prefix = string.find(rewardFrame.Name, "Add") and "+" or "x"
-                CurrentUpgrade.Value = upgradeName
-                InvFrame.Holder[upgradeName].Shadow.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
                 rewardFrame.RewardText.Text = prefix .. SuffixHandler:Convert(reward)
                 rewardFrame.Visible = true
                 rewardFrame.Parent = EquipFrame.RewardsFrame
@@ -63,6 +62,8 @@ local function updateEquipFrame()
         end
     end
 
+    CurrentUpgrade.Value = upgradeName
+    InvFrame.Holder[upgradeName].Shadow.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     EquipFrame.ItemName.Title.Text = upgrade.Title
     IconImage.Image = upgrade.Image
 
@@ -78,22 +79,21 @@ local function playClickSound()
 end
 
 local function iconHover()
-    TweenButton:Grow(IconImage, ICONIMAGE_ORIGINALSIZE)
+    TweenButton:Grow(IconButtonImage, ICONIMAGE_ORIGINALSIZE)
 end
 
 local function iconLeave()
-    TweenButton:Reset(IconImage, ICONIMAGE_ORIGINALSIZE)
+    TweenButton:Reset(IconButtonImage, ICONIMAGE_ORIGINALSIZE)
 end
 
 local function iconMouseDown()
     playClickSound()
-    TweenButton:Shrink(IconImage, ICONIMAGE_ORIGINALSIZE)
+    TweenButton:Shrink(IconButtonImage, ICONIMAGE_ORIGINALSIZE)
 end
 
 local function iconMouseUp()
-    TweenButton:Reset(IconImage, ICONIMAGE_ORIGINALSIZE)
-    updateEquipFrame()
-    if UIVisible.Value == false then
+    TweenButton:Reset(IconButtonImage, ICONIMAGE_ORIGINALSIZE)
+    if UIVisible.Value == false or CurrentUpgrade.Value ~= IconButton.Name then
         EquipFrame:TweenPosition(UDim2.new(0,0,.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
         InvFrame:TweenSizeAndPosition(UDim2.new(0.75,0,0.8,0), UDim2.new(0.575,0,0.56,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
         UIVisible.Value = true
@@ -102,6 +102,7 @@ local function iconMouseUp()
         InvFrame:TweenSizeAndPosition(UDim2.new(0.9,0,0.8,0), UDim2.new(0.5,0,0.56,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
         UIVisible.Value = false
     end
+    updateEquipFrame()
 end
 
 IconButton.ClickDetector.MouseEnter:Connect(iconHover)

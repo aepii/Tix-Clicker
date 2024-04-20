@@ -42,16 +42,24 @@ end
 local Networking = ReplicatedStorage.Networking
 local EquipTixRemote = Networking.EquipTix
 
+local function replicateData(player, data, replicatedData)
+    replicatedData.ToolEquipped.Value = data.ToolEquipped
+end
+
 EquipTixRemote.OnServerEvent:Connect(function(player, upgradeName)
     local data = ProfileCacher:GetProfile(player).Data
+    local replicatedData = player.ReplicatedData
+
     local upgrade = Upgrades[upgradeName]
+
     if table.find(data.Upgrades, upgradeName) then
         if data.ToolEquipped ~= upgradeName then
             unequipTool(player)
+            local tool = upgrade.Tool
+            equipTool(player, tool)
+            data.ToolEquipped = upgradeName
+            replicateData(player, data, replicatedData)
         end
-        local tool = upgrade.Tool
-        equipTool(player, tool)
-        data.ToolEquipped = upgradeName
     end
 end)
 
