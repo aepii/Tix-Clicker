@@ -12,7 +12,7 @@ local Upgrades = require(ReplicatedStorage.Data.Upgrades)
 ---- Private Functions ----
 
 local function equipTool(player, tool)
-    local character = player.Character
+    local character = player.Character or player.CharacterAdded:Wait()
     local rightHand = character:WaitForChild("RightHand")
     local toolClone = tool:Clone()
     toolClone.Name = "Upgrade"
@@ -28,7 +28,7 @@ local function equipTool(player, tool)
 end
 
 local function unequipTool(player)
-    local character = player.Character
+    local character = player.Character or player.CharacterAdded:Wait()
     local rightHand = character:WaitForChild("RightHand")
 
     local tool = rightHand:FindFirstChild("Upgrade")
@@ -67,7 +67,7 @@ end)
 ---- Setup ----
 
 local function animateTool(player)
-	local character = player.Character
+    local character = player.Character or player.CharacterAdded:Wait()
 	local humanoid = character.Humanoid
 	
 	local animationTrack = humanoid:LoadAnimation(character.Animate.toolnone.ToolNoneAnim) 

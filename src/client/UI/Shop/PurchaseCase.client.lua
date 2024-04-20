@@ -19,7 +19,7 @@ local ButtonStatus = require(Modules.ButtonStatus)
 ---- UI ----
 
 local InfoUI = Player.PlayerGui:WaitForChild("InfoUI")
-local UpgradeInfo = InfoUI.UpgradeInfo
+local UpgradeInfo = InfoUI.CaseInfo
 local InfoFrame = UpgradeInfo.InfoFrame
 local CurrentUI = InfoUI.CurrentUI
 
@@ -31,12 +31,12 @@ local ClickSound = Sounds:WaitForChild("ClickSound")
 ---- Networking ----
 
 local Networking = ReplicatedStorage.Networking
-local PurchaseUpgradeRemote = Networking.PurchaseUpgrade
+local PurchaseCaseRemote = Networking.PurchaseCase
 
 ---- Private Functions ----
 
-local function purchaseUpgrade(upgradeName)
-    PurchaseUpgradeRemote:InvokeServer(upgradeName)
+local function purchaseCase(caseName)
+    PurchaseCaseRemote:InvokeServer(caseName)
 end
 
 ---- Buttons ----
@@ -58,9 +58,8 @@ end
 
 local function purchaseMouseDown()
     playClickSound()
-    purchaseUpgrade(CurrentUI.Value)
+    purchaseCase(CurrentUI.Value)
     TweenButton:Shrink(PurchaseButton, PURCHASEBUTTON_ORIGINALSIZE)
-    ButtonStatus:Upgrade(Player, CurrentUI.Value, PurchaseButton)
 end
 
 local function purchaseMouseUp()

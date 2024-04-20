@@ -10,15 +10,10 @@ local Player = Players.LocalPlayer
 
 local Shop = Workspace.NoobShop:WaitForChild("Stand")
 
----- Data ----
-
-local Upgrades = require(ReplicatedStorage.Data.Upgrades)
-
 ---- Modules ----
 
 local Modules = ReplicatedStorage.Modules
 local TweenButton = require(Modules.TweenButton)
-local ButtonStatus = require(Modules.ButtonStatus)
 
 ---- UI ----
 
@@ -64,7 +59,6 @@ local function purchaseMouseDown()
     TweenButton:Shrink(PurchaseButton, PURCHASEBUTTON_ORIGINALSIZE)
     playClickSound()
     purchaseValueUpgrade(CurrentUI.Value)
-    ButtonStatus:ValueUpgrade(Player, CurrentUI.Value, PurchaseButton)
 end
 
 local function purchaseMouseUp()

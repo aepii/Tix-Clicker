@@ -12,54 +12,48 @@ local TemporaryData = require(Modules.TemporaryData)
 ---- Data ----
 
 local ProfileCacher = require(ServerScriptService.Data.ProfileCacher)
-local ValueUpgrades = require(ReplicatedStorage.Data.ValueUpgrades)
+local Cases = require(ReplicatedStorage.Data.Cases)
 local ReplicatedProfile = require(ServerScriptService.Data.ReplicatedProfile)
 
 ---- Networking ----
 
 local Networking = ReplicatedStorage.Networking
-local PurchaseValueUpgradeRemote = Networking.PurchaseValueUpgrade
+local PurchaseCaseRemote = Networking.PurchaseCase
 local UpdateClientShopInfoRemote = Networking.UpdateClientShopInfo
 
 ---- Private Functions ----
 
-local function replicateData(player, profile, replicatedData, upgradeName)
+local function replicateData(player, profile, replicatedData, caseName)
     local data = profile.Data
     replicatedData.Rocash.Value = data.Rocash
 
-    local replicatedUpgrade = replicatedData.ValueUpgrades:FindFirstChild(upgradeName)
+    local replicatedUpgrade = replicatedData.Cases:FindFirstChild(caseName)
     if replicatedUpgrade then
         replicatedUpgrade.Value += 1
     else
         replicatedUpgrade = Instance.new("NumberValue")
-        replicatedUpgrade.Name = upgradeName
+        replicatedUpgrade.Name = caseName
         replicatedUpgrade.Value = 1
-        replicatedUpgrade.Parent = replicatedData["ValueUpgrades"]
+        replicatedUpgrade.Parent = replicatedData["Cases"]
     end
 
     ReplicatedProfile:UpdateLeaderstats(player, profile, "Rocash")
 end
 
-PurchaseValueUpgradeRemote.OnServerInvoke = (function(player, upgradeName)
-    local cost;
+PurchaseCaseRemote.OnServerInvoke = (function(player, caseName)
     local profile = ProfileCacher:GetProfile(player)
     local data = profile.Data
 
     local replicatedData = player.ReplicatedData
-    local valueUpgrade = ValueUpgrades[upgradeName]
-    local upgradeData = data.ValueUpgrades[upgradeName]
 
-    if upgradeData then
-        cost = TemporaryData:CalculateTixPerSecondCost(upgradeData, upgradeName, 1)
-    else
-        cost = valueUpgrade.Cost
-    end
+    local case = Cases[caseName]
+    local cost = case.Cost
 
     if data.Rocash >= cost then
-        data.ValueUpgrades[upgradeName] = (data.ValueUpgrades[upgradeName] or 0) + 1
+        data.Cases[caseName] = (data.Cases[caseName] or 0) + 1
         data.Rocash -= cost
-        replicateData(player, profile, replicatedData, upgradeName)
-        UpdateClientShopInfoRemote:FireClient(player, "PerSecUpgrade")
+        replicateData(player, profile, replicatedData, caseName)
+        UpdateClientShopInfoRemote:FireClient(player, "Case")
     end
     
 end)
