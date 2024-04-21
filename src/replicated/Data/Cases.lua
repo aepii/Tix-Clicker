@@ -1,5 +1,6 @@
 local cases = {
     Case1 = {
+        Name = "Case1",
         Title = "Noob Case",
         Cost = 10,
         Weights = {
@@ -12,6 +13,7 @@ local cases = {
     },
 
     Case2 = {
+        Name = "Case2",
         Title = "Apprentice Case",
         Cost = 100,
         Weights = {
