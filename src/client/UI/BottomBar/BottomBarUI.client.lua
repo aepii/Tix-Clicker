@@ -22,10 +22,17 @@ local PlayerGui = Player.PlayerGui
 local UI = PlayerGui:WaitForChild("UI")
 
 local TixInventory = UI.TixInventory
+local CaseInventory = UI.CaseInventory
+local AccessoryInventory = UI.AccessoryInventory
 local BottomBar = UI.BottomBar
 local Toolbar = BottomBar.Toolbar
 local XPHolder = BottomBar.XPHolder
 local XPBar = XPHolder.XPBar
+
+---- UI Values ----
+
+local UIVisible = UI.UIVisible
+local CurrentUI = UI.CurrentUI
 
 ---- Sound ----
 
@@ -49,30 +56,63 @@ animateXPBar()
 local ToolButton = Toolbar.Tool
 local TOOLBUTTON_ORIGINALSIZE = ToolButton.Size
 
+local CaseButton = BottomBar.CaseButton.Icon
+local CASEBUTTON_ORIGINALSIZE = CaseButton.Size
+
+local AccessoryButton = BottomBar.AccessoryButton.Icon
+local ACCESSORYBUTTON_ORIGINALSIZE = AccessoryButton.Size
+
+local UIFrames = {
+    TixInventory = TixInventory,
+    CaseInventory = CaseInventory,
+    AccessoryInventory = AccessoryInventory
+}
+
 local function playClickSound()
     SoundService:PlayLocalSound(ClickSound)
 end
 
-local function toolHover()
-    TweenButton:Grow(ToolButton, TOOLBUTTON_ORIGINALSIZE)
+local function buttonBehavior(button, originalSize, inventory, uiValue)
+    local function buttonHover()
+        TweenButton:Grow(button, originalSize)
+    end
+
+    local function buttonLeave()
+        TweenButton:Reset(button, originalSize)
+    end
+
+    local function buttonMouseDown()
+        playClickSound()
+        TweenButton:Shrink(button, originalSize)
+        
+        if CurrentUI.Value ~= uiValue then
+            inventory:TweenPosition(UDim2.new(0.5, 0, 0.5, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.25, true)
+            local currentFrame = UIFrames[CurrentUI.Value]
+            if currentFrame then
+                currentFrame:TweenPosition(UDim2.new(0.5, 0, 2, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.25, true)
+            end
+            CurrentUI.Value = uiValue
+            UIVisible.Value = true
+        else
+            inventory:TweenPosition(UDim2.new(0.5, 0, 2, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.25, true)
+            CurrentUI.Value = ""
+            UIVisible.Value = false
+        end
+    end
+
+    local function buttonMouseUp()
+        TweenButton:Reset(button, originalSize)
+    end
+
+    button.MouseEnter:Connect(buttonHover)
+    button.MouseLeave:Connect(buttonLeave)
+    button.MouseButton1Down:Connect(buttonMouseDown)
+    button.MouseButton1Up:Connect(buttonMouseUp)
 end
 
-local function toolLeave()
-    TweenButton:Reset(ToolButton, TOOLBUTTON_ORIGINALSIZE)
-end
+buttonBehavior(ToolButton, TOOLBUTTON_ORIGINALSIZE, TixInventory, "TixInventory")
+buttonBehavior(CaseButton, CASEBUTTON_ORIGINALSIZE, CaseInventory, "CaseInventory")
+buttonBehavior(AccessoryButton, ACCESSORYBUTTON_ORIGINALSIZE, AccessoryInventory, "AccessoryInventory")
 
-local function toolMouseDown()
-    playClickSound()
-    TweenButton:Shrink(ToolButton, TOOLBUTTON_ORIGINALSIZE)
-    TixInventory:TweenPosition(UDim2.new(0.5, 0, 0.5, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
-end
 
-local function toolMouseUp()
-    TweenButton:Reset(ToolButton, TOOLBUTTON_ORIGINALSIZE)
-end
-
-ToolButton.MouseEnter:Connect(toolHover)
-ToolButton.MouseLeave:Connect(toolLeave)
-ToolButton.MouseButton1Down:Connect(toolMouseDown)
-ToolButton.MouseButton1Up:Connect(toolMouseUp)
 

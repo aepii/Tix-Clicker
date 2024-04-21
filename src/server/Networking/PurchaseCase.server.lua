@@ -28,14 +28,13 @@ local function replicateData(player, profile, replicatedData, caseName)
     replicatedData.Rocash.Value = data.Rocash
 
     local replicatedUpgrade = replicatedData.Cases:FindFirstChild(caseName)
-    if replicatedUpgrade then
-        replicatedUpgrade.Value += 1
-    else
+    if not replicatedUpgrade then
         replicatedUpgrade = Instance.new("NumberValue")
         replicatedUpgrade.Name = caseName
-        replicatedUpgrade.Value = 1
+        
         replicatedUpgrade.Parent = replicatedData["Cases"]
     end
+    replicatedUpgrade.Value = data.Cases[caseName]
 
     ReplicatedProfile:UpdateLeaderstats(player, profile, "Rocash")
 end

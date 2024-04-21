@@ -14,7 +14,7 @@ local accessories = {
         Reward = {AddPerClick = 1, AddStorage = 10},
         Value = 3,
         Rarity = "Basic",
-        Cases = {["C1"] = true},
+        Cases = {["Case1"] = true},
         ID = "A1"
     },
     A2 = {
@@ -24,7 +24,7 @@ local accessories = {
         Reward = {AddPerClick = 1, AddStorage = 10},
         Value = 3,
         Rarity = "Basic",
-        Cases = {["C1"] = true},
+        Cases = {["Case1"] = true},
         ID = "A2"
     },
     A3 = {
@@ -34,7 +34,7 @@ local accessories = {
         Reward = {AddPerClick = 2},
         Value = 3,
         Rarity = "Basic",
-        Cases = {["C1"] = true},
+        Cases = {["Case1"] = true},
         ID = "A3"
     },
     A4 = {
@@ -44,7 +44,7 @@ local accessories = {
         Reward = {AddPerClick = 2},
         Value = 11,
         Rarity = "Common",
-        Cases = {["C1"] = true},
+        Cases = {["Case1"] = true},
         ID = "A4"
     },
     A5 = {
@@ -54,7 +54,7 @@ local accessories = {
         Reward = {AddPerClick = 3},
         Value = 13,
         Rarity = "Common",
-        Cases = {["C1"] = true},
+        Cases = {["Case1"] = true},
         ID = "A5"
     },
     A6 = {
@@ -64,7 +64,7 @@ local accessories = {
         Reward = {AddPerClick = 2, AddStorage = 20},
         Value = 15,
         Rarity = "Common",
-        Cases = {["C1"] = true},
+        Cases = {["Case1"] = true},
         ID = "A6"
     },
     A10 = {
@@ -74,7 +74,7 @@ local accessories = {
         Reward = {AddPerClick = 4},
         Value = 20,
         Rarity = "Common",
-        Cases = {["C1"] = true},
+        Cases = {["Case1"] = true},
         ID = "A10"
     },
     A11 = {
@@ -84,7 +84,7 @@ local accessories = {
         Reward = {AddPerClick = 7},
         Value = 60,
         Rarity = "Uncommon",
-        Cases = {["C1"] = true},
+        Cases = {["Case1"] = true},
         ID = "A11"
     },
     A12 = {
@@ -94,7 +94,7 @@ local accessories = {
         Reward = {AddPerClick = 15},
         Value = 300,
         Rarity = "Uncommon",
-        Cases = {["C1"] = true},
+        Cases = {["Case1"] = true},
         ID = "A12"
     },
 }

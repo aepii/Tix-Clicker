@@ -8,7 +8,6 @@ local SoundService = game:GetService("SoundService")
 
 local Modules = ReplicatedStorage.Modules
 local TweenButton = require(Modules.TweenButton)
-local ButtonStatus = require(Modules.ButtonStatus)
 local Cases = require(ReplicatedStorage.Data.Cases)
 
 ---- Data ----
@@ -119,7 +118,6 @@ local function equipMouseDown()
     playClickSound()
     TweenButton:Shrink(OpenButton, OPENBUTTON_ORIGINALSIZE)
     openCase(CurrentCase.Value)
-    --ButtonStatus:TixInventory(Player, CurrentUpgrade.Value, OpenButton)
 end
 
 local function equipMouseUp()
