@@ -8,7 +8,8 @@ local SoundService = game:GetService("SoundService")
 
 local Modules = ReplicatedStorage.Modules
 local TweenButton = require(Modules.TweenButton)
-local Cases = require(ReplicatedStorage.Data.Cases)
+local ButtonStatus = require(Modules.ButtonStatus)
+local Accessories = require(ReplicatedStorage.Data.Accessories)
 
 ---- Data ----
 
@@ -19,9 +20,9 @@ local ReplicatedData = Player:WaitForChild("ReplicatedData")
 local PlayerGui = Player.PlayerGui
 local UI = PlayerGui:WaitForChild("UI")
 
-local CaseInventory = UI.CaseInventory
-local InvHolder = CaseInventory.InvFrame.Holder
-local OpenFrame = CaseInventory.OpenFrame
+local AccessoryInventory = UI.AccessoryInventory
+local InvHolder = AccessoryInventory.InvFrame.Holder
+local EquipFrame = AccessoryInventory.EquipFrame
 local IconCopy = InvHolder.IconCopy
 
 local IconScript = script.Parent.Icon
@@ -30,7 +31,7 @@ IconScript.Enabled = true
 
 ---- UI Values ----
 
-local CurrentCase = OpenFrame.CurrentCase
+local CurrentAccessory = EquipFrame.CurrentAccessory
 
 ---- Sound ----
 
@@ -40,29 +41,24 @@ local ClickSound = Sounds:WaitForChild("ClickSound")
 ---- Networking ----
 
 local Networking = ReplicatedStorage.Networking
-local OpenCaseRemote = Networking.OpenCase
-local UpdateClientCaseInventoryRemote = Networking.UpdateClientCaseInventory
+local EquipAccessoryRemote = Networking.EquipAccessory
+--local UpdateClientInventoryRemote = Networking.UpdateClientInventory
 
 ---- Private Functions ----
 
-local function openCase(caseName)
-    OpenCaseRemote:InvokeServer(caseName)
+local function equipAccessory(accessoryName)
+    EquipAccessoryRemote:InvokeServer(accessoryName)
 end
 
-local function updateInventory(case, method)
+local function updateInventory(ID, GUID, method)
     if method == "ADD" then
         local icon = IconCopy:Clone()
         icon.Visible = true
-        icon.Name = case.Name
-        icon.IconImage.Image = case.Image
+        icon.Name = GUID
+        icon.IconImage.Image = "http://www.roblox.com/Thumbs/Asset.ashx?Width=256&Height=256&AssetID="..Accessories[ID].AssetID
         icon.Parent = InvHolder
-    elseif method == "UPDATE" then
-        if CurrentCase.Value == case.Name then
-            local ownedValue = Player.ReplicatedData.Cases:FindFirstChild(case.Name) and Player.ReplicatedData.Cases[case.Name].Value or 0
-            OpenFrame.OwnedFrame.Owned.Text = "Owned " .. ownedValue  
-        end
-     elseif method == "DEL" then
-        local icon = InvHolder:FindFirstChild(case.Title)
+    elseif method == "DEL" then
+        local icon = InvHolder:FindFirstChild(GUID)
         if icon then
             icon:Destroy()
         end
@@ -70,24 +66,24 @@ local function updateInventory(case, method)
 end
 
 local function initInventory()
-    for _, case in ReplicatedData.Cases:GetChildren() do
-        updateInventory(Cases[case.Name], "ADD")
+    for _, accessory in ReplicatedData.Accessories:GetChildren() do
+        updateInventory(accessory.Value, accessory.Name, "ADD")
     end
 end
 
 initInventory()
 
-UpdateClientCaseInventoryRemote.OnClientEvent:Connect(function(case, method)
-    updateInventory(case, method)
-end)
+--UpdateClientInventoryRemote.OnClientEvent:Connect(function(accessory)
+    --updateInventory(upgrade, "ADD")
+--end)
 
 ---- Buttons ----
 
-local ExitButton = CaseInventory.ExitButton
-local OpenButton = OpenFrame.OpenButton
+local ExitButton = AccessoryInventory.ExitButton
+local EquipButton = EquipFrame.EquipButton
 
 local EXITBUTTON_ORIGINALSIZE = ExitButton.Size
-local OPENBUTTON_ORIGINALSIZE = OpenButton.Size
+local EQUIPBUTTON_ORIGINALSIZE = EquipButton.Size
 
 local function playClickSound()
     SoundService:PlayLocalSound(ClickSound)
@@ -104,7 +100,7 @@ end
 local function exitMouseDown()
     playClickSound()
     TweenButton:Shrink(ExitButton, EXITBUTTON_ORIGINALSIZE)
-    CaseInventory:TweenPosition(UDim2.new(0.5, 0, 2, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+    AccessoryInventory:TweenPosition(UDim2.new(0.5, 0, 2, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
 end
 
 local function exitMouseUp()
@@ -112,21 +108,22 @@ local function exitMouseUp()
 end
 
 local function equipHover()
-    TweenButton:Grow(OpenButton, OPENBUTTON_ORIGINALSIZE)
+    TweenButton:Grow(EquipButton, EQUIPBUTTON_ORIGINALSIZE)
 end
 
 local function equipLeave()
-    TweenButton:Reset(OpenButton, OPENBUTTON_ORIGINALSIZE)
+    TweenButton:Reset(EquipButton, EQUIPBUTTON_ORIGINALSIZE)
 end
 
 local function equipMouseDown()
     playClickSound()
-    TweenButton:Shrink(OpenButton, OPENBUTTON_ORIGINALSIZE)
-    openCase(CurrentCase.Value)
+    TweenButton:Shrink(EquipButton, EQUIPBUTTON_ORIGINALSIZE)
+    equipAccessory(CurrentAccessory.Value)
+    ButtonStatus:AccessoryInventory(Player, CurrentAccessory.Value, EquipButton)
 end
 
 local function equipMouseUp()
-    TweenButton:Reset(OpenButton, OPENBUTTON_ORIGINALSIZE)
+    TweenButton:Reset(EquipButton, EQUIPBUTTON_ORIGINALSIZE)
 end
 
 ExitButton.ClickDetector.MouseEnter:Connect(exitHover)
@@ -134,7 +131,7 @@ ExitButton.ClickDetector.MouseLeave:Connect(exitLeave)
 ExitButton.ClickDetector.MouseButton1Down:Connect(exitMouseDown)
 ExitButton.ClickDetector.MouseButton1Up:Connect(exitMouseUp)
 
-OpenButton.ClickDetector.MouseEnter:Connect(equipHover)
-OpenButton.ClickDetector.MouseLeave:Connect(equipLeave)
-OpenButton.ClickDetector.MouseButton1Down:Connect(equipMouseDown)
-OpenButton.ClickDetector.MouseButton1Up:Connect(equipMouseUp)
+EquipButton.ClickDetector.MouseEnter:Connect(equipHover)
+EquipButton.ClickDetector.MouseLeave:Connect(equipLeave)
+EquipButton.ClickDetector.MouseButton1Down:Connect(equipMouseDown)
+EquipButton.ClickDetector.MouseButton1Up:Connect(equipMouseUp)

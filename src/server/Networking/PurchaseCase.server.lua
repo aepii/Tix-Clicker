@@ -20,6 +20,7 @@ local ReplicatedProfile = require(ServerScriptService.Data.ReplicatedProfile)
 local Networking = ReplicatedStorage.Networking
 local PurchaseCaseRemote = Networking.PurchaseCase
 local UpdateClientShopInfoRemote = Networking.UpdateClientShopInfo
+local UpdateClientCaseInventoryRemote = Networking.UpdateClientCaseInventory
 
 ---- Private Functions ----
 
@@ -49,6 +50,11 @@ PurchaseCaseRemote.OnServerInvoke = (function(player, caseName)
     local cost = case.Cost
 
     if data.Rocash >= cost then
+        if data.Cases[caseName] then
+            UpdateClientCaseInventoryRemote:FireClient(player, case, "UPDATE")
+        else
+            UpdateClientCaseInventoryRemote:FireClient(player, case, "ADD")
+        end
         data.Cases[caseName] = (data.Cases[caseName] or 0) + 1
         data.Rocash -= cost
         replicateData(player, profile, replicatedData, caseName)

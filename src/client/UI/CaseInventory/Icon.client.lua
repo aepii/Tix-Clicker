@@ -71,7 +71,6 @@ local function updateEquipFrame()
     IconImage.Image = case.Image
     local ownedValue = Player.ReplicatedData.Cases:FindFirstChild(caseName) and Player.ReplicatedData.Cases[caseName].Value or 0
     OwnedFrame.Owned.Text = "Owned " .. ownedValue  
-
 end
 
 ---- Buttons ----

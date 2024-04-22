@@ -1,11 +1,19 @@
+---- Services ----
+
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
-local Networking = ReplicatedStorage.Networking
-local EquipAccessoryFunction = Networking.EquipAccessory
-local EquipAccessoryBindableFunction = Networking.BindableEquipAccessory
+
+---- Modules ----
+
 local ProfileCacher = require(ServerScriptService.Data.ProfileCacher)
 local Accessories = require(ReplicatedStorage.Data.Accessories)
+
+---- Networking ----
+
+local Networking = ReplicatedStorage.Networking
+local EquipAccessoryRemote = Networking.EquipAccessory
+local EquipAccessoryBindableRemote = Networking.EquipAccessoryBindable
 
 local function physicalEquip(ID, humanoid)
     local accessory = Accessories[ID]
@@ -20,7 +28,7 @@ local function physicalEquip(ID, humanoid)
     end
 end
 
-EquipAccessoryBindableFunction.Event:Connect(physicalEquip)
+EquipAccessoryBindableRemote.Event:Connect(physicalEquip)
 
 local function physicalUnequip(ID, humanoid)
     local accessory = Accessories[ID]
@@ -36,7 +44,21 @@ local function physicalUnequip(ID, humanoid)
     end
 end
 
+local function replicateData(player, data, replicatedData, GUID, ID)
+    local replicatedAccessory = replicatedData.EquippedAccessories:FindFirstChild(ID)
+
+    if not replicatedAccessory then
+        replicatedAccessory = Instance.new("StringValue")
+        replicatedAccessory.Name = ID
+        replicatedAccessory.Value = GUID
+        replicatedAccessory.Parent = replicatedData["EquippedAccessories"]
+    else
+        replicatedAccessory:Destroy()
+    end
+end
+
 local function equipAccessory(player, GUID, data)
+    local replicatedData = player.ReplicatedData
     local equippedAccessories = data.EquippedAccessories
     local accessoriesInventory = data.Accessories
     local ID = accessoriesInventory[GUID]
@@ -47,18 +69,23 @@ local function equipAccessory(player, GUID, data)
     end
 
     if equippedAccessories[ID] == GUID then
+        print("UNEQUIPP")
         equippedAccessories[ID] = nil
         physicalUnequip(ID, player.Character.Humanoid)
+        replicateData(player, data, replicatedData, GUID, ID)
     elseif equippedAccessories[ID] then
         return
     elseif count < player.TemporaryData.EquippedAccessoriesLimit.Value then
+        print("EQUIPP")
         equippedAccessories[ID] = GUID
         physicalEquip(ID, player.Character.Humanoid)
+        replicateData(player, data, replicatedData, GUID, ID)
     end
 
 end
 
-EquipAccessoryFunction.OnServerInvoke = function(player, GUID)
+
+EquipAccessoryRemote.OnServerInvoke = function(player, GUID)
     local data = ProfileCacher:GetProfile(player).Data
 
     if data.Accessories[GUID] then

@@ -1,3 +1,4 @@
+local Players = game:GetService("Players")
 local ButtonStatus = {}
 
 function ButtonStatus:TixInventory(player, currentUpgrade, equipButton)
@@ -9,6 +10,36 @@ function ButtonStatus:TixInventory(player, currentUpgrade, equipButton)
         backgroundColor = Color3.fromRGB(82, 81, 81)
         shadowColor = Color3.fromRGB(36, 35, 35)
         strokeColor = Color3.fromRGB(36, 35, 35)
+    else
+        equipText = "Equip"
+        backgroundColor = Color3.fromRGB(85, 170, 127)
+        shadowColor = Color3.fromRGB(34, 68, 50)
+        strokeColor = Color3.fromRGB(34, 68, 50)
+    end
+
+    equipButton.EquipText.Text = equipText
+    equipButton.BackgroundColor3 = backgroundColor
+    equipButton.Shadow.BackgroundColor3 = shadowColor
+    equipButton.EquipText.UIStroke.Color = strokeColor
+end
+
+function ButtonStatus:AccessoryInventory(player, GUID, equipButton)
+    local ID = player.ReplicatedData.Accessories[GUID].Value
+    local equippedAccessory = player.ReplicatedData.EquippedAccessories:FindFirstChild(ID)
+    local equipText, backgroundColor, shadowColor, strokeColor
+    print(GUID, equippedAccessory)
+    if equippedAccessory then
+        if equippedAccessory.Value == GUID then
+            equipText = "Unequip"
+            backgroundColor = Color3.fromRGB(170, 85, 89)
+            shadowColor = Color3.fromRGB(102, 63, 64)
+            strokeColor = Color3.fromRGB(102, 63, 64)
+        else
+            equipText = "Unavailable"
+            backgroundColor = Color3.fromRGB(82, 81, 81)
+            shadowColor = Color3.fromRGB(36, 35, 35)
+            strokeColor = Color3.fromRGB(36, 35, 35)
+        end
     else
         equipText = "Equip"
         backgroundColor = Color3.fromRGB(85, 170, 127)

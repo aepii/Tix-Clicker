@@ -9,6 +9,7 @@ local ServerScriptService = game:GetService("ServerScriptService")
 local ProfileData = require(ReplicatedStorage.Data.ProfileData)
 local Upgrades = require(ReplicatedStorage.Data.Upgrades)
 local ValueUpgrades = require(ReplicatedStorage.Data.ValueUpgrades)
+local Accessories = require(ReplicatedStorage.Data.Accessories)
 
 local TemporaryProfileData = ProfileData.TemporaryData
 
@@ -16,19 +17,44 @@ local TemporaryData = {}
 
 ---- Temporary Data ----
 
+function TemporaryData:CalculateAccessories(player, data)
+    local addPerClick, addStorage = 0, 0
+    local  multPerClick, multStorage = 1, 1
+    local equippedAccessories = data.EquippedAccessories
+
+    for ID, GUID in data.EquippedAccessories do
+        local accessory = Accessories[ID]
+        local rewards = accessory.Reward
+        
+        addPerClick += rewards.AddPerClick or 0
+        addStorage += rewards.AddStorage or 0
+        multStorage += rewards.MultPerClick or 0
+        multPerClick += rewards.MultStorage or 0
+    end
+    player.TemporaryData.AddPerClick.Value = addPerClick
+    player.TemporaryData.AddStorage.Value = addStorage
+    player.TemporaryData.MultPerClick.Value = multPerClick
+    player.TemporaryData.MultStorage.Value = multStorage
+end
+
+
 function TemporaryData:CalculateTixPerClick(player, data)
+    TemporaryData:CalculateAccessories(player, data)
     local toolEquipped = data.ToolEquipped
     local toolReward = Upgrades[toolEquipped].Reward["MultPerClick"]
-    local tixPerClick = TemporaryProfileData.TixPerClick.Value * toolReward
+    print(TemporaryProfileData.TixPerClick.Value, player.TemporaryData.AddPerClick.Value,toolReward)
+
+    local tixPerClick = (TemporaryProfileData.TixPerClick.Value + player.TemporaryData.AddPerClick.Value) * (toolReward * player.TemporaryData.MultPerClick.Value)
 
     player.TemporaryData.TixPerClick.Value = tixPerClick
     return tixPerClick
 end
 
 function TemporaryData:CalculateTixStorage(player, data)
+    TemporaryData:CalculateAccessories(player, data)
     local toolEquipped = data.ToolEquipped
     local toolReward = Upgrades[toolEquipped].Reward["MultStorage"]
-    local tixStorage = TemporaryProfileData.TixStorage.Value * toolReward
+    local tixStorage = (TemporaryProfileData.TixStorage.Value + player.TemporaryData.AddStorage.Value) * (toolReward * player.TemporaryData.MultStorage.Value)
 
     player.TemporaryData.TixStorage.Value = tixStorage
     return tixStorage
@@ -41,6 +67,7 @@ function TemporaryData:CalculateTixPerSecondCost(owned, upgrade, amount)
 end
 
 function TemporaryData:CalculateTixPerSecond(player, data)
+    TemporaryData:CalculateAccessories(player, data)
 	local tixPerSecond = 0
     local ownedUpgrades = data.ValueUpgrades
 	for upgrade, value in ownedUpgrades do

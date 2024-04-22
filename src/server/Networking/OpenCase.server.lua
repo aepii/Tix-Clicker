@@ -79,16 +79,17 @@ OpenCaseRemote.OnServerInvoke = (function(player, caseName)
     local data = profile.Data
 
     local replicatedData = player.ReplicatedData
+    local temporaryData = player.TemporaryData
 
     local owned = data.Cases[caseName]
+    if #replicatedData.Accessories:GetChildren() < temporaryData.AccessoriesLimit.Value then 
+        if owned >= 1 then
+            local GUID = HttpService:GenerateGUID(false)
 
-    if owned >= 1 then
-        local GUID = HttpService:GenerateGUID(false)
-
-        data.Cases[caseName] -= 1
-        local item = roll(caseName)
-        addToAccessories(player, item.ID, GUID)
-        replicateData(player, profile, replicatedData, caseName, GUID, item.ID)
+            data.Cases[caseName] -= 1
+            local item = roll(caseName)
+            addToAccessories(player, item.ID, GUID)
+            replicateData(player, profile, replicatedData, caseName, GUID, item.ID)
+        end
     end
-    
 end)
