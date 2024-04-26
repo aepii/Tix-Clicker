@@ -16,6 +16,7 @@ local HttpService = game:GetService("HttpService")
 
 local Networking = ReplicatedStorage.Networking
 local OpenCaseRemote = Networking.OpenCase
+local UpdateClientCaseInventoryRemote = Networking.UpdateClientCaseInventory
 
 ---- Private Functions ----
 
@@ -81,15 +82,26 @@ OpenCaseRemote.OnServerInvoke = (function(player, caseName)
     local replicatedData = player.ReplicatedData
     local temporaryData = player.TemporaryData
 
+    local case = Cases[caseName]
     local owned = data.Cases[caseName]
+
     if #replicatedData.Accessories:GetChildren() < temporaryData.AccessoriesLimit.Value then 
         if owned >= 1 then
             local GUID = HttpService:GenerateGUID(false)
 
             data.Cases[caseName] -= 1
+
             local item = roll(caseName)
             addToAccessories(player, item.ID, GUID)
             replicateData(player, profile, replicatedData, caseName, GUID, item.ID)
+            if data.Cases[caseName] then
+                UpdateClientCaseInventoryRemote:FireClient(player, case, "UPDATE") 
+            end
+            if data.Cases[caseName] == 0 then
+                UpdateClientCaseInventoryRemote:FireClient(player, case, "DEL")
+                replicatedData.Cases[caseName]:Destory()
+                data.Cases[caseName] = nil
+            end
         end
     end
 end)

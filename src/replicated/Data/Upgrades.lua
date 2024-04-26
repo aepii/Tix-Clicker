@@ -26,6 +26,30 @@ local upgrades = {
 		Tool = Tools["Tix Wallet"];
 		Image = "rbxassetid://17206340267"
 	};
+	["Upgrade4"] = {
+		Name = "Upgrade4";
+		Title = "Tix Bag";
+		Cost = {Rocash = 1500, Common = 10, Uncommon = 5, Fine = 3};
+		Reward = {MultPerClick = 8, MultStorage = 15};
+		Tool = Tools["Tix Bag"];
+		Image = "rbxassetid://17273972764"
+	};
+	["Upgrade5"] = {
+		Name = "Upgrade5";
+		Title = "Tix Sack";
+		Cost = {Rocash = 30000, Fine = 20, Rare = 10};
+		Reward = {MultPerClick = 15, MultStorage = 30};
+		Tool = Tools["Tix Sack"];
+		Image = "rbxassetid://17273942251"
+	};
+	["Upgrade6"] = {
+		Name = "Upgrade6";
+		Title = "Tix Case";
+		Cost = {Rocash = 750000, Rare = 100};
+		Reward = {MultPerClick = 30, MultStorage = 75};
+		Tool = Tools["Tix Case"];
+		Image = "rbxassetid://17273942384"
+	};
 }
 	
 return upgrades

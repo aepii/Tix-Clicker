@@ -55,7 +55,6 @@ function TemporaryData:CalculateTixStorage(player, data)
     local toolEquipped = data.ToolEquipped
     local toolReward = Upgrades[toolEquipped].Reward["MultStorage"]
     local tixStorage = (TemporaryProfileData.TixStorage.Value + player.TemporaryData.AddStorage.Value) * (toolReward * player.TemporaryData.MultStorage.Value)
-
     player.TemporaryData.TixStorage.Value = tixStorage
     return tixStorage
 end

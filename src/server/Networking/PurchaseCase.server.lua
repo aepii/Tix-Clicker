@@ -50,15 +50,16 @@ PurchaseCaseRemote.OnServerInvoke = (function(player, caseName)
     local cost = case.Cost
 
     if data.Rocash >= cost then
-        if data.Cases[caseName] then
-            UpdateClientCaseInventoryRemote:FireClient(player, case, "UPDATE")
-        else
+        if not data.Cases[caseName] then
             UpdateClientCaseInventoryRemote:FireClient(player, case, "ADD")
         end
         data.Cases[caseName] = (data.Cases[caseName] or 0) + 1
         data.Rocash -= cost
         replicateData(player, profile, replicatedData, caseName)
         UpdateClientShopInfoRemote:FireClient(player, "Case")
+        if data.Cases[caseName] then
+            UpdateClientCaseInventoryRemote:FireClient(player, case, "UPDATE")
+        end
     end
     
 end)
