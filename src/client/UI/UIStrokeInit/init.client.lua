@@ -1,1 +1,0 @@
-local UIStrokeAdjuster = require(script.UIStrokeAdjuster)
