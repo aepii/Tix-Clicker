@@ -45,24 +45,25 @@ local UpdateClientCaseInventoryRemote = Networking.UpdateClientCaseInventory
 
 ---- Private Functions ----
 
-local function openCase(caseName)
-    OpenCaseRemote:InvokeServer(caseName)
+local function openCase(caseID)
+    OpenCaseRemote:InvokeServer(caseID)
 end
 
 local function updateInventory(case, method)
     if method == "ADD" then
+        print(case.ID)
         local icon = IconCopy:Clone()
         icon.Visible = true
-        icon.Name = case.Name
+        icon.Name = case.ID
         icon.IconImage.Image = case.Image
         icon.Parent = InvHolder
     elseif method == "UPDATE" then
-        if CurrentCase.Value == case.Name then
-            local ownedValue = Player.ReplicatedData.Cases:FindFirstChild(case.Name) and Player.ReplicatedData.Cases[case.Name].Value or 0
+        if CurrentCase.Value == case.ID then
+            local ownedValue = Player.ReplicatedData.Cases:FindFirstChild(case.ID) and Player.ReplicatedData.Cases[case.ID].Value or 0
             OpenFrame.OwnedFrame.Owned.Text = "Owned " .. ownedValue  
         end
      elseif method == "DEL" then
-        local icon = InvHolder:FindFirstChild(case.Title)
+        local icon = InvHolder:FindFirstChild(case.ID)
         if icon then
             icon:Destroy()
         end

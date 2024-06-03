@@ -9,7 +9,7 @@ local cases = {
             [4] = {"Fine", 1}
         },
         Image = "rbxassetid://17227170475",
-        ID = "C2"
+        ID = "C1"
     },
 
     C2 = {

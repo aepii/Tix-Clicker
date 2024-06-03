@@ -53,23 +53,23 @@ local function populateCaseRarity(weights, rewardsFrame)
 end
 
 local function updateEquipFrame()
-    local caseName = script.Parent.Name
-    local case = Cases[caseName]
+    local caseID = script.Parent.Name
+    local case = Cases[caseID]
     
     if InvFrame.Holder:FindFirstChild(CurrentCase.Value) then
         InvFrame.Holder[CurrentCase.Value].Shadow.BackgroundColor3 = Color3.fromRGB(0, 83, 125)
     end
 
-    if CurrentCase.Value == caseName and UIVisible.Value == false then
+    if CurrentCase.Value == caseID and UIVisible.Value == false then
         return
     end
 
-    CurrentCase.Value = caseName
+    CurrentCase.Value = caseID
     populateCaseRarity(case.Weights, RewardsFrame)
-    InvFrame.Holder[caseName].Shadow.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    OpenFrame.ItemName.Title.Text = case.Title
+    InvFrame.Holder[caseID].Shadow.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    OpenFrame.ItemName.Title.Text = case.Name
     IconImage.Image = case.Image
-    local ownedValue = Player.ReplicatedData.Cases:FindFirstChild(caseName) and Player.ReplicatedData.Cases[caseName].Value or 0
+    local ownedValue = Player.ReplicatedData.Cases:FindFirstChild(caseID) and Player.ReplicatedData.Cases[caseID].Value or 0
     OwnedFrame.Owned.Text = "Owned " .. ownedValue  
 end
 

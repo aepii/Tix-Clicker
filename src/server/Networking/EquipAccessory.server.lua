@@ -1,5 +1,3 @@
---[[
-
 ---- Services ----
 
 local Players = game:GetService("Players")
@@ -41,48 +39,6 @@ local function physicalUnequip(ID, humanoid)
     end
 end
 
-local function replicateData(player, data, replicatedData, GUID, ID)
-    local replicatedAccessory = replicatedData.EquippedAccessories:FindFirstChild(ID)
-
-    if not replicatedAccessory then
-        replicatedAccessory = Instance.new("StringValue")
-        replicatedAccessory.Name = ID
-        replicatedAccessory.Value = GUID
-        replicatedAccessory.Parent = replicatedData["EquippedAccessories"]
-    else
-        replicatedAccessory:Destroy()
-    end
-end
-
-local function equipAccessory(player, GUID, data)
-    local replicatedData = player.ReplicatedData
-    local equippedAccessories = data.EquippedAccessories
-    local accessoriesInventory = data.Accessories
-    local ID = accessoriesInventory[GUID]
-
-    local count = 0
-    for _ in equippedAccessories do
-        count += 1
-    end
-
-    if equippedAccessories[ID] == GUID then
-        print("UNEQUIPP")
-
-        DataManager:SetValue(player, profile, {"EquippedAccessories"}, upgradeID)
-        equippedAccessories[ID] = nil
-        physicalUnequip(ID, player.Character.Humanoid)
-        replicateData(player, data, replicatedData, GUID, ID)
-    elseif equippedAccessories[ID] then
-        return
-    elseif count < player.TemporaryData.EquippedAccessoriesLimit.Value then
-        print("EQUIPP")
-        equippedAccessories[ID] = GUID
-        physicalEquip(ID, player.Character.Humanoid)
-        replicateData(player, data, replicatedData, GUID, ID)
-    end
-
-end
-
 ---- Networking ----
 
 local Networking = ReplicatedStorage.Networking
@@ -90,11 +46,31 @@ local EquipAccessoryRemote = Networking.EquipAccessory
 local EquipAccessoryBindableRemote = Networking.EquipAccessoryBindable
 
 EquipAccessoryRemote.OnServerInvoke = function(player, GUID)
-    local data = ProfileCacher:GetProfile(player).Data
+    local profile = ProfileCacher:GetProfile(player)
+    local data = profile.Data
+
+    local equippedAccessories = data.EquippedAccessories
+    local accessoriesInventory = data.Accessories
+    local ID = accessoriesInventory[GUID]
 
     if data.Accessories[GUID] then
-        equipAccessory(player, GUID, data)
+        local count = 0
+        for _ in equippedAccessories do
+            count += 1
+        end
+
+        if equippedAccessories[ID] == GUID then
+            print("UNEQUIPP")
+            DataManager:SetValue(player, profile, {"EquippedAccessories", ID}, nil)
+            physicalUnequip(ID, player.Character.Humanoid)
+        elseif equippedAccessories[ID] then
+            return
+        elseif count < player.TemporaryData.EquippedAccessoriesLimit.Value then
+            print("EQUIPP")
+            DataManager:SetValue(player, profile, {"EquippedAccessories", ID}, GUID)
+            physicalEquip(ID, player.Character.Humanoid)
+        end
     end
 end
 
-EquipAccessoryBindableRemote.Event:Connect(physicalEquip)--]]
+EquipAccessoryBindableRemote.Event:Connect(physicalEquip)

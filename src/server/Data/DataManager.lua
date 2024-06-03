@@ -133,6 +133,8 @@ function DataManager:SetValue(player, profile, path, key)
     local currentProfile = profile.Data
     local currentReplicated = player.ReplicatedData
 
+	local response = "Exists"
+
     -- Iterate through the path except for the last element
     for i = 1, #path - 1 do
         local pointer = path[i]
@@ -148,31 +150,48 @@ function DataManager:SetValue(player, profile, path, key)
         currentReplicated = currentReplicated[pointer]
     end
 
-    -- Set the value at the final path for profile
-    currentProfile[path[#path]] = key
+	local finalKey = path[#path]
 
-    -- Handle setting the value in player.ReplicatedData
-    local finalKey = path[#path]
-    local finalValue = currentReplicated:FindFirstChild(finalKey)
+	if key == nil then
+        -- Handle deletion
+        currentProfile[finalKey] = nil
 
-    -- Create the appropriate value instance if it doesn't exist
-    if not finalValue then
-        local valueType = type(key)
-        local instanceClass = typeMap[valueType]
-		
-        finalValue = Instance.new(instanceClass)
-        finalValue.Name = finalKey
-        finalValue.Parent = currentReplicated
-    end
+        local finalValue = currentReplicated:FindFirstChild(finalKey)
+        if finalValue then
+            finalValue:Destroy()
+        end
 
-    -- Set the value
-    finalValue.Value = key
+        response = "Deleted"
+	else
+		-- Set the value at the final path for profile
+		currentProfile[finalKey] = key
+
+		-- Handle setting the value in player.ReplicatedData
+		local finalValue = currentReplicated:FindFirstChild(finalKey)
+
+		-- Create the appropriate value instance if it doesn't exist
+		if not finalValue then
+			local valueType = type(key)
+			local instanceClass = typeMap[valueType]
+			
+			finalValue = Instance.new(instanceClass)
+			finalValue.Name = finalKey
+			finalValue.Parent = currentReplicated
+			response = "Created"
+		end
+		-- Set the value
+		finalValue.Value = key
+	end
+
+	return response
 end
 
-function DataManager:InsertArray(player, profile, path, key)
+function DataManager:ArrayInsert(player, profile, path, key)
     local currentProfile = profile.Data
     local currentReplicated = player.ReplicatedData
 
+	local response = "Exists"
+
     -- Iterate through the path except for the last element
     for i = 1, #path - 1 do
         local pointer = path[i]
@@ -188,16 +207,17 @@ function DataManager:InsertArray(player, profile, path, key)
         currentReplicated = currentReplicated[pointer]
     end
 
+	local finalKey = path[#path]
+
     -- Ensure the final path in profile is an array
-    if currentProfile[path[#path]] == nil then
-        currentProfile[path[#path]] = {}
+    if currentProfile[finalKey] == nil then
+        currentProfile[finalKey] = {}
     end
 
     -- Append the element to the array in profile
-    table.insert(currentProfile[path[#path]], key)
+    table.insert(currentProfile[finalKey], key)
 
     -- Handle setting the value in player.ReplicatedData
-    local finalKey = path[#path]
     local finalValue = currentReplicated:FindFirstChild(finalKey)
 
     -- If the final value does not exist, create a Folder to hold the array elements
@@ -205,15 +225,16 @@ function DataManager:InsertArray(player, profile, path, key)
         finalValue = Instance.new("Folder")
         finalValue.Name = finalKey
         finalValue.Parent = currentReplicated
+		response = "Created"
     end
 
-    -- Clear existing children in the final value
-    for _, child in pairs(finalValue:GetChildren()) do
+	 -- Clear existing children in the final value
+	 for _, child in pairs(finalValue:GetChildren()) do
         child:Destroy()
     end
 
     -- Create the appropriate value instances for each element in the array
-    for index, element in currentProfile[path[#path]] do
+    for index, element in currentProfile[finalKey] do
         local valueType = type(element)
         local instanceClass = typeMap[valueType]
 
@@ -222,6 +243,8 @@ function DataManager:InsertArray(player, profile, path, key)
         valueInstance.Value = element
         valueInstance.Parent = finalValue
     end
+
+	return response
 end
 
 return DataManager

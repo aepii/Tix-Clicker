@@ -46,19 +46,19 @@ local UpdateClientInventoryRemote = Networking.UpdateClientInventory
 
 ---- Private Functions ----
 
-local function equipTix(upgradeName)
-    EquipTixRemote:InvokeServer(upgradeName)
+local function equipTix(upgradeID)
+    EquipTixRemote:InvokeServer(upgradeID)
 end
 
 local function updateInventory(upgrade, method)
     if method == "ADD" then
         local icon = IconCopy:Clone()
         icon.Visible = true
-        icon.Name = upgrade.Name
+        icon.Name = upgrade.ID
         icon.IconImage.Image = upgrade.Image
         icon.Parent = InvHolder
     elseif method == "DEL" then
-        local icon = InvHolder:FindFirstChild(upgrade.Title)
+        local icon = InvHolder:FindFirstChild(upgrade.ID)
         if icon then
             icon:Destroy()
         end

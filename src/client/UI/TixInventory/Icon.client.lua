@@ -37,21 +37,22 @@ local ClickSound = Sounds:WaitForChild("ClickSound")
 ---- Private Functions ----
 
 local function updateEquipFrame()
-    local upgradeName = script.Parent.Name
-    local upgrade = Upgrades[upgradeName]
+    local upgradeID = script.Parent.Name
+    local upgrade = Upgrades[upgradeID]
     
     if InvFrame.Holder:FindFirstChild(CurrentUpgrade.Value) then
         InvFrame.Holder[CurrentUpgrade.Value].Shadow.BackgroundColor3 = Color3.fromRGB(0, 83, 125)
     end
 
-    if CurrentUpgrade.Value == upgradeName and UIVisible.Value == false then
+    if CurrentUpgrade.Value == upgradeID and UIVisible.Value == false then
         return
     end
 
-    CurrentUpgrade.Value = upgradeName
+    CurrentUpgrade.Value = upgradeID
 
     for _, rewardFrame in RewardsFrame:GetChildren() do
         if rewardFrame:IsA("Frame") then
+            print(upgradeID)
             local reward = upgrade.Reward[rewardFrame.Name]
             if reward then
                 local prefix = string.find(rewardFrame.Name, "Add") and "+" or "x"
@@ -64,8 +65,8 @@ local function updateEquipFrame()
         end
     end
 
-    InvFrame.Holder[upgradeName].Shadow.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    EquipFrame.ItemName.Title.Text = upgrade.Title
+    InvFrame.Holder[upgradeID].Shadow.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    EquipFrame.ItemName.Title.Text = upgrade.Name
     IconImage.Image = upgrade.Image
 
     ButtonStatus:TixInventory(Player, CurrentUpgrade.Value, EquipButton)

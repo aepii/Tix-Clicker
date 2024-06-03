@@ -47,11 +47,11 @@ local UpdateClientShopInfoRemote = Networking.UpdateClientShopInfo
 ---- Private Functions ----
 
 local function getShopInfo(nearest)
-    if string.find(nearest, "PerSec") then
+    if string.sub(nearest, 1, 1) == "P" then
         return PerSecInfo
-    elseif string.find(nearest, "Case") then
+    elseif string.sub(nearest, 1, 1) == "C" then
         return CaseInfo
-    else 
+    elseif string.sub(nearest, 1, 1) == "U" then
         return UpgradeInfo
     end
 end
@@ -101,7 +101,7 @@ local function updateShopInfo(nearest, shopInfo)
         end
     end
     Icon.IconImage.Image = item.Image
-    ItemName.Title.Text = item.Title
+    ItemName.Title.Text = item.Name
     ButtonStatus:Upgrade(Player, CurrentUI.Value, PurchaseButton)
 end
 

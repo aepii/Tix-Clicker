@@ -59,7 +59,7 @@ end
 local function playerRemoved(player)
 	local player_profile = PlayerProfiles[player]
 	if player_profile ~= nil then
-		player_profile.Profile:Release()
+		player_profile:Release()
 	end
 end
 

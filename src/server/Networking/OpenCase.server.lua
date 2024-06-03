@@ -20,11 +20,11 @@ local UpdateClientCaseInventoryRemote = Networking.UpdateClientCaseInventory
 
 ---- Private Functions ----
 
-local function pickWinner(rarity, caseName)
+local function pickWinner(rarity, caseID)
     local matchingAccessories = {}
-    print(rarity,caseName)
+    print(rarity,caseID)
     for _, accessory in Accessories do
-        if accessory.Rarity == rarity and accessory.Cases[caseName] then
+        if accessory.Rarity == rarity and table.find(accessory.Cases, caseID) then
             print(_, accessory)
             table.insert(matchingAccessories, accessory)
         end
@@ -33,8 +33,8 @@ local function pickWinner(rarity, caseName)
     return matchingAccessories[randomIndex]
 end
 
-local function roll(caseName)
-    local weights = Cases[caseName].Weights
+local function roll(caseID)
+    local weights = Cases[caseID].Weights
 
     local totalWeight = 0
     for _, entry in weights do
@@ -47,7 +47,7 @@ local function roll(caseName)
     for _, entry in weights do
         currentWeight = currentWeight + entry[2]
         if currentWeight >= randomNumber then
-            return pickWinner(entry[1], caseName)
+            return pickWinner(entry[1], caseID)
         end
     end
 end
@@ -66,17 +66,18 @@ OpenCaseRemote.OnServerInvoke = (function(player, caseID)
         if owned >= 1 then
             local GUID = HttpService:GenerateGUID(false)
             local item = roll(caseID)
-
-            DataManager:SetValue(player, profile, {"Cases", caseID}, data.caseID - 1)
+            
+            print(data["Cases"])
+            print(data["Cases"][caseID])
+            DataManager:SetValue(player, profile, {"Cases", caseID}, data["Cases"][caseID] - 1)
             DataManager:SetValue(player, profile, {"Accessories", GUID}, item.ID)
 
             if data.Cases[caseID] then
                 UpdateClientCaseInventoryRemote:FireClient(player, case, "UPDATE") 
             end
             if data.Cases[caseID] == 0 then
+                DataManager:SetValue(player, profile, {"Cases", caseID}, nil)
                 UpdateClientCaseInventoryRemote:FireClient(player, case, "DEL")
-                --replicatedData.Cases[caseID]:Destory()
-                --data.Cases[caseID] = nil
             end
         end
     end
