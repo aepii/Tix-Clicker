@@ -1,5 +1,5 @@
 game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, false)
-game.Players.LocalPlayer.PlayerGui:WaitForChild("UI").MainTheme:Play()
+game.Players.LocalPlayer.PlayerGui:WaitForChild("UI"):WaitForChild("MainTheme"):Play()
 
 local Sounds = Instance.new("Folder")
 Sounds.Name = "Sounds"

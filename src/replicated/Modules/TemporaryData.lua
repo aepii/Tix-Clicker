@@ -6,20 +6,24 @@ local ServerScriptService = game:GetService("ServerScriptService")
 
 ---- Data ----
 
-local ProfileData = require(ReplicatedStorage.Data.ProfileData)
+local Data = ReplicatedStorage:WaitForChild("Data")
+local ProfileData = require(Data:WaitForChild("ProfileData"))
+
 local Upgrades = require(ReplicatedStorage.Data.Upgrades)
-local ValueUpgrades = require(ReplicatedStorage.Data.ValueUpgrades)
+local PerSecondUpgrades = require(ReplicatedStorage.Data.PerSecondUpgrades)
 local Accessories = require(ReplicatedStorage.Data.Accessories)
+local Materials = require(ReplicatedStorage.Data.Materials)
 
+local leaderstatsProfileData = ProfileData.leaderstats
 local TemporaryProfileData = ProfileData.TemporaryData
-
-local TemporaryData = {}
 
 ---- Temporary Data ----
 
+local TemporaryData = {}
+
 function TemporaryData:CalculateAccessories(player, data)
     local addPerClick, addStorage = 0, 0
-    local  multPerClick, multStorage = 1, 1
+    local multPerClick, multStorage = 1, 1
     local equippedAccessories = data.EquippedAccessories
 
     for ID, GUID in data.EquippedAccessories do
@@ -60,18 +64,18 @@ function TemporaryData:CalculateTixStorage(player, data)
 end
 
 function TemporaryData:CalculateTixPerSecondCost(owned, upgrade, amount)
-	local cost = ValueUpgrades[upgrade].Cost
-	local modifier = ValueUpgrades[upgrade].Modifier
+	local cost = PerSecondUpgrades[upgrade].Cost
+	local modifier = PerSecondUpgrades[upgrade].Modifier
 	return math.ceil(cost * modifier^(owned + amount - 1))
 end
 
 function TemporaryData:CalculateTixPerSecond(player, data)
     TemporaryData:CalculateAccessories(player, data)
 	local tixPerSecond = 0
-    local ownedUpgrades = data.ValueUpgrades
+    local ownedUpgrades = data.PerSecondUpgrades
 	for upgrade, value in ownedUpgrades do
-        if ValueUpgrades[upgrade] then
-            local reward = ValueUpgrades[upgrade].Reward
+        if PerSecondUpgrades[upgrade] then
+            local reward = PerSecondUpgrades[upgrade].Reward
             tixPerSecond += value * reward
         end
 	end
@@ -88,7 +92,7 @@ function TemporaryData:CalculateRequiredXP(level)
     return math.floor((level * 10) * (((level - 1) * 0.1) + 1))
 end
 
-function TemporaryData:GetDisplayName(key)
+function TemporaryData:GetLeaderstatDisplayName(key)
 	local leaderstatsProfile = ProfileData.leaderstats
 	for index, data in leaderstatsProfile do
 		if data.ID == key then
@@ -101,6 +105,23 @@ function TemporaryData:Setup(player, data)
     TemporaryData:CalculateTixStorage(player, data)
 	TemporaryData:CalculateTixPerClick(player, data)
 	TemporaryData:CalculateTixPerSecond(player, data)
+end
+
+function TemporaryData:CalculateMaterialInfo(itemValue)
+
+    for _, material in Materials do
+        if material.Value and itemValue >= material.Value[1] and itemValue <= material.Value[2] then
+            local materialID = material.ID
+            local minVal = material.Value[1]
+            local maxVal = material.Value[2]
+            local maxQuantity = 5  
+            local minQuantity = 1
+            local chanceToReceive = 0.25 
+            local quantity = math.floor(minQuantity + (itemValue - minVal) * ((maxQuantity - minQuantity) / (maxVal - minVal)))
+
+            return quantity, chanceToReceive, materialID
+        end
+    end
 end
 
 return TemporaryData

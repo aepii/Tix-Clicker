@@ -12,32 +12,21 @@ local TemporaryData = require(Modules.TemporaryData)
 ---- Data ----
 
 local ProfileCacher = require(ServerScriptService.Data.ProfileCacher)
-local ReplicatedProfile = require(ServerScriptService.Data.ReplicatedProfile)
+local DataManager = require(ServerScriptService.Data.DataManager)
 
 ---- Private Functions ----
-
-local function replicateData(player, profile, replicatedData)
-    local data = profile.Data
-
-    replicatedData.Tix.Value = data.Tix
-    replicatedData["Lifetime Tix"].Value = data["Lifetime Tix"]
-
-    ReplicatedProfile:UpdateLeaderstats(player, profile, "Tix")
-end
-
 
 local function playerAdded(player)
     local profile = ProfileCacher:GetProfile(player)
     local data = profile.Data
-    local replicatedData = player.ReplicatedData
 
     coroutine.resume(coroutine.create(function()
         while task.wait() and player:IsDescendantOf(Players) do
             local tixStorage = TemporaryData:CalculateTixStorage(player, data)
             local tixPerSecond = TemporaryData:CalculateTixPerSecond(player, data)
             if data.Tix < tixStorage then
-                data.Tix = math.min(data.Tix + tixPerSecond, tixStorage)
-                replicateData(player, profile, replicatedData)
+                DataManager:SetValue(player, profile, {"Tix"}, math.min(data.Tix + tixPerSecond, tixStorage))
+                DataManager:UpdateLeaderstats(player, profile, "Tix")
             end
             task.wait(1)
 		end

@@ -30,12 +30,12 @@ local ClickSound = Sounds:WaitForChild("ClickSound")
 ---- Networking ----
 
 local Networking = ReplicatedStorage.Networking
-local PurchaseValueUpgradeRemote = Networking.PurchaseValueUpgrade
+local PurchasePerSecondUpgradeRemote = Networking.PurchasePerSecondUpgrade
 
 ---- Private Functions ----
 
-local function purchaseValueUpgrade(upgradeName)
-    PurchaseValueUpgradeRemote:InvokeServer(upgradeName)
+local function purchasePerSecondUpgrade(upgradeName)
+    PurchasePerSecondUpgradeRemote:InvokeServer(upgradeName)
 end
 
 ---- Buttons ----
@@ -58,7 +58,7 @@ end
 local function purchaseMouseDown()
     TweenButton:Shrink(PurchaseButton, PURCHASEBUTTON_ORIGINALSIZE)
     playClickSound()
-    purchaseValueUpgrade(CurrentUI.Value)
+    purchasePerSecondUpgrade(CurrentUI.Value)
 end
 
 local function purchaseMouseUp()

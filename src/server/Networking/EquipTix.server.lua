@@ -7,6 +7,7 @@ local ServerScriptService = game:GetService("ServerScriptService")
 ---- Data ----
 
 local ProfileCacher = require(ServerScriptService.Data.ProfileCacher)
+local DataManager = require(ServerScriptService.Data.DataManager)
 local Upgrades = require(ReplicatedStorage.Data.Upgrades)
 
 ---- Private Functions ----
@@ -42,20 +43,15 @@ end
 local Networking = ReplicatedStorage.Networking
 local EquipTixRemote = Networking.EquipTix
 
-local function replicateData(player, data, replicatedData)
-    replicatedData.ToolEquipped.Value = data.ToolEquipped
-end
+EquipTixRemote.OnServerInvoke = (function(player, upgradeID)
+    local profile = ProfileCacher:GetProfile(player)
+    local data = profile.Data
 
-EquipTixRemote.OnServerInvoke = (function(player, upgradeName)
-    local data = ProfileCacher:GetProfile(player).Data
-    local replicatedData = player.ReplicatedData
+    local upgrade = Upgrades[upgradeID]
 
-    local upgrade = Upgrades[upgradeName]
-
-    if table.find(data.Upgrades, upgradeName) then
-        if data.ToolEquipped ~= upgradeName then
-            data.ToolEquipped = upgradeName
-            replicateData(player, data, replicatedData)
+    if table.find(data.Upgrades, upgradeID) then
+        if data.ToolEquipped ~= upgradeID then
+            DataManager:SetValue(player, profile, {"ToolEquipped"}, upgradeID)
             unequipTool(player)
             local tool = upgrade.Tool
             equipTool(player, tool)

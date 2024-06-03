@@ -16,34 +16,35 @@ local ProfileTemplate = ProfileData.Data
 ---- Loaded Modules ----
 
 local ProfileService = require(script.ProfileService)
-local ReplicatedProfile = require(script.Parent.ReplicatedProfile)
+local DataManager = require(ServerScriptService.Data.DataManager)
 
 ---- Private Variables ----
 
-local ProfileStore = ProfileService.GetProfileStore(
-	"PlayerData03",
+local GameProfileStore = ProfileService.GetProfileStore(
+	"PlayerData1",
 	ProfileTemplate
 )
 
-local Profiles = {} -- [player] = profile
-local ProfileManager = {}
+local PlayerProfiles = {} -- [player]
 
 ---- Private Functions ----
 
 local function playerAdded(player)
-	local profile = ProfileStore:LoadProfileAsync("Player_" .. player.UserId)
+	print(player)
+	local profile = GameProfileStore:LoadProfileAsync("Player_" .. player.UserId)
 	if profile ~= nil then
 		profile:AddUserId(player.UserId) -- GDPR compliance
 		profile:Reconcile() -- Fill in missing variables from ProfileTemplate (optional)
 		profile:ListenToRelease(function()
-			Profiles[player] = nil
+			PlayerProfiles[player] = nil
 			-- The profile could've been loaded on another Roblox server:
 			player:Kick("Error loading data, please rejoin.") 
 		end)
 		if player:IsDescendantOf(Players) == true then
-			Profiles[player] = profile
+			-- Replica service
+			PlayerProfiles[player] = profile
 			-- A profile has been successfully loaded:
-			ReplicatedProfile:Create(player, profile)
+			DataManager:InitializeReplicatedData(player, profile) 
 		else
 			-- Player left before the profile loaded:
 			profile:Release()
@@ -55,7 +56,16 @@ local function playerAdded(player)
 	end
 end
 
----- Initialize ----
+local function playerRemoved(player)
+	local player_profile = PlayerProfiles[player]
+	if player_profile ~= nil then
+		player_profile.Profile:Release()
+	end
+end
+
+---- Profile Manager ----
+
+local ProfileManager = {}
 
 function ProfileManager:Init()
 	-- In case Players have joined the server earlier than this script ran:
@@ -63,15 +73,13 @@ function ProfileManager:Init()
 		task.spawn(playerAdded, player)
 	end
 
-	---- Connections ----
-
 	Players.PlayerAdded:Connect(playerAdded)
+	Players.PlayerRemoving:Connect(playerRemoved)
 
-	Players.PlayerRemoving:Connect(function(player)
-		local profile = Profiles[player]
-		if profile ~= nil then
-			profile:Release()
-		end
+	game:BindToClose(function()
+		table.foreach(Players:GetPlayers(),function(_,player)
+			playerRemoved(player)
+		end)
 	end)
 end
 
@@ -79,7 +87,7 @@ function ProfileManager:GetProfile(player)
 	local count = 0
 
 	while count < 3 do
-		local profile = Profiles[player]
+		local profile = PlayerProfiles[player]
 		if profile ~= nil then
 			return profile
 		end
@@ -93,3 +101,4 @@ function ProfileManager:GetProfile(player)
 end
 
 return ProfileManager
+

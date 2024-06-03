@@ -12,6 +12,8 @@ local TweenButton = require(Modules.TweenButton)
 local Accessories = require(ReplicatedStorage.Data.Accessories)
 local SuffixHandler = require(Modules.SuffixHandler)
 local RarityColors = require(Modules.RarityColors)
+local Materials = require(ReplicatedStorage.Data.Materials)
+local TemporaryData = require(Modules.TemporaryData)
 
 ---- UI ----
 
@@ -53,19 +55,17 @@ local function updateScrapFrame()
 
     CurrentAccessory.Value = GUID
 
-    --[[for _, rewardFrame in RewardsFrame:GetChildren() do
+    for _, rewardFrame in RewardsFrame:GetChildren() do
         if rewardFrame:IsA("Frame") then
-            -local reward = accessory.Reward[rewardFrame.Name]
-            if reward then
-                local prefix = string.find(rewardFrame.Name, "Add") and "+" or "x"
-                rewardFrame.RewardText.Text = prefix .. SuffixHandler:Convert(reward)
-                rewardFrame.Visible = true
-                rewardFrame.Parent = EquipFrame.RewardsFrame
-            else
-                rewardFrame.Visible = false
-            end
+            local quantity, chanceToReceive, materialID = TemporaryData:CalculateMaterialInfo(accessory.Value)
+            local prefix = "x"
+            rewardFrame.RewardText.Text = prefix  .. "0-" .. quantity
+            rewardFrame.ChanceText.Text = chanceToReceive*100 .."%/drop"
+            rewardFrame.RewardIcon.Image = Materials[materialID].Image
+            rewardFrame.Visible = true
+            rewardFrame.Parent = ScrapFrame.RewardsFrame
         end
-    end]]--
+    end
 
     local gradient = RarityColors:GetGradient(accessory.Rarity)
     RarityFrame.RarityText.UIGradient.Color = gradient

@@ -13,21 +13,28 @@ ProfileData.Data = {
 	["Lifetime Level"] = 1;
 	["Lifetime XP"] = 0;
 
-	["ToolEquipped"] = "Upgrade1";
+	["ToolEquipped"] = "U1";
 	["EquippedAccessories"] = {};
 
 	["AlphaTester"] = true;
 	
-	["Upgrades"] = {"Upgrade1"};
+	["Upgrades"] = {"U1"};
 	
-	["ValueUpgrades"] = {
+	["PerSecondUpgrades"] = {
 	};
+
+	["RebirthUpgrades"] = {
+	};
+
 	["Accessories"] = {
 	};
+
 	["Cases"] = {
 	};
+
 	["Materials"] = {
 	};
+
 }
 
 ProfileData.TemporaryData = {
@@ -64,11 +71,11 @@ ProfileData.TemporaryData = {
 		Type = "Number"
 	};
 	["MultPerClick"] = {
-		Value = 0,
+		Value = 1,
 		Type = "Number"
 	};
 	["MultStorage"] = {
-		Value = 0,
+		Value = 1,
 		Type = "Number"
 	};
 }

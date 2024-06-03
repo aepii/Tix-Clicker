@@ -41,13 +41,13 @@ local ClickSound = Sounds:WaitForChild("ClickSound")
 ---- Networking ----
 
 local Networking = ReplicatedStorage.Networking
---local ScrapAccessoryRemote = Networking.ScrapAccessory
---local UpdateClientInventoryRemote = Networking.UpdateClientInventory
+local ScrapAccessoryRemote = Networking.ScrapAccessory
+local UpdateClientInventoryRemote = Networking.UpdateClientInventory
 
 ---- Private Functions ----
 
-local function scrapAccessory(accessoryName)
-   -- ScrapAccessoryRemote:InvokeServer(accessoryName)
+local function scrapAccessory(accessoryGUID)
+   ScrapAccessoryRemote:InvokeServer(accessoryGUID)
 end
 
 local function updateInventory(ID, GUID, method)
@@ -73,9 +73,9 @@ end
 
 initInventory()
 
---UpdateClientInventoryRemote.OnClientEvent:Connect(function(accessory)
-    --updateInventory(upgrade, "ADD")
---end)
+UpdateClientInventoryRemote.OnClientEvent:Connect(function(accessory)
+    updateInventory(accessory, "ADD")
+end)
 
 ---- Buttons ----
 

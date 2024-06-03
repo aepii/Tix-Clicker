@@ -18,7 +18,7 @@ local Humanoid = Character:WaitForChild("Humanoid")
 ---- Data ----
 
 local Upgrades = require(ReplicatedStorage.Data.Upgrades)
-local ValueUpgrades = require(ReplicatedStorage.Data.ValueUpgrades)
+local PerSecondUpgrades = require(ReplicatedStorage.Data.PerSecondUpgrades)
 local Cases = require(ReplicatedStorage.Data.Cases)
 
 ---- Modules ----
@@ -88,8 +88,8 @@ local function updateShopInfo(nearest, shopInfo)
         populateCaseRarity(item.Weights, RewardsFrame)
     else
         if shopInfo.Name == "PerSecInfo" then
-            item = ValueUpgrades[nearest]
-            local levelValue = Player.ReplicatedData.ValueUpgrades:FindFirstChild(nearest) and Player.ReplicatedData.ValueUpgrades[nearest].Value or 0
+            item = PerSecondUpgrades[nearest]
+            local levelValue = Player.ReplicatedData.PerSecondUpgrades:FindFirstChild(nearest) and Player.ReplicatedData.PerSecondUpgrades[nearest].Value or 0
             PurchaseButton.PriceFrame.PriceText.Text = TemporaryData:CalculateTixPerSecondCost(levelValue, nearest, 1)
             InfoFrame.LevelFrame.Level.Text = "Level " .. levelValue  
             RewardsFrame.TixPerSec.RewardText.Text = "+"..item.Reward

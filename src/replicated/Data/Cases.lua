@@ -1,7 +1,6 @@
 local cases = {
-    Case1 = {
-        Name = "Case1",
-        Title = "Noob Case",
+    C1 = {
+        Name = "Noob Case",
         Cost = 10,
         Weights = {
             [1] = {"Basic", 50},
@@ -9,12 +8,12 @@ local cases = {
             [3] = {"Uncommon", 14},
             [4] = {"Fine", 1}
         },
-        Image = "rbxassetid://17227170475"
+        Image = "rbxassetid://17227170475",
+        ID = "C2"
     },
 
-    Case2 = {
-        Name = "Case2",
-        Title = "Apprentice Case",
+    C2 = {
+        Name = "Apprentice Case",
         Cost = 100,
         Weights = {
             [1] = {"Basic", 25},
@@ -23,7 +22,8 @@ local cases = {
             [4] = {"Fine", 4.9},
             [5] = {"Rare", 0.1}
         },
-        Image = "rbxassetid://17230178285"
+        Image = "rbxassetid://17230178285",
+        ID = "C2"
     }
 }
 

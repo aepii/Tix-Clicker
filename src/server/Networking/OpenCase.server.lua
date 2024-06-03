@@ -3,14 +3,14 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
+local HttpService = game:GetService("HttpService")
 
 ---- Data ----
 
 local ProfileCacher = require(ServerScriptService.Data.ProfileCacher)
+local DataManager = require(ServerScriptService.Data.DataManager)
 local Cases = require(ReplicatedStorage.Data.Cases)
 local Accessories = require(ReplicatedStorage.Data.Accessories)
-local ReplicatedProfile = require(ServerScriptService.Data.ReplicatedProfile)
-local HttpService = game:GetService("HttpService")
 
 ---- Networking ----
 
@@ -19,28 +19,6 @@ local OpenCaseRemote = Networking.OpenCase
 local UpdateClientCaseInventoryRemote = Networking.UpdateClientCaseInventory
 
 ---- Private Functions ----
-
-local function replicateData(player, profile, replicatedData, caseName, result, ID)
-   
-    local data = profile.Data
-
-    local replicatedUpgrade = replicatedData.Cases[caseName]
-    replicatedUpgrade.Value = data.Cases[caseName]
-  
-    local replicatedAccessory = replicatedData.Accessories:FindFirstChild(result)
-    if not replicatedAccessory then
-        replicatedAccessory = Instance.new("StringValue")
-        replicatedAccessory.Name = result
-        replicatedAccessory.Value = ID
-        replicatedAccessory.Parent = replicatedData["Accessories"]
-    end
-end
-
-local function addToAccessories(player, ID, GUID)
-    local data = ProfileCacher:GetProfile(player).Data
-    data.Accessories[GUID] = ID
-    --UpdateAccessoriesEvent:FireClient(player, ID, result, "ADD")
-end
 
 local function pickWinner(rarity, caseName)
     local matchingAccessories = {}
@@ -74,33 +52,31 @@ local function roll(caseName)
     end
 end
 
-
-OpenCaseRemote.OnServerInvoke = (function(player, caseName)
+OpenCaseRemote.OnServerInvoke = (function(player, caseID)
     local profile = ProfileCacher:GetProfile(player)
     local data = profile.Data
 
     local replicatedData = player.ReplicatedData
     local temporaryData = player.TemporaryData
 
-    local case = Cases[caseName]
-    local owned = data.Cases[caseName]
+    local case = Cases[caseID]
+    local owned = data.Cases[caseID]
 
     if #replicatedData.Accessories:GetChildren() < temporaryData.AccessoriesLimit.Value then 
         if owned >= 1 then
             local GUID = HttpService:GenerateGUID(false)
+            local item = roll(caseID)
 
-            data.Cases[caseName] -= 1
+            DataManager:SetValue(player, profile, {"Cases", caseID}, data.caseID - 1)
+            DataManager:SetValue(player, profile, {"Accessories", GUID}, item.ID)
 
-            local item = roll(caseName)
-            addToAccessories(player, item.ID, GUID)
-            replicateData(player, profile, replicatedData, caseName, GUID, item.ID)
-            if data.Cases[caseName] then
+            if data.Cases[caseID] then
                 UpdateClientCaseInventoryRemote:FireClient(player, case, "UPDATE") 
             end
-            if data.Cases[caseName] == 0 then
+            if data.Cases[caseID] == 0 then
                 UpdateClientCaseInventoryRemote:FireClient(player, case, "DEL")
-                replicatedData.Cases[caseName]:Destory()
-                data.Cases[caseName] = nil
+                --replicatedData.Cases[caseID]:Destory()
+                --data.Cases[caseID] = nil
             end
         end
     end

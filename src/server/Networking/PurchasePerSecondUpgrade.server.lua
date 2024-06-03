@@ -13,37 +13,35 @@ local TemporaryData = require(Modules.TemporaryData)
 
 local ProfileCacher = require(ServerScriptService.Data.ProfileCacher)
 local DataManager = require(ServerScriptService.Data.DataManager)
-local Cases = require(ReplicatedStorage.Data.Cases)
+local PerSecondUpgrades = require(ReplicatedStorage.Data.PerSecondUpgrades)
 
 ---- Networking ----
 
 local Networking = ReplicatedStorage.Networking
-local PurchaseCaseRemote = Networking.PurchaseCase
+local PurchasePerSecondUpgradeRemote = Networking.PurchasePerSecondUpgrade
 local UpdateClientShopInfoRemote = Networking.UpdateClientShopInfo
-local UpdateClientCaseInventoryRemote = Networking.UpdateClientCaseInventory
 
 ---- Private Functions ----
 
-PurchaseCaseRemote.OnServerInvoke = (function(player, caseID)
+PurchasePerSecondUpgradeRemote.OnServerInvoke = (function(player, upgradeID)
+    local cost;
     local profile = ProfileCacher:GetProfile(player)
     local data = profile.Data
 
-    local case = Cases[caseID]
-    local cost = case.Cost
+    local perSecondUpgrade = PerSecondUpgrades[upgradeID]
+    local upgradeData = data.PerSecondUpgrades[upgradeID]
+
+    if upgradeData then
+        cost = TemporaryData:CalculateTixPerSecondCost(upgradeData, upgradeID, 1)
+    else
+        cost = perSecondUpgrade.Cost
+    end
 
     if data.Rocash >= cost then
-        if not data.Cases[caseID] then
-            UpdateClientCaseInventoryRemote:FireClient(player, case, "ADD")
-        end
-
-        DataManager:SetValue(player, profile, {"Cases", caseID}, (data.Cases[caseID] or 0) + 1)
+        DataManager:SetValue(player, profile, {"PerSecondUpgrades", upgradeID}, (upgradeData or 0) + 1)
         DataManager:SetValue(player, profile, {"Rocash"}, data.Rocash - cost)
         DataManager:UpdateLeaderstats(player, profile, "Rocash")
-        UpdateClientShopInfoRemote:FireClient(player, "Case")
-
-        if data.Cases[caseID] then
-            UpdateClientCaseInventoryRemote:FireClient(player, case, "UPDATE")
-        end
+        UpdateClientShopInfoRemote:FireClient(player, "PerSecondUpgrade")
     end
     
 end)

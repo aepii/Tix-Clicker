@@ -1,3 +1,5 @@
+--[[
+
 ---- Services ----
 
 local Players = game:GetService("Players")
@@ -7,13 +9,10 @@ local ServerScriptService = game:GetService("ServerScriptService")
 ---- Modules ----
 
 local ProfileCacher = require(ServerScriptService.Data.ProfileCacher)
+local DataManager = require(ServerScriptService.Data.DataManager)
 local Accessories = require(ReplicatedStorage.Data.Accessories)
 
----- Networking ----
-
-local Networking = ReplicatedStorage.Networking
-local EquipAccessoryRemote = Networking.EquipAccessory
-local EquipAccessoryBindableRemote = Networking.EquipAccessoryBindable
+---- Private Functions ----
 
 local function physicalEquip(ID, humanoid)
     local accessory = Accessories[ID]
@@ -27,8 +26,6 @@ local function physicalEquip(ID, humanoid)
         humanoid.parent.Head.face.Texture = asset
     end
 end
-
-EquipAccessoryBindableRemote.Event:Connect(physicalEquip)
 
 local function physicalUnequip(ID, humanoid)
     local accessory = Accessories[ID]
@@ -70,6 +67,8 @@ local function equipAccessory(player, GUID, data)
 
     if equippedAccessories[ID] == GUID then
         print("UNEQUIPP")
+
+        DataManager:SetValue(player, profile, {"EquippedAccessories"}, upgradeID)
         equippedAccessories[ID] = nil
         physicalUnequip(ID, player.Character.Humanoid)
         replicateData(player, data, replicatedData, GUID, ID)
@@ -84,6 +83,11 @@ local function equipAccessory(player, GUID, data)
 
 end
 
+---- Networking ----
+
+local Networking = ReplicatedStorage.Networking
+local EquipAccessoryRemote = Networking.EquipAccessory
+local EquipAccessoryBindableRemote = Networking.EquipAccessoryBindable
 
 EquipAccessoryRemote.OnServerInvoke = function(player, GUID)
     local data = ProfileCacher:GetProfile(player).Data
@@ -93,3 +97,4 @@ EquipAccessoryRemote.OnServerInvoke = function(player, GUID)
     end
 end
 
+EquipAccessoryBindableRemote.Event:Connect(physicalEquip)--]]
