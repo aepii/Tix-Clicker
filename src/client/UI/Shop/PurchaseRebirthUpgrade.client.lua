@@ -14,13 +14,12 @@ local Shop = Workspace.ShopUpgrades
 
 local Modules = ReplicatedStorage.Modules
 local TweenButton = require(Modules.TweenButton)
-local ButtonStatus = require(Modules.ButtonStatus)
 
 ---- UI ----
 
 local InfoUI = Player.PlayerGui:WaitForChild("InfoUI")
-local UpgradeInfo = InfoUI.UpgradeInfo
-local InfoFrame = UpgradeInfo.InfoFrame
+local RebirthInfo = InfoUI.RebirthInfo
+local InfoFrame = RebirthInfo.InfoFrame
 local CurrentUI = InfoUI.CurrentUI
 
 ---- Sound ----
@@ -31,12 +30,12 @@ local ClickSound = Sounds:WaitForChild("ClickSound")
 ---- Networking ----
 
 local Networking = ReplicatedStorage.Networking
-local PurchaseUpgradeRemote = Networking.PurchaseUpgrade
+local PurchaseRebirthUpgradeRemote = Networking.PurchaseRebirthUpgrade
 
 ---- Private Functions ----
 
-local function purchaseUpgrade(upgradeName)
-    PurchaseUpgradeRemote:InvokeServer(upgradeName)
+local function purchaseRebirthUpgrade(upgradeName)
+    PurchaseRebirthUpgradeRemote:InvokeServer(upgradeName)
 end
 
 ---- Buttons ----
@@ -57,10 +56,9 @@ local function purchaseLeave()
 end
 
 local function purchaseMouseDown()
-    playClickSound()
-    purchaseUpgrade(CurrentUI.Value)
     TweenButton:Shrink(PurchaseButton, PURCHASEBUTTON_ORIGINALSIZE)
-    ButtonStatus:Upgrade(Player, CurrentUI.Value, PurchaseButton)
+    playClickSound()
+    purchaseRebirthUpgrade(CurrentUI.Value)
 end
 
 local function purchaseMouseUp()

@@ -12,7 +12,7 @@ local upgrades = {
 	};
 	U2 = {
 		Name = "Tix Wad";
-		Cost = {Rocash = 10};
+		Cost = {Rocash = 5};
 		Reward = {MultPerClick = 2, MultStorage = 2};
 		Tool = Tools["Tix Wad"];
 		Image = "rbxassetid://17206299335",
@@ -20,7 +20,7 @@ local upgrades = {
 	},
 	U3 = {
 		Name = "Tix Wallet";
-		Cost = {Rocash = 100, Basic = 3};
+		Cost = {Rocash = 50, Materials = {[1] = {"M1", 5}}};
 		Reward = {MultPerClick = 4, MultStorage = 4};
 		Tool = Tools["Tix Wallet"];
 		Image = "rbxassetid://17206340267",
@@ -28,7 +28,7 @@ local upgrades = {
 	};
 	U4 = {
 		Name = "Tix Bag";
-		Cost = {Rocash = 1500, Common = 10, Uncommon = 5, Fine = 3};
+		Cost = {Rocash = 1000, Materials = {[1] = {"M1", 15}, [2] = {"M2", 7}, [3] = {"M3", 3}}};
 		Reward = {MultPerClick = 8, MultStorage = 15};
 		Tool = Tools["Tix Bag"];
 		Image = "rbxassetid://17273972764",
@@ -36,7 +36,7 @@ local upgrades = {
 	};
 	U5 = {
 		Name = "Tix Sack";
-		Cost = {Rocash = 30000, Fine = 20, Rare = 10};
+		Cost = {Rocash = 25000, Materials = {[1] = {"M3", 50}, [2] = {"M4", 10}}};
 		Reward = {MultPerClick = 15, MultStorage = 30};
 		Tool = Tools["Tix Sack"];
 		Image = "rbxassetid://17273942251",
@@ -44,7 +44,7 @@ local upgrades = {
 	};
 	U6 = {
 		Name = "Tix Case";
-		Cost = {Rocash = 750000, Rare = 100};
+		Cost = {Rocash = 750000, Materials = {[1] = {"M5", 100}}};
 		Reward = {MultPerClick = 30, MultStorage = 75};
 		Tool = Tools["Tix Case"];
 		Image = "rbxassetid://17273942384",

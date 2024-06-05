@@ -8,7 +8,7 @@ local Player = Players.LocalPlayer
 
 ---- Shop ----
 
-local Shop = Workspace.NoobShop:WaitForChild("Stand")
+local Shop = Workspace.ShopUpgrades
 
 ---- Modules ----
 

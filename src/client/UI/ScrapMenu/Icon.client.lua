@@ -55,10 +55,13 @@ local function updateScrapFrame()
 
     CurrentAccessory.Value = GUID
 
+    local gradient = RarityColors:GetGradient(accessory.Rarity)
+
     for _, rewardFrame in RewardsFrame:GetChildren() do
         if rewardFrame:IsA("Frame") then
-            local quantity, chanceToReceive, materialID = TemporaryData:CalculateMaterialInfo(accessory.Value)
+            local quantity, chanceToReceive, materialID = TemporaryData:CalculateMaterialInfo(Player, accessory.Value)
             local prefix = "x"
+            rewardFrame.RewardText.UIGradient.Color = gradient
             rewardFrame.RewardText.Text = prefix  .. "0-" .. quantity
             rewardFrame.ChanceText.Text = chanceToReceive*100 .."%/drop"
             rewardFrame.RewardIcon.Image = Materials[materialID].Image
@@ -67,7 +70,6 @@ local function updateScrapFrame()
         end
     end
 
-    local gradient = RarityColors:GetGradient(accessory.Rarity)
     RarityFrame.RarityText.UIGradient.Color = gradient
     RarityFrame.RarityText.Text = accessory.Rarity
     InvFrame.Holder[GUID].Shadow.BackgroundColor3 = Color3.fromRGB(255, 255, 255)

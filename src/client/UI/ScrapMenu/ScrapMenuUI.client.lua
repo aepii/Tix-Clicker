@@ -42,16 +42,25 @@ local ClickSound = Sounds:WaitForChild("ClickSound")
 
 local Networking = ReplicatedStorage.Networking
 local ScrapAccessoryRemote = Networking.ScrapAccessory
-local UpdateClientInventoryRemote = Networking.UpdateClientInventory
+local UpdateClientAccessoriesInventoryRemote = Networking.UpdateClientAccessoriesInventory
 
 ---- Private Functions ----
 
 local function scrapAccessory(accessoryGUID)
-   ScrapAccessoryRemote:InvokeServer(accessoryGUID)
+    print("SCRAPP")
+    print(ScrapAccessoryRemote)
+    ScrapAccessoryRemote:InvokeServer(accessoryGUID)
 end
 
 local function updateInventory(ID, GUID, method)
-    if method == "ADD" then
+    if method == "INIT" then
+        for index, icon in InvHolder:GetChildren() do
+            if icon:IsA("Frame") and icon ~= IconCopy then
+                icon:Destroy()
+            end
+        end
+        initInventory()
+    elseif method == "ADD" then
         local icon = IconCopy:Clone()
         icon.Visible = true
         icon.Name = GUID
@@ -65,7 +74,7 @@ local function updateInventory(ID, GUID, method)
     end
 end
 
-local function initInventory()
+function initInventory()
     for _, accessory in ReplicatedData.Accessories:GetChildren() do
         updateInventory(accessory.Value, accessory.Name, "ADD")
     end
@@ -73,8 +82,8 @@ end
 
 initInventory()
 
-UpdateClientInventoryRemote.OnClientEvent:Connect(function(accessory)
-    updateInventory(accessory, "ADD")
+UpdateClientAccessoriesInventoryRemote.OnClientEvent:Connect(function(ID, GUID, method)
+    updateInventory(ID, GUID, method)
 end)
 
 ---- Buttons ----

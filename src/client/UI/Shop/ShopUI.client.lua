@@ -7,7 +7,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 ---- Shop ----
 
-local Shop = Workspace.NoobShop:WaitForChild("Stand")
+local Shop = Workspace.ShopUpgrades
 
 ---- Player ----
 
@@ -17,8 +17,10 @@ local Humanoid = Character:WaitForChild("Humanoid")
 
 ---- Data ----
 
+local Materials = require(ReplicatedStorage.Data.Materials)
 local Upgrades = require(ReplicatedStorage.Data.Upgrades)
 local PerSecondUpgrades = require(ReplicatedStorage.Data.PerSecondUpgrades)
+local RebirthUpgrades = require(ReplicatedStorage.Data.RebirthUpgrades)
 local Cases = require(ReplicatedStorage.Data.Cases)
 
 ---- Modules ----
@@ -33,6 +35,7 @@ local RarityColors = require(Modules.RarityColors)
 local InfoUI = Player.PlayerGui:WaitForChild("InfoUI")
 local PerSecInfo = InfoUI.PerSecInfo
 local UpgradeInfo = InfoUI.UpgradeInfo
+local RebirthInfo = InfoUI.RebirthInfo
 local CaseInfo = InfoUI.CaseInfo
 
 local CurrentUI = InfoUI.CurrentUI
@@ -53,6 +56,8 @@ local function getShopInfo(nearest)
         return CaseInfo
     elseif string.sub(nearest, 1, 1) == "U" then
         return UpgradeInfo
+    elseif string.sub(nearest, 1, 1) == "R" then
+        return RebirthInfo
     end
 end
 
@@ -72,6 +77,35 @@ local function populateCaseRarity(weights, rewardsFrame)
     end
 end
 
+local function populateMaterialCost(itemCosts, materialsHolder)
+    for count = 1, 3 do
+        print("HIDE", count)
+        materialsHolder[count].Visible = false
+    end
+    if itemCosts == nil then
+        materialsHolder.Parent.Visible = false
+        return
+    end
+    materialsHolder.Parent.Visible = true
+    local index = 1
+    print(itemCosts)
+    for key, data in itemCosts do
+
+        local materialID = data[1]
+        local materialCost = data[2]
+
+        local material = Materials[materialID]
+
+        local gradient = RarityColors:GetGradient(material.Rarity)
+        
+        materialsHolder[index].CostText.Text = materialCost
+        materialsHolder[index].MaterialIcon.Image = material.Image
+        materialsHolder[index].Visible = true
+        materialsHolder[index].CostText.UIGradient.Color = gradient
+        index += 1
+    end
+end
+
 local function updateShopInfo(nearest, shopInfo)
     local InfoFrame = shopInfo.InfoFrame
     local Icon = InfoFrame.Icon
@@ -86,23 +120,34 @@ local function updateShopInfo(nearest, shopInfo)
         PurchaseButton.PriceFrame.PriceText.Text = item.Cost
         InfoFrame.OwnedFrame.Owned.Text = "Owned " .. ownedValue  
         populateCaseRarity(item.Weights, RewardsFrame)
-    else
-        if shopInfo.Name == "PerSecInfo" then
-            item = PerSecondUpgrades[nearest]
-            local levelValue = Player.ReplicatedData.PerSecondUpgrades:FindFirstChild(nearest) and Player.ReplicatedData.PerSecondUpgrades[nearest].Value or 0
-            PurchaseButton.PriceFrame.PriceText.Text = TemporaryData:CalculateTixPerSecondCost(levelValue, nearest, 1)
-            InfoFrame.LevelFrame.Level.Text = "Level " .. levelValue  
-            RewardsFrame.TixPerSec.RewardText.Text = "+"..item.Reward
-        elseif shopInfo.Name == "UpgradeInfo" then
-            item = Upgrades[nearest]
-            PurchaseButton.PriceFrame.PriceText.Text = item.Cost["Rocash"]
-            RewardsFrame.MultPerClick.RewardText.Text = "x"..item.Reward["MultPerClick"]
-            RewardsFrame.MultStorage.RewardText.Text = "x"..item.Reward["MultStorage"]
-        end
+    elseif shopInfo.Name == "PerSecInfo" then
+        item = PerSecondUpgrades[nearest]
+        local levelValue = Player.ReplicatedData.PerSecondUpgrades:FindFirstChild(nearest) and Player.ReplicatedData.PerSecondUpgrades[nearest].Value or 0
+        PurchaseButton.PriceFrame.PriceText.Text = TemporaryData:CalculateTixPerSecondCost(levelValue, nearest, 1)
+        InfoFrame.LevelFrame.Level.Text = "Level " .. levelValue  
+        RewardsFrame.TixPerSec.RewardText.Text = "+"..item.Reward
+    elseif shopInfo.Name == "UpgradeInfo" then
+        local MaterialsHolder = InfoFrame.MaterialsFrame.MaterialsHolder
+        item = Upgrades[nearest]
+        PurchaseButton.PriceFrame.PriceText.Text = item.Cost["Rocash"]
+        RewardsFrame.MultPerClick.RewardText.Text = "x"..item.Reward["MultPerClick"]
+        RewardsFrame.MultStorage.RewardText.Text = "x"..item.Reward["MultStorage"]
+        populateMaterialCost(item.Cost["Materials"] or nil, MaterialsHolder)
+        ButtonStatus:Upgrade(Player, CurrentUI.Value, PurchaseButton)
+    elseif shopInfo.Name == "RebirthInfo" then
+        item = RebirthUpgrades[nearest]
+        local levelValue = Player.ReplicatedData.RebirthUpgrades:FindFirstChild(nearest) and Player.ReplicatedData.RebirthUpgrades[nearest].Value or 0
+        PurchaseButton.PriceFrame.PriceText.Text = TemporaryData:CalculateRebirthUpgradeCost(levelValue, nearest, 1)
+        InfoFrame.LevelFrame.Level.Text = "Level " .. levelValue  .. "/" .. item.Limit
+
+        local ampersandReplacement = item.Initial + (levelValue * item.Reward)
+        local initialMessage = item.InitialMessage:gsub("&", ampersandReplacement)
+
+        RewardsFrame.InitialText.Text = initialMessage
+        RewardsFrame.RewardText.Text = item.RewardMessage
     end
     Icon.IconImage.Image = item.Image
     ItemName.Title.Text = item.Name
-    ButtonStatus:Upgrade(Player, CurrentUI.Value, PurchaseButton)
 end
 
 local function getNearest()

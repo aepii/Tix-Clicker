@@ -32,7 +32,7 @@ ProfileData.Data = {
 	["Cases"] = {
 	};
 
-	["Materials"] = {
+	["Materials"] = {	
 	};
 
 }
@@ -76,6 +76,24 @@ ProfileData.TemporaryData = {
 	};
 	["MultStorage"] = {
 		Value = 1,
+		Type = "Number"
+	};
+
+
+	["RebirthMaterialDropChance"] = {
+		Value = 25,
+		Type = "Number"
+	};
+	["RebirthMaterialMaxDrop"] = {
+		Value = 5,
+		Type = "Number"
+	};
+	["RebirthMultPerClick"] = {
+		Value = 0,
+		Type = "Number"
+	};
+	["RebirthMultStorage"] = {
+		Value = 0,
 		Type = "Number"
 	};
 }

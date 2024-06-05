@@ -50,7 +50,15 @@ local function openCase(caseID)
 end
 
 local function updateInventory(case, method)
-    if method == "ADD" then
+    if method == "INIT" then
+        for index, icon in InvHolder:GetChildren() do
+            print(icon)
+            if icon:IsA("Frame") and icon ~= IconCopy then
+                icon:Destroy()
+            end
+        end
+        initInventory()
+    elseif method == "ADD" then
         print(case.ID)
         local icon = IconCopy:Clone()
         icon.Visible = true
@@ -70,7 +78,7 @@ local function updateInventory(case, method)
     end
 end
 
-local function initInventory()
+function initInventory()
     for _, case in ReplicatedData.Cases:GetChildren() do
         updateInventory(Cases[case.Name], "ADD")
     end

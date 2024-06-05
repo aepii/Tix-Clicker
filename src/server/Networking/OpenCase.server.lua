@@ -17,6 +17,7 @@ local Accessories = require(ReplicatedStorage.Data.Accessories)
 local Networking = ReplicatedStorage.Networking
 local OpenCaseRemote = Networking.OpenCase
 local UpdateClientCaseInventoryRemote = Networking.UpdateClientCaseInventory
+local UpdateClientAccessoriesInventoryRemote = Networking.UpdateClientAccessoriesInventory
 
 ---- Private Functions ----
 
@@ -71,6 +72,9 @@ OpenCaseRemote.OnServerInvoke = (function(player, caseID)
             print(data["Cases"][caseID])
             DataManager:SetValue(player, profile, {"Cases", caseID}, data["Cases"][caseID] - 1)
             DataManager:SetValue(player, profile, {"Accessories", GUID}, item.ID)
+            DataManager:UpdateLeaderstats(player, profile, "Value")
+            
+            UpdateClientAccessoriesInventoryRemote:FireClient(player, item.ID, GUID, "ADD") 
 
             if data.Cases[caseID] then
                 UpdateClientCaseInventoryRemote:FireClient(player, case, "UPDATE") 

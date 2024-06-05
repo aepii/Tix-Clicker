@@ -51,7 +51,16 @@ local function equipTix(upgradeID)
 end
 
 local function updateInventory(upgrade, method)
-    if method == "ADD" then
+    if method == "INIT" then
+        print("HELLO ITTNIT TIX")
+        for index, icon in InvHolder:GetChildren() do
+            if icon:IsA("Frame") and icon ~= IconCopy then
+                icon:Destroy()
+            end
+        end
+        print("HELLO INIT TIX")
+        initInventory()
+    elseif method == "ADD" then
         local icon = IconCopy:Clone()
         icon.Visible = true
         icon.Name = upgrade.ID
@@ -65,16 +74,17 @@ local function updateInventory(upgrade, method)
     end
 end
 
-local function initInventory()
+function initInventory()
     for _, upgrade in ReplicatedData.Upgrades:GetChildren() do
+        print(upgrade, "INITIALIZEEEE")
         updateInventory(Upgrades[upgrade.Name], "ADD")
     end
 end
 
 initInventory()
 
-UpdateClientInventoryRemote.OnClientEvent:Connect(function(upgrade)
-    updateInventory(upgrade, "ADD")
+UpdateClientInventoryRemote.OnClientEvent:Connect(function(upgrade, method)
+    updateInventory(upgrade, method)
 end)
 
 ---- Buttons ----

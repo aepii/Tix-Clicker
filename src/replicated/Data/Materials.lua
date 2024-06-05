@@ -10,7 +10,7 @@ local materials = {
     M1 = {
         Name = "Basic Material",
         Image = "rbxassetid://17227318167",
-        Value = {0,10},
+        Value = {1,10},
         Rarity = "Basic",
         ID = "M1"
     },
@@ -35,6 +35,13 @@ local materials = {
         Rarity = "Fine",
         ID = "M4"
     },
+    M5 = {
+        Name = "Rare Material",
+        Image = "rbxassetid://",
+        Value = {2001,16000},
+        Rarity = "Rare",
+        ID = "M5"
+    }
 }
 
 return materials

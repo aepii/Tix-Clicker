@@ -1,11 +1,3 @@
---[[
-    RARITY: VALUE | ROBLOX RAP
-    Basic : 0-10 | FREE
-    Common : 11-50 | 1-70
-    Uncommon : 51-300 | 71-150
-    Fine : 301 - 2000 | 151-300
-]]
-
 local accessories = {
     A1 = {
         Name = "Roblox Baseball Cap",
@@ -41,7 +33,7 @@ local accessories = {
         Name = "Adorable Puppy",
         Type = "Face",
         AssetID = 11389372,
-        Reward = {AddPerClick = 2, AddStorage = 10},
+        Reward = {AddPerClick = 3, AddStorage = 20},
         Value = 11,
         Rarity = "Common",
         Cases = {"C1", "C2"},
@@ -51,7 +43,7 @@ local accessories = {
         Name = "Lazy Eye",
         Type = "Face",
         AssetID = 7075502,
-        Reward = {AddPerClick = 3},
+        Reward = {AddPerClick = 4},
         Value = 13,
         Rarity = "Common",
         Cases = {"C1", "C2"},
@@ -71,7 +63,7 @@ local accessories = {
         Name = "Good Intentioned",
         Type = "Face",
         AssetID = 7317793,
-        Reward = {AddPerClick = 4},
+        Reward = {AddPerClick = 5},
         Value = 20,
         Rarity = "Common",
         Cases = {"C1", "C2"},
@@ -97,6 +89,109 @@ local accessories = {
         Cases = {"C1", "C2"},
         ID = "A12"
     },
+    A13 = {
+        Name = "Brown Hair",
+        Type = "Accessory",
+        AssetID = 62234425,
+        Reward = {AddPerClick = 1},
+        Value = 1,
+        Rarity = "Basic",
+        Cases = {"C1", "C2"},
+        ID = "A13"
+    },
+    A14 = {
+        Name = "Belle Of Belfast Long Red Hair",
+        Type = "Accessory",
+        AssetID = 2956239660,
+        Reward = {AddPerClick = 1},
+        Value = 1,
+        Rarity = "Basic",
+        Cases = {"C1", "C2"},
+        ID = "A14"
+    },
+    A15 = {
+        Name = "Italian Ski Cap",
+        Type = "Accessory",
+        AssetID = 1038669,
+        Reward = {MultStorage = 4},
+        Value = 2000,
+        Rarity = "Fine",
+        Cases = {"C1", "C2"},
+        ID = "A15"
+    },
+    A16 = {
+        Name = "Orange Shades",
+        Type = "Accessory",
+        AssetID = 376527500,
+        Reward = {AddPerClick = 1, AddStorage = 20},
+        Value = 5,
+        Rarity = "Basic",
+        Cases = {"C1", "C2"},
+        ID = "A16"
+    },
+    A17 = {
+        Name = "Down to Earth Hair",
+        Type = "Accessory",
+        AssetID = 1772336109,
+        Reward = {AddPerClick = 3},
+        Value = 7,
+        Rarity = "Basic",
+        Cases = {"C1", "C2"},
+        ID = "A17"
+    },
+    A18 = {
+        Name = "Knights of Redcliff: Paladin",
+        Type = "Face",
+        AssetID = 2493587489,
+        Reward = {AddPerClick = 3, AddStorage = 10},
+        Value = 9,
+        Rarity = "Basic",
+        Cases = {"C1", "C2"},
+        ID = "A18"
+    },
+    A19 = {
+        Name = "Silly Fun",
+        Type = "Face",
+        AssetID = 7699174,
+        Reward = {AddPerClick = 2, AddStorage = 20},
+        Value = 10,
+        Rarity = "Basic",
+        Cases = {"C1", "C2"},
+        ID = "A19"
+    }
 }
+
+--[[
+    RARITY: VALUE | ROBLOX RAP
+    Basic : 0-10 | FREE
+    AddPerClick = 1-3
+    AddStorage = 10-20
+
+    Common : 11-50 | 1-70
+    AddPerClick = 2-5
+    AddStorage = 10-100
+
+    Uncommon : 51-300 | 71-150
+    AddPerClick = 5-15
+    AddStorage = 50-500
+
+    Fine : 301 - 2000 | 151-300
+    AddPerClick = 15-50
+    AddStorage = 500-2500
+
+]]
+
+--[[
+     A_ = {
+        Name = "",
+        Type = "Accessory/Face",
+        AssetID = 0,
+        Reward = {AddPerClick = 1, AddStorage = 1},
+        Value = 0,
+        Rarity = "Basic",
+        Cases = {"C1", "C2"},
+        ID = "_"
+    }
+]]
 
 return accessories

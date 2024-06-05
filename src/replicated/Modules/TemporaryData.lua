@@ -13,6 +13,7 @@ local Upgrades = require(ReplicatedStorage.Data.Upgrades)
 local PerSecondUpgrades = require(ReplicatedStorage.Data.PerSecondUpgrades)
 local Accessories = require(ReplicatedStorage.Data.Accessories)
 local Materials = require(ReplicatedStorage.Data.Materials)
+local RebirthUpgrades = require(ReplicatedStorage.Data.RebirthUpgrades)
 
 local leaderstatsProfileData = ProfileData.leaderstats
 local TemporaryProfileData = ProfileData.TemporaryData
@@ -22,18 +23,16 @@ local TemporaryProfileData = ProfileData.TemporaryData
 local TemporaryData = {}
 
 function TemporaryData:CalculateAccessories(player, data)
-    local addPerClick, addStorage = 0, 0
-    local multPerClick, multStorage = 1, 1
-    local equippedAccessories = data.EquippedAccessories
-
+    local addPerClick, addStorage = TemporaryProfileData.AddPerClick.Value, TemporaryProfileData.AddStorage.Value
+    local multPerClick, multStorage = TemporaryProfileData.MultPerClick.Value, TemporaryProfileData.MultStorage.Value
     for ID, GUID in data.EquippedAccessories do
         local accessory = Accessories[ID]
         local rewards = accessory.Reward
         
         addPerClick += rewards.AddPerClick or 0
         addStorage += rewards.AddStorage or 0
-        multStorage += rewards.MultPerClick or 0
-        multPerClick += rewards.MultStorage or 0
+        multPerClick += rewards.MultPerClick or 0
+        multStorage += rewards.MultStorage or 0
     end
     player.TemporaryData.AddPerClick.Value = addPerClick
     player.TemporaryData.AddStorage.Value = addStorage
@@ -41,14 +40,22 @@ function TemporaryData:CalculateAccessories(player, data)
     player.TemporaryData.MultStorage.Value = multStorage
 end
 
+function TemporaryData:CalculateRebirthUpgrades(player, data)
+    for upgrade, value in data.RebirthUpgrades do
+        if RebirthUpgrades[upgrade] then
+            local upgradeData = RebirthUpgrades[upgrade]
+            player.TemporaryData[upgradeData.RewardType].Value = upgradeData.Initial + (upgradeData.Reward * value)
+        end
+    end
+end
 
 function TemporaryData:CalculateTixPerClick(player, data)
     TemporaryData:CalculateAccessories(player, data)
+    TemporaryData:CalculateRebirthUpgrades(player, data)
     local toolEquipped = data.ToolEquipped
     local toolReward = Upgrades[toolEquipped].Reward["MultPerClick"]
-    print(TemporaryProfileData.TixPerClick.Value, player.TemporaryData.AddPerClick.Value,toolReward)
 
-    local tixPerClick = (TemporaryProfileData.TixPerClick.Value + player.TemporaryData.AddPerClick.Value) * (toolReward * player.TemporaryData.MultPerClick.Value)
+    local tixPerClick = (1 + player.TemporaryData.RebirthMultPerClick.Value / 100) * (TemporaryProfileData.TixPerClick.Value + player.TemporaryData.AddPerClick.Value) * (toolReward * player.TemporaryData.MultPerClick.Value)
 
     player.TemporaryData.TixPerClick.Value = tixPerClick
     return tixPerClick
@@ -56,9 +63,10 @@ end
 
 function TemporaryData:CalculateTixStorage(player, data)
     TemporaryData:CalculateAccessories(player, data)
+    TemporaryData:CalculateRebirthUpgrades(player, data)
     local toolEquipped = data.ToolEquipped
     local toolReward = Upgrades[toolEquipped].Reward["MultStorage"]
-    local tixStorage = (TemporaryProfileData.TixStorage.Value + player.TemporaryData.AddStorage.Value) * (toolReward * player.TemporaryData.MultStorage.Value)
+    local tixStorage = (1 + player.TemporaryData.RebirthMultStorage.Value / 100) * (TemporaryProfileData.TixStorage.Value + player.TemporaryData.AddStorage.Value) * (toolReward * player.TemporaryData.MultStorage.Value)
     player.TemporaryData.TixStorage.Value = tixStorage
     return tixStorage
 end
@@ -69,11 +77,17 @@ function TemporaryData:CalculateTixPerSecondCost(owned, upgrade, amount)
 	return math.ceil(cost * modifier^(owned + amount - 1))
 end
 
+function TemporaryData:CalculateRebirthUpgradeCost(owned, upgrade, amount)
+	local cost = RebirthUpgrades[upgrade].Cost
+	local modifier = RebirthUpgrades[upgrade].Modifier
+	return math.ceil(cost * modifier^(owned + amount - 1))
+end
+
 function TemporaryData:CalculateTixPerSecond(player, data)
     TemporaryData:CalculateAccessories(player, data)
+    TemporaryData:CalculateRebirthUpgrades(player, data)
 	local tixPerSecond = 0
-    local ownedUpgrades = data.PerSecondUpgrades
-	for upgrade, value in ownedUpgrades do
+	for upgrade, value in data.PerSecondUpgrades do
         if PerSecondUpgrades[upgrade] then
             local reward = PerSecondUpgrades[upgrade].Reward
             tixPerSecond += value * reward
@@ -84,8 +98,14 @@ function TemporaryData:CalculateTixPerSecond(player, data)
 end
 	
 
-function TemporaryData:CalculateValue(data)
-    return 0
+function TemporaryData:CalculateValue(player, data)
+    local value = 0
+    for GUID, ID in data.Accessories do
+        local accessory = Accessories[ID]
+        value += accessory.Value
+    end
+    player.TemporaryData.Value.Value = value
+    return value
 end
 
 function TemporaryData:CalculateRequiredXP(level)
@@ -107,21 +127,31 @@ function TemporaryData:Setup(player, data)
 	TemporaryData:CalculateTixPerSecond(player, data)
 end
 
-function TemporaryData:CalculateMaterialInfo(itemValue)
+function TemporaryData:CalculateMaterialInfo(player, itemValue)
 
     for _, material in Materials do
         if material.Value and itemValue >= material.Value[1] and itemValue <= material.Value[2] then
             local materialID = material.ID
             local minVal = material.Value[1]
             local maxVal = material.Value[2]
-            local maxQuantity = 5  
+            local maxQuantity = player.TemporaryData.RebirthMaterialMaxDrop.Value
             local minQuantity = 1
-            local chanceToReceive = 0.25 
+            local chanceToReceive = player.TemporaryData.RebirthMaterialDropChance.Value / 100
             local quantity = math.floor(minQuantity + (itemValue - minVal) * ((maxQuantity - minQuantity) / (maxVal - minVal)))
 
             return quantity, chanceToReceive, materialID
         end
     end
 end
+
+function TemporaryData:CalculateRebirthInfo(value)
+    local VALUE_TO_REBIRTH_TIX = 1000
+    print(value)
+    local rebirthTixReward = math.floor(value / VALUE_TO_REBIRTH_TIX)
+    local valueCost = math.floor(value / VALUE_TO_REBIRTH_TIX) * VALUE_TO_REBIRTH_TIX
+
+    return rebirthTixReward, valueCost, VALUE_TO_REBIRTH_TIX
+end
+
 
 return TemporaryData

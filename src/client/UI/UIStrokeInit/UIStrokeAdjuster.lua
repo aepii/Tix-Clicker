@@ -88,7 +88,7 @@ end
 
 -- Returns position of part or model (for relative BillboardGui position)
 local function getInstancePosition(instance: Instance): Vector3
-	if instance:IsA("Part") then
+	if instance:IsA("MeshPart") then
 		return instance.Position
 	elseif instance:IsA("Model") then
 		local cf, size = instance:GetBoundingBox()
@@ -177,7 +177,7 @@ CollectionService:GetInstanceAddedSignal(Billboard_Tag):Connect(function(billboa
 				else
 					stroke.Thickness = originalThickness * distanceRatio * getScreenRatio()
 					if not stroke.Parent:IsA("TextLabel") then
-						stroke.Parent.Size = UDim2.new(stroke.Parent.Size.X.Scale, stroke.Thickness*2, stroke.Parent.Size.Y.Scale, stroke.Thickness*2)
+						stroke.Parent.Size = UDim2.new(stroke.Parent.Size.X.Scale, stroke.Thickness, stroke.Parent.Size.Y.Scale, stroke.Thickness)
 						stroke.Enabled = false
 					end
 				end
