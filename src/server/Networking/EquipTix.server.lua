@@ -12,7 +12,7 @@ local Upgrades = require(ReplicatedStorage.Data.Upgrades)
 
 ---- Private Functions ----
 
-local function equipTool(player, tool)
+function equipTool(player, tool)
     local character = player.Character or player.CharacterAdded:Wait()
     local rightHand = character:WaitForChild("RightHand")
     local toolClone = tool:Clone()
@@ -28,7 +28,7 @@ local function equipTool(player, tool)
 	weld.Parent = toolClone
 end
 
-local function unequipTool(player)
+function unequipTool(player)
     local character = player.Character or player.CharacterAdded:Wait()
     local rightHand = character:WaitForChild("RightHand")
 
@@ -59,6 +59,15 @@ EquipTixRemote.OnServerInvoke = (function(player, upgradeID)
         end
     end
 end)
+
+local BindableEquipTix = Networking.BindableEquipTix
+
+BindableEquipTix.Event:Connect(function(player, upgradeID)
+    unequipTool(player)
+    local tool = Upgrades[upgradeID].Tool
+    equipTool(player, tool)
+end)
+
 
 ---- Setup ----
 

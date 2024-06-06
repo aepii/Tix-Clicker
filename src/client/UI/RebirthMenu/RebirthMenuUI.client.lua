@@ -28,6 +28,11 @@ local ValueInfo = RebirthMenu.ValueInfo
 
 local RebirthButton = InfoFrame.RebirthButton
 
+---- UI Values ----
+
+local UIVisible = UI.UIVisible
+local CurrentUI = UI.CurrentUI
+
 ---- Sound ----
 
 local Sounds = Player:WaitForChild("Sounds")
@@ -80,6 +85,8 @@ local function exitMouseDown()
     playClickSound()
     TweenButton:Shrink(ExitButton, EXITBUTTON_ORIGINALSIZE)
     RebirthMenu:TweenPosition(UDim2.new(0.5, 0, 2, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+    CurrentUI.Value = ""
+    UIVisible.Value = false
 end
 
 local function exitMouseUp()

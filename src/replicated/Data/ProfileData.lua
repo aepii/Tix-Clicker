@@ -4,14 +4,10 @@ ProfileData.Data = {
 	["Tix"] = 0;
 	["Rocash"] = 0;
 	["Rebirth Tix"] = 0;
-	["Level"] = 1;
-	["XP"] = 0;
 
 	["Lifetime Tix"] = 0;
 	["Lifetime Rocash"] = 0;
 	["Lifetime Rebirth Tix"] = 0;
-	["Lifetime Level"] = 1;
-	["Lifetime XP"] = 0;
 
 	["ToolEquipped"] = "U1";
 	["EquippedAccessories"] = {};
@@ -38,6 +34,18 @@ ProfileData.Data = {
 }
 
 ProfileData.TemporaryData = {
+	["LastClickTime"] = {
+		Value = 0,
+		Type = "Number"
+	};
+	["XP"] = {
+		Value = 0,
+		Type = "Number"
+	};
+	["RequiredXP"] = {
+		Value = 250,
+		Type = "Number"
+	};
 	["TixPerClick"] = {
 		Value = 1,
 		Type = "Number"
@@ -78,8 +86,6 @@ ProfileData.TemporaryData = {
 		Value = 1,
 		Type = "Number"
 	};
-
-
 	["RebirthMaterialDropChance"] = {
 		Value = 25,
 		Type = "Number"
@@ -114,10 +120,6 @@ ProfileData.leaderstats = {
 	[4] = {
 		ID = "Rebirth Tix",
 		DisplayName = "🌟 Rb Tix"
-	};
-	[5] = {
-		ID = "Level",
-		DisplayName = "⭐ Level"
 	};
 }
 

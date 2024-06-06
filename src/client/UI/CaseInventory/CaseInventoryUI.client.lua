@@ -31,6 +31,8 @@ IconScript.Enabled = true
 ---- UI Values ----
 
 local CurrentCase = OpenFrame.CurrentCase
+local UIVisible = UI.UIVisible
+local CurrentUI = UI.CurrentUI
 
 ---- Sound ----
 
@@ -114,6 +116,8 @@ local function exitMouseDown()
     playClickSound()
     TweenButton:Shrink(ExitButton, EXITBUTTON_ORIGINALSIZE)
     CaseInventory:TweenPosition(UDim2.new(0.5, 0, 2, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+    CurrentUI.Value = ""
+    UIVisible.Value = false
 end
 
 local function exitMouseUp()

@@ -10,10 +10,14 @@ local Modules = ReplicatedStorage.Modules
 local TweenButton = require(Modules.TweenButton)
 local ButtonStatus = require(Modules.ButtonStatus)
 local Accessories = require(ReplicatedStorage.Data.Accessories)
+local RarityColors = require(Modules.RarityColors)
 
 ---- Data ----
 
 local ReplicatedData = Player:WaitForChild("ReplicatedData")
+local TemporaryData = Player:WaitForChild("TemporaryData")
+local ReplicatedAccessories = ReplicatedData.Accessories
+local accessoriesLimit = TemporaryData.AccessoriesLimit
 
 ---- UI ----
 
@@ -25,13 +29,17 @@ local InvHolder = ScrapMenu.InvFrame.Holder
 local ScrapFrame = ScrapMenu.ScrapFrame
 local IconCopy = InvHolder.IconCopy
 
+local AccessoriesLimitText = ScrapMenu.AccessoriesLimit
+
 local IconScript = script.Parent.Icon
+IconScript.Name = "IconScript"
 IconScript.Parent = IconCopy
-IconScript.Enabled = true
 
 ---- UI Values ----
 
 local CurrentAccessory = ScrapFrame.CurrentAccessory
+local UIVisible = UI.UIVisible
+local CurrentUI = UI.CurrentUI
 
 ---- Sound ----
 
@@ -65,13 +73,16 @@ local function updateInventory(ID, GUID, method)
         icon.Visible = true
         icon.Name = GUID
         icon.IconImage.Image = "http://www.roblox.com/Thumbs/Asset.ashx?Width=256&Height=256&AssetID="..Accessories[ID].AssetID
+        icon.UIGradient.Color = RarityColors:GetGradient(Accessories[ID].Rarity)
         icon.Parent = InvHolder
+        icon.IconScript.Enabled = true
     elseif method == "DEL" then
         local icon = InvHolder:FindFirstChild(GUID)
         if icon then
             icon:Destroy()
         end
     end
+    AccessoriesLimitText.Text = #ReplicatedAccessories:GetChildren() .. "/" .. accessoriesLimit.Value
 end
 
 function initInventory()
@@ -110,6 +121,8 @@ local function exitMouseDown()
     playClickSound()
     TweenButton:Shrink(ExitButton, EXITBUTTON_ORIGINALSIZE)
     ScrapMenu:TweenPosition(UDim2.new(0.5, 0, 2, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+    CurrentUI.Value = ""
+    UIVisible.Value = false
 end
 
 local function exitMouseUp()

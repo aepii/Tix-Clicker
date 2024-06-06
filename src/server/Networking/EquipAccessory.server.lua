@@ -44,6 +44,7 @@ end
 local Networking = ReplicatedStorage.Networking
 local EquipAccessoryRemote = Networking.EquipAccessory
 local EquipAccessoryBindableRemote = Networking.EquipAccessoryBindable
+local UpdateEquippedAccessoriesRemote = Networking.UpdateEquippedAccessories
 
 EquipAccessoryRemote.OnServerInvoke = function(player, GUID)
     local profile = ProfileCacher:GetProfile(player)
@@ -70,6 +71,7 @@ EquipAccessoryRemote.OnServerInvoke = function(player, GUID)
             DataManager:SetValue(player, profile, {"EquippedAccessories", ID}, GUID)
             physicalEquip(ID, player.Character.Humanoid)
         end
+        UpdateEquippedAccessoriesRemote:FireClient(player)
     end
 end
 

@@ -9,12 +9,15 @@ local SoundService = game:GetService("SoundService")
 local Modules = ReplicatedStorage.Modules
 local TemporaryData = require(Modules.TemporaryData)
 local TweenButton = require(Modules.TweenButton)
+local Upgrades = require(ReplicatedStorage.Data.Upgrades)
 
 ---- Data ----
 
 local ReplicatedData = Player:WaitForChild("ReplicatedData")
-local Level = ReplicatedData.Level
-local XP = ReplicatedData.XP
+local TemporaryData = Player:WaitForChild("TemporaryData")
+local ToolEquipped = ReplicatedData.ToolEquipped
+local XP = TemporaryData.XP
+local requiredXP = TemporaryData.RequiredXP
 
 ---- UI ----
 
@@ -42,14 +45,40 @@ local ClickSound = Sounds:WaitForChild("ClickSound")
 ---- Private Functions ----
 
 local function animateXPBar()
-    local requiredXP = TemporaryData:CalculateRequiredXP(Level.Value)
-    XPHolder.Level.Text = "Level " .. Level.Value
-	XPHolder.XPAmount.Text = XP.Value .. "/" .. requiredXP
-    XPBar:TweenSize(UDim2.new((XP.Value/requiredXP)*0.95, 0, 0.7, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Linear, 0.1, true)
+    XPBar:TweenSize(UDim2.new(math.min((XP.Value/requiredXP.Value)*0.95, 0.95), 0, 0.7, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Linear, 0.5, true)
+    
 end
 
 XP.Changed:Connect(animateXPBar)
 animateXPBar()
+
+local function changeToolButton()
+    Toolbar.Tool.Image = Upgrades[ToolEquipped.Value].Image
+end
+
+ToolEquipped.Changed:Connect(changeToolButton)
+changeToolButton()
+
+local gradient = XPBar.UIGradient
+local ts = game:GetService("TweenService") 
+local ti = TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
+local offset1 = {Offset = Vector2.new(1, 0)}
+local create = ts:Create(gradient, ti, offset1)
+local startingPos = {Offset = Vector2.new(-1, 0)}
+local create2 = ts:Create(gradient, ti, startingPos)
+
+coroutine.resume(coroutine.create(function()
+    local function animate()
+        gradient.Offset = Vector2.new(-1, 0)
+        create:Play()
+        create.Completed:Wait() 
+        gradient.Offset = Vector2.new(1, 0)
+        create2:Play()
+        create2.Completed:Wait() 
+        animate()
+    end
+    animate()
+end))
 
 ---- Buttons ----
 
@@ -65,7 +94,7 @@ local ACCESSORYBUTTON_ORIGINALSIZE = AccessoryButton.Size
 local UIFrames = {
     TixInventory = TixInventory,
     CaseInventory = CaseInventory,
-    AccessoryInventory = AccessoryInventory
+    AccessoryInventory = AccessoryInventory,
 }
 
 local function playClickSound()
@@ -86,13 +115,17 @@ local function buttonBehavior(button, originalSize, inventory, uiValue)
         TweenButton:Shrink(button, originalSize)
         
         if CurrentUI.Value ~= uiValue then
-            inventory:TweenPosition(UDim2.new(0.5, 0, 0.5, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.25, true)
-            local currentFrame = UIFrames[CurrentUI.Value]
-            if currentFrame then
-                currentFrame:TweenPosition(UDim2.new(0.5, 0, 2, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.25, true)
+            if CurrentUI.Value == "RebirthMenu" or CurrentUI.Value == "ScrapMenu" then
+                return
             end
-            CurrentUI.Value = uiValue
-            UIVisible.Value = true
+                inventory:TweenPosition(UDim2.new(0.5, 0, 0.5, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.25, true)
+                local currentFrame = UIFrames[CurrentUI.Value]
+                if currentFrame then
+                    print(currentFrame)
+                    currentFrame:TweenPosition(UDim2.new(0.5, 0, 2, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.25, true)
+                end
+                CurrentUI.Value = uiValue
+                UIVisible.Value = true
         else
             inventory:TweenPosition(UDim2.new(0.5, 0, 2, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.25, true)
             CurrentUI.Value = ""

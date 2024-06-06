@@ -10,6 +10,11 @@ local Workspace = game:GetService("Workspace")
 local ProfileCacher = require(ServerScriptService.Data.ProfileCacher)
 local DataManager = require(ServerScriptService.Data.DataManager)
 
+---- Networking ----
+
+local Networking = ReplicatedStorage.Networking
+local ExchangeTixRemote = Networking.ExchangeTix
+
 ---- Exchange Tix ----
 
 local function exchangeTix(player)
@@ -17,11 +22,15 @@ local function exchangeTix(player)
     local data = ProfileCacher:GetProfile(player).Data
 
     if data.Tix >= 20 then
-        DataManager:SetValue(player, profile, {"Rocash"}, data.Rocash + math.floor(data.Tix / 20))
+        local tixExchanged = math.floor(data.Tix / 20) * 20
+        local rocashGained = math.floor(data.Tix / 20)
+
+        DataManager:SetValue(player, profile, {"Rocash"}, data.Rocash + rocashGained)
         DataManager:SetValue(player, profile, {"Lifetime Rocash"}, data.Rocash + math.floor(data.Tix / 20))
-        DataManager:SetValue(player, profile, {"Tix"}, data.Tix - math.floor(data.Tix / 20) * 20)
+        DataManager:SetValue(player, profile, {"Tix"}, data.Tix - tixExchanged)
         DataManager:UpdateLeaderstats(player, profile, "Tix")
         DataManager:UpdateLeaderstats(player, profile, "Rocash")
+        ExchangeTixRemote:FireClient(player, tixExchanged, rocashGained)
     end
 end
 

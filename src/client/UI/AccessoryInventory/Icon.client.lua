@@ -13,6 +13,12 @@ local Accessories = require(ReplicatedStorage.Data.Accessories)
 local SuffixHandler = require(Modules.SuffixHandler)
 local RarityColors = require(Modules.RarityColors)
 
+---- Data ----
+
+local ReplicatedData = Player:WaitForChild("ReplicatedData")
+local EquippedAccessories = ReplicatedData.EquippedAccessories
+local ReplicatedAccessories = ReplicatedData.Accessories
+
 ---- UI ----
 
 local IconButton = script.Parent
@@ -23,8 +29,9 @@ local AccessoryInventory = InvFrame.Parent
 local EquipFrame = AccessoryInventory.EquipFrame
 local IconImage = EquipFrame.Icon.IconImage
 local RewardsFrame = EquipFrame.RewardsFrame
-local RarityFrame = EquipFrame.RarityFrame
+local ValueFrame = EquipFrame.ValueFrame
 local EquipButton = EquipFrame.EquipButton
+local EquippedIcon = IconButton.EquippedIcon
 
 ---- UI Values ----
 
@@ -36,7 +43,27 @@ local CurrentAccessory = EquipFrame.CurrentAccessory
 local Sounds = Player:WaitForChild("Sounds")
 local ClickSound = Sounds:WaitForChild("ClickSound")
 
+---- Networking ----
+
+local Networking = ReplicatedStorage.Networking
+local UpdateEquippedAccessoriesRemote = Networking.UpdateEquippedAccessories
+
 ---- Private Functions ----
+
+local function updateEquippedIcon()
+    local ID = ReplicatedAccessories[script.Parent.Name].Value
+    local equippedAccessory = EquippedAccessories:FindFirstChild(ID)
+    if equippedAccessory and equippedAccessory.Value == script.Parent.Name then
+        EquippedIcon.Visible = true
+    else
+        EquippedIcon.Visible = false
+    end
+end
+updateEquippedIcon()
+
+UpdateEquippedAccessoriesRemote.OnClientEvent:Connect(function()
+    updateEquippedIcon()
+end)
 
 local function updateEquipFrame()
     local GUID = script.Parent.Name
@@ -44,10 +71,12 @@ local function updateEquipFrame()
     local accessory = Accessories[ID]
     
     if InvFrame.Holder:FindFirstChild(CurrentAccessory.Value) then
+        print("BLUEING")
         InvFrame.Holder[CurrentAccessory.Value].Shadow.BackgroundColor3 = Color3.fromRGB(0, 83, 125)
     end
 
-    if CurrentAccessory.Value == ID and UIVisible.Value == false then
+    if CurrentAccessory.Value == GUID and UIVisible.Value == false then
+        print("oh no")
         return
     end
 
@@ -67,9 +96,7 @@ local function updateEquipFrame()
         end
     end
 
-    local gradient = RarityColors:GetGradient(accessory.Rarity)
-    RarityFrame.RarityText.UIGradient.Color = gradient
-    RarityFrame.RarityText.Text = accessory.Rarity
+    ValueFrame.ValueText.Text = "$"..SuffixHandler:Convert(accessory.Value)
     InvFrame.Holder[GUID].Shadow.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     EquipFrame.ItemName.Title.Text = accessory.Name
     IconImage.Image = "http://www.roblox.com/Thumbs/Asset.ashx?Width=256&Height=256&AssetID="..accessory.AssetID

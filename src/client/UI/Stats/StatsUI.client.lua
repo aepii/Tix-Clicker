@@ -43,6 +43,7 @@ local function updateTixHolder()
     animateTixBar()
 end
 
+TixStorage.Changed:Connect(updateTixHolder)
 TixLeaderstat.Changed:Connect(updateTixHolder)
 
 local function updateRocashHolder()

@@ -18,6 +18,7 @@ local Networking = ReplicatedStorage.Networking
 local OpenCaseRemote = Networking.OpenCase
 local UpdateClientCaseInventoryRemote = Networking.UpdateClientCaseInventory
 local UpdateClientAccessoriesInventoryRemote = Networking.UpdateClientAccessoriesInventory
+local UpdateClientShopInfoRemote = Networking.UpdateClientShopInfo
 
 ---- Private Functions ----
 
@@ -67,14 +68,13 @@ OpenCaseRemote.OnServerInvoke = (function(player, caseID)
         if owned >= 1 then
             local GUID = HttpService:GenerateGUID(false)
             local item = roll(caseID)
-            
-            print(data["Cases"])
-            print(data["Cases"][caseID])
+
             DataManager:SetValue(player, profile, {"Cases", caseID}, data["Cases"][caseID] - 1)
             DataManager:SetValue(player, profile, {"Accessories", GUID}, item.ID)
             DataManager:UpdateLeaderstats(player, profile, "Value")
             
             UpdateClientAccessoriesInventoryRemote:FireClient(player, item.ID, GUID, "ADD") 
+            UpdateClientShopInfoRemote:FireClient(player, "Case")
 
             if data.Cases[caseID] then
                 UpdateClientCaseInventoryRemote:FireClient(player, case, "UPDATE") 

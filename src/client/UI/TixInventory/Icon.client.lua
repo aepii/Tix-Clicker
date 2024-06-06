@@ -12,6 +12,11 @@ local TweenButton = require(Modules.TweenButton)
 local Upgrades = require(ReplicatedStorage.Data.Upgrades)
 local SuffixHandler = require(Modules.SuffixHandler)
 
+---- Data ----
+
+local ReplicatedData = Player:WaitForChild("ReplicatedData")
+local ToolEquipped = ReplicatedData.ToolEquipped
+
 ---- UI ----
 
 local IconButton = script.Parent
@@ -23,6 +28,7 @@ local EquipFrame = TixInventory.EquipFrame
 local IconImage = EquipFrame.Icon.IconImage
 local RewardsFrame = EquipFrame.RewardsFrame
 local EquipButton = EquipFrame.EquipButton
+local EquippedIcon = IconButton.EquippedIcon
 
 ---- UI Values ----
 
@@ -41,10 +47,13 @@ local function updateEquipFrame()
     local upgrade = Upgrades[upgradeID]
     
     if InvFrame.Holder:FindFirstChild(CurrentUpgrade.Value) then
+        print("BLUEING")
         InvFrame.Holder[CurrentUpgrade.Value].Shadow.BackgroundColor3 = Color3.fromRGB(0, 83, 125)
     end
 
+    print(CurrentUpgrade.Value, upgradeID, UIVisible.Value)
     if CurrentUpgrade.Value == upgradeID and UIVisible.Value == false then
+        print("oh no")
         return
     end
 
@@ -71,6 +80,16 @@ local function updateEquipFrame()
 
     ButtonStatus:TixInventory(Player, CurrentUpgrade.Value, EquipButton)
 end
+
+local function updateEquippedIcon()
+    if ToolEquipped.Value == script.Parent.Name then
+        EquippedIcon.Visible = true
+    else
+        EquippedIcon.Visible = false
+    end
+end
+updateEquippedIcon()
+ToolEquipped.Changed:Connect(updateEquippedIcon)
 
 ---- Buttons ----
 

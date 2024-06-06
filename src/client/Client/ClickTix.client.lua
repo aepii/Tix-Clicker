@@ -5,6 +5,11 @@ local UserInputService = game:GetService("UserInputService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local SoundService = game:GetService("SoundService")
 
+---- Modules ----
+
+local Modules = ReplicatedStorage.Modules
+local TixUIAnim = require(Modules.TixUIAnim)
+
 ---- Networking ----
 
 local Networking = ReplicatedStorage.Networking
@@ -14,6 +19,7 @@ local ClickTixRemote = Networking.ClickTix
 
 local Sounds = Player:WaitForChild("Sounds")
 local ClickSound = Sounds:WaitForChild("ClickSound")
+local PopSound = Sounds:WaitForChild("PopSound")
 
 ---- Click Tix ----
 
@@ -22,7 +28,11 @@ UserInputService.InputBegan:Connect(function(input,_gameProcessed)
         if _gameProcessed == false then
             local response = ClickTixRemote:InvokeServer()
             if response then
-                SoundService:PlayLocalSound(ClickSound)
+                coroutine.wrap(function()
+                    SoundService:PlayLocalSound(ClickSound)
+                    TixUIAnim:Animate(Player, "TixDetail", response)
+                    SoundService:PlayLocalSound(PopSound)
+                end)()
             end
         end
     end

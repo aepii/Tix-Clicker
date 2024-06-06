@@ -108,10 +108,6 @@ function TemporaryData:CalculateValue(player, data)
     return value
 end
 
-function TemporaryData:CalculateRequiredXP(level)
-    return math.floor((level * 10) * (((level - 1) * 0.1) + 1))
-end
-
 function TemporaryData:GetLeaderstatDisplayName(key)
 	local leaderstatsProfile = ProfileData.leaderstats
 	for index, data in leaderstatsProfile do
@@ -146,7 +142,6 @@ end
 
 function TemporaryData:CalculateRebirthInfo(value)
     local VALUE_TO_REBIRTH_TIX = 1000
-    print(value)
     local rebirthTixReward = math.floor(value / VALUE_TO_REBIRTH_TIX)
     local valueCost = math.floor(value / VALUE_TO_REBIRTH_TIX) * VALUE_TO_REBIRTH_TIX
 

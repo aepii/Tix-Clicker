@@ -5,22 +5,42 @@ local LocalPlayer = game.Players.LocalPlayer
 local Workspace = game:GetService("Workspace")
 local RunService = game:GetService("RunService") 
 
+
+---- UI ----
+
+local playerGui = LocalPlayer:WaitForChild("PlayerGui")
+local UI = playerGui:WaitForChild("UI")
+local UIVisible = UI.UIVisible
+local CurrentUI = UI.CurrentUI
+local scrapMenu = UI.ScrapMenu
+
+local UIFrames = {
+    TixInventory = UI.TixInventory,
+    CaseInventory = UI.CaseInventory,
+    AccessoryInventory = UI.AccessoryInventory,
+}
+
 ---- Show Menu ----
 
 local active = false
 
 local function toggleMenu(show)
-    local playerGui = LocalPlayer:WaitForChild("PlayerGui")
-    local UI = playerGui.UI
-    local scrapMenu = UI.ScrapMenu
-
     if show and not active then
         active = true
         scrapMenu:TweenPosition(UDim2.new(0.5, 0, 0.5, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+        local currentFrame = UIFrames[CurrentUI.Value]
+        if currentFrame then
+            currentFrame:TweenPosition(UDim2.new(0.5, 0, 2, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.25, true)
+        end
+        CurrentUI.Value = "ScrapMenu"
+        UIVisible.Value = true
     elseif not show and active then
         scrapMenu:TweenPosition(UDim2.new(0.5, 0, 2, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
-        task.wait(0.1)  
         active = false
+        if CurrentUI.Value == "ScrapMenu" then
+            CurrentUI.Value = ""
+            UIVisible.Value = false
+        end
     end
 end
 

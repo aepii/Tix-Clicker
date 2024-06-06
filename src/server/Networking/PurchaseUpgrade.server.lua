@@ -8,6 +8,7 @@ local ServerScriptService = game:GetService("ServerScriptService")
 
 local Modules = ReplicatedStorage.Modules
 local TemporaryData = require(Modules.TemporaryData)
+local SuffixHandler = require(Modules.SuffixHandler)
 
 ---- Data ----
 
@@ -75,6 +76,7 @@ PurchaseUpgradeRemote.OnServerInvoke = (function(player, upgradeID)
                     if newMaterialValue ~= 0 then
                         UpdateClientMaterialsInventoryRemote:FireClient(player, newMaterialValue, materialID, "UPDATE")
                     else
+                        DataManager:SetValue(player, profile, {"Materials", materialID}, nil)
                         UpdateClientMaterialsInventoryRemote:FireClient(player, newMaterialValue, materialID, "DEL")
                     end
                 end
