@@ -24,8 +24,8 @@ local function playerAdded(player)
         while task.wait(0.1) and player:IsDescendantOf(Players) do
             local lastClickTime = player.TemporaryData.LastClickTime
             local elapsedTime = os.time() - lastClickTime.Value 
-            if elapsedTime > 5 and player.TemporaryData.XP.Value > 0 then
-                player.TemporaryData.XP.Value = math.max(0, player.TemporaryData.XP.Value - ((elapsedTime + 5)^1.5 * .1))
+            if elapsedTime > 15 and player.TemporaryData.XP.Value > 0 then
+                player.TemporaryData.XP.Value = math.max(0, player.TemporaryData.XP.Value - ((elapsedTime + 20)^1.25 * .02))
             end
 		end
     end))

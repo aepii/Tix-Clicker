@@ -9,6 +9,11 @@ local ServerScriptService = game:GetService("ServerScriptService")
 local Modules = ReplicatedStorage.Modules
 local TemporaryData = require(Modules.TemporaryData)
 
+---- Networking ----
+
+local Networking = ReplicatedStorage.Networking
+local AnimateTixRemote = Networking.AnimateTix
+
 ---- Data ----
 
 local ProfileCacher = require(ServerScriptService.Data.ProfileCacher)
@@ -24,9 +29,10 @@ local function playerAdded(player)
         while task.wait() and player:IsDescendantOf(Players) do
             local tixStorage = TemporaryData:CalculateTixStorage(player, data)
             local tixPerSecond = TemporaryData:CalculateTixPerSecond(player, data)
-            if data.Tix < tixStorage then
+            if data.Tix < tixStorage and tixPerSecond > 0 then
                 DataManager:SetValue(player, profile, {"Tix"}, math.min(data.Tix + tixPerSecond, tixStorage))
                 DataManager:UpdateLeaderstats(player, profile, "Tix")
+                AnimateTixRemote:FireClient(player, tixPerSecond)
             end
             task.wait(1)
 		end

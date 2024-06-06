@@ -40,6 +40,9 @@ local EquippedIcon = IconButton.EquippedIcon
 local UIVisible = ScrapFrame.UIVisible
 local CurrentAccessory = ScrapFrame.CurrentAccessory
 
+local GUID = IconButton.GUID
+local EquippedTag = IconButton.Equipped
+
 ---- Sound ----
 
 local Sounds = Player:WaitForChild("Sounds")
@@ -53,9 +56,9 @@ local UpdateEquippedAccessoriesRemote = Networking.UpdateEquippedAccessories
 ---- Private Functions ----
 
 local function updateEquippedIcon()
-    local ID = ReplicatedAccessories[script.Parent.Name].Value
+    local ID = ReplicatedAccessories[GUID.Value].Value
     local equippedAccessory = EquippedAccessories:FindFirstChild(ID)
-    if equippedAccessory and equippedAccessory.Value == script.Parent.Name then
+    if equippedAccessory and equippedAccessory.Value ==  GUID.Value then
         EquippedIcon.Visible = true
     else
         EquippedIcon.Visible = false
@@ -68,19 +71,20 @@ UpdateEquippedAccessoriesRemote.OnClientEvent:Connect(function()
 end)
 
 local function updateScrapFrame()
-    local GUID = script.Parent.Name
-    local ID = Player.ReplicatedData.Accessories[GUID].Value
+    local ID = Player.ReplicatedData.Accessories[GUID.Value].Value
     local accessory = Accessories[ID]
     
+    local taggedName = TemporaryData:CalculateTag(Player, GUID.Value)
+    
     if InvFrame.Holder:FindFirstChild(CurrentAccessory.Value) then
-        InvFrame.Holder[CurrentAccessory.Value].Shadow.BackgroundColor3 = Color3.fromRGB(68, 68, 68)
+        InvFrame.Holder[CurrentAccessory.Value].Shadow.BackgroundColor3 = Color3.fromRGB(234, 160, 19)
     end
 
-    if CurrentAccessory.Value == GUID and UIVisible.Value == false then
+    if CurrentAccessory.Value == taggedName and UIVisible.Value == false then
         return
     end
 
-    CurrentAccessory.Value = GUID
+    CurrentAccessory.Value = taggedName
 
     local gradient = RarityColors:GetGradient(accessory.Rarity)
 
@@ -98,11 +102,11 @@ local function updateScrapFrame()
     end
 
     ValueFrame.ValueText.Text = "$"..SuffixHandler:Convert(accessory.Value)
-    InvFrame.Holder[GUID].Shadow.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    InvFrame.Holder[taggedName].Shadow.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     ScrapFrame.ItemName.Title.Text = accessory.Name
     IconImage.Image = "http://www.roblox.com/Thumbs/Asset.ashx?Width=256&Height=256&AssetID="..accessory.AssetID
 
-    --ButtonStatus:AccessoryInventory(Player, CurrentAccessory.Value, ScrapButton)
+    ButtonStatus:ScrapInventory(Player, GUID.Value, ScrapButton)
 end
 
 ---- Buttons ----

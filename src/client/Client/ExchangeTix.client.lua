@@ -25,7 +25,6 @@ local ExchangeTixRemote = Networking.ExchangeTix
 ---- Private Functions ----
 
 ExchangeTixRemote.OnClientEvent:Connect(function(tixExchanged, rocashGained)
-    print(tixExchanged, rocashGained)
     SoundService:PlayLocalSound(MoneySound)
     coroutine.wrap(function()
         SoundService:PlayLocalSound(PopSound)

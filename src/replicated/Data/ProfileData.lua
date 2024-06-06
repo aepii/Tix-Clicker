@@ -43,7 +43,7 @@ ProfileData.TemporaryData = {
 		Type = "Number"
 	};
 	["RequiredXP"] = {
-		Value = 250,
+		Value = 500,
 		Type = "Number"
 	};
 	["TixPerClick"] = {
@@ -51,6 +51,14 @@ ProfileData.TemporaryData = {
 		Type = "Number"
 	};
 	["TixPerSecond"] = {
+		Value = 0,
+		Type = "Number"
+	};
+	["ConvertPerSecond"] = {
+		Value = 0,
+		Type = "Number"
+	};
+	["QueuedTix"] = {
 		Value = 0,
 		Type = "Number"
 	};

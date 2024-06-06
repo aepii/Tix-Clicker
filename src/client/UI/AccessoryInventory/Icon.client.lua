@@ -12,6 +12,7 @@ local TweenButton = require(Modules.TweenButton)
 local Accessories = require(ReplicatedStorage.Data.Accessories)
 local SuffixHandler = require(Modules.SuffixHandler)
 local RarityColors = require(Modules.RarityColors)
+local TemporaryData = require(Modules.TemporaryData)
 
 ---- Data ----
 
@@ -38,6 +39,9 @@ local EquippedIcon = IconButton.EquippedIcon
 local UIVisible = EquipFrame.UIVisible
 local CurrentAccessory = EquipFrame.CurrentAccessory
 
+local GUID = IconButton.GUID
+local EquippedTag = IconButton.Equipped
+
 ---- Sound ----
 
 local Sounds = Player:WaitForChild("Sounds")
@@ -51,11 +55,13 @@ local UpdateEquippedAccessoriesRemote = Networking.UpdateEquippedAccessories
 ---- Private Functions ----
 
 local function updateEquippedIcon()
-    local ID = ReplicatedAccessories[script.Parent.Name].Value
+    local ID = ReplicatedAccessories[GUID.Value].Value
     local equippedAccessory = EquippedAccessories:FindFirstChild(ID)
-    if equippedAccessory and equippedAccessory.Value == script.Parent.Name then
+    if equippedAccessory and equippedAccessory.Value == GUID.Value then
+        EquippedTag.Value = true
         EquippedIcon.Visible = true
     else
+        EquippedTag.Value = false
         EquippedIcon.Visible = false
     end
 end
@@ -66,21 +72,22 @@ UpdateEquippedAccessoriesRemote.OnClientEvent:Connect(function()
 end)
 
 local function updateEquipFrame()
-    local GUID = script.Parent.Name
-    local ID = Player.ReplicatedData.Accessories[GUID].Value
+    local ID = Player.ReplicatedData.Accessories[GUID.Value].Value
     local accessory = Accessories[ID]
     
+    local taggedName = TemporaryData:CalculateTag(Player, GUID.Value)
+
     if InvFrame.Holder:FindFirstChild(CurrentAccessory.Value) then
         print("BLUEING")
         InvFrame.Holder[CurrentAccessory.Value].Shadow.BackgroundColor3 = Color3.fromRGB(0, 83, 125)
     end
 
-    if CurrentAccessory.Value == GUID and UIVisible.Value == false then
+    if CurrentAccessory.Value == taggedName and UIVisible.Value == false then
         print("oh no")
         return
     end
 
-    CurrentAccessory.Value = GUID
+    CurrentAccessory.Value = taggedName
 
     for _, rewardFrame in RewardsFrame:GetChildren() do
         if rewardFrame:IsA("Frame") then
@@ -97,11 +104,11 @@ local function updateEquipFrame()
     end
 
     ValueFrame.ValueText.Text = "$"..SuffixHandler:Convert(accessory.Value)
-    InvFrame.Holder[GUID].Shadow.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    InvFrame.Holder[taggedName].Shadow.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     EquipFrame.ItemName.Title.Text = accessory.Name
     IconImage.Image = "http://www.roblox.com/Thumbs/Asset.ashx?Width=256&Height=256&AssetID="..accessory.AssetID
 
-    ButtonStatus:AccessoryInventory(Player, CurrentAccessory.Value, EquipButton)
+    ButtonStatus:AccessoryInventory(Player, GUID.Value, EquipButton)
 end
 
 ---- Buttons ----

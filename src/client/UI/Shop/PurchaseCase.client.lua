@@ -15,6 +15,7 @@ local Shop = Workspace.ShopUpgrades
 local Modules = ReplicatedStorage.Modules
 local TweenButton = require(Modules.TweenButton)
 local ButtonStatus = require(Modules.ButtonStatus)
+local TixUIAnim = require(Modules.TixUIAnim)
 
 ---- UI ----
 
@@ -27,6 +28,9 @@ local CurrentUI = InfoUI.CurrentUI
 
 local Sounds = Player:WaitForChild("Sounds")
 local ClickSound = Sounds:WaitForChild("ClickSound")
+local MoneySound = Sounds:WaitForChild("MoneySound")
+local PopSound = Sounds:WaitForChild("PopSound")
+local ErrorSound = Sounds:WaitForChild("ErrorSound")
 
 ---- Networking ----
 
@@ -36,7 +40,16 @@ local PurchaseCaseRemote = Networking.PurchaseCase
 ---- Private Functions ----
 
 local function purchaseCase(caseName)
-    PurchaseCaseRemote:InvokeServer(caseName)
+    local response = PurchaseCaseRemote:InvokeServer(caseName)
+    coroutine.wrap(function()
+        if response then
+            SoundService:PlayLocalSound(MoneySound)
+            TixUIAnim:Animate(Player, "NegateRocashDetail", response)
+            SoundService:PlayLocalSound(PopSound)
+        else
+            SoundService:PlayLocalSound(ErrorSound)
+        end
+    end)()
 end
 
 ---- Buttons ----

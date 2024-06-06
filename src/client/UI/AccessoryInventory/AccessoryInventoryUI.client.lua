@@ -11,13 +11,14 @@ local TweenButton = require(Modules.TweenButton)
 local ButtonStatus = require(Modules.ButtonStatus)
 local Accessories = require(ReplicatedStorage.Data.Accessories)
 local RarityColors = require(Modules.RarityColors)
+local TemporaryData = require(Modules.TemporaryData)
 
 ---- Data ----
 
 local ReplicatedData = Player:WaitForChild("ReplicatedData")
-local TemporaryData = Player:WaitForChild("TemporaryData")
+local ReplicatedTemporaryData = Player:WaitForChild("TemporaryData")
 local ReplicatedAccessories = ReplicatedData.Accessories
-local accessoriesLimit = TemporaryData.AccessoriesLimit
+local accessoriesLimit = ReplicatedTemporaryData.AccessoriesLimit
 
 ---- UI ----
 
@@ -70,16 +71,13 @@ local function updateInventory(ID, GUID, method)
     elseif method == "ADD" then
         local icon = IconCopy:Clone()
         icon.Visible = true
-        icon.Name = GUID
+        icon.Name = TemporaryData:CalculateTag(Player, GUID)
+        icon.ID.Value = ID
+        icon.GUID.Value = GUID
         icon.IconImage.Image = "http://www.roblox.com/Thumbs/Asset.ashx?Width=256&Height=256&AssetID="..Accessories[ID].AssetID
         icon.UIGradient.Color = RarityColors:GetGradient(Accessories[ID].Rarity)
         icon.Parent = InvHolder
         icon.IconScript.Enabled = true
-    elseif method == "DEL" then
-        local icon = InvHolder:FindFirstChild(GUID)
-        if icon then
-            icon:Destroy()
-        end
     end
     AccessoriesLimitText.Text = #ReplicatedAccessories:GetChildren() .. "/" .. accessoriesLimit.Value
 end
@@ -139,8 +137,13 @@ end
 local function equipMouseDown()
     playClickSound()
     TweenButton:Shrink(EquipButton, EQUIPBUTTON_ORIGINALSIZE)
-    equipAccessory(CurrentAccessory.Value)
-    ButtonStatus:AccessoryInventory(Player, CurrentAccessory.Value, EquipButton)
+    local currentIcon = InvHolder:FindFirstChild(CurrentAccessory.Value)
+    if currentIcon then
+        equipAccessory(currentIcon.GUID.Value)
+        ButtonStatus:AccessoryInventory(Player, currentIcon.GUID.Value, EquipButton)
+        currentIcon.Name = TemporaryData:CalculateTag(Player, currentIcon.GUID.Value)
+        CurrentAccessory.Value = currentIcon.Name
+    end
 end
 
 local function equipMouseUp()

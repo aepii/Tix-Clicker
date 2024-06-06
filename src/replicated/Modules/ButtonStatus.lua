@@ -53,7 +53,38 @@ function ButtonStatus:AccessoryInventory(player, GUID, equipButton)
     equipButton.EquipText.UIStroke.Color = strokeColor
 end
 
+function ButtonStatus:ScrapInventory(player, GUID, scrapButton)
+    local ID = player.ReplicatedData.Accessories[GUID].Value
+    local equippedAccessory = player.ReplicatedData.EquippedAccessories:FindFirstChild(ID)
+    local equipText, backgroundColor, shadowColor, strokeColor
+    if equippedAccessory then
+        if equippedAccessory.Value == GUID then
+            equipText = "Unavailable"
+            backgroundColor = Color3.fromRGB(82, 81, 81)
+            shadowColor = Color3.fromRGB(36, 35, 35)
+            strokeColor = Color3.fromRGB(36, 35, 35)
+        else
+            equipText = "Scrap"
+            backgroundColor = Color3.fromRGB(255, 192, 16)
+            shadowColor = Color3.fromRGB(234, 160, 19)
+            strokeColor = Color3.fromRGB(234, 160, 19)
+        end
+    else
+        equipText = "Scrap"
+        backgroundColor = Color3.fromRGB(255, 192, 16)
+        shadowColor = Color3.fromRGB(234, 160, 19)
+        strokeColor = Color3.fromRGB(234, 160, 19)
+    end
+
+    scrapButton.ScrapText.Text = equipText
+    scrapButton.BackgroundColor3 = backgroundColor
+    scrapButton.Shadow.BackgroundColor3 = shadowColor
+    scrapButton.ScrapText.UIStroke.Color = strokeColor
+
+end
+
 function ButtonStatus:Upgrade(player, currentUpgrade, purchaseButton)
+
     local upgradeEquipped = player.ReplicatedData.Upgrades
     local priceFrame, backgroundColor, shadowColor, strokeColor
 
@@ -63,13 +94,11 @@ function ButtonStatus:Upgrade(player, currentUpgrade, purchaseButton)
         shadowColor = Color3.fromRGB(36, 35, 35)
         strokeColor = Color3.fromRGB(36, 35, 35)
         purchaseButton.PriceFrame.PriceText.Text = priceFrame
-        purchaseButton.PriceFrame.PriceText.Position = UDim2.new(0.5, 0, 0.5, 0)
         purchaseButton.PriceFrame.CurrencyIcon.Visible = false
     else
         backgroundColor = Color3.fromRGB(85, 170, 127)
         shadowColor = Color3.fromRGB(34, 68, 50)
         strokeColor = Color3.fromRGB(34, 68, 50)
-        purchaseButton.PriceFrame.PriceText.Position = UDim2.new(0.6, 0, 0.5, 0)
         purchaseButton.PriceFrame.CurrencyIcon.Visible = true
     end
     purchaseButton.BackgroundColor3 = backgroundColor

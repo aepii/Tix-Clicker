@@ -18,6 +18,18 @@ local RebirthUpgrades = require(ReplicatedStorage.Data.RebirthUpgrades)
 local leaderstatsProfileData = ProfileData.leaderstats
 local TemporaryProfileData = ProfileData.TemporaryData
 
+---- Private ----
+
+local RarityTags = {
+    Basic = "A",
+    Common = "B",
+    Uncommon = "C",
+    Fine = "D",
+    Rare = "E",
+    Epic = "F",
+    Legendary = "G"
+}
+
 ---- Temporary Data ----
 
 local TemporaryData = {}
@@ -89,7 +101,7 @@ function TemporaryData:CalculateTixPerSecond(player, data)
 	local tixPerSecond = 0
 	for upgrade, value in data.PerSecondUpgrades do
         if PerSecondUpgrades[upgrade] then
-            local reward = PerSecondUpgrades[upgrade].Reward
+            local reward = PerSecondUpgrades[upgrade].Reward.AddPerSecond
             tixPerSecond += value * reward
         end
 	end
@@ -97,7 +109,20 @@ function TemporaryData:CalculateTixPerSecond(player, data)
 	return tixPerSecond
 end
 	
-
+function TemporaryData:CalculateConvertPerSecond(player, data)
+    TemporaryData:CalculateAccessories(player, data)
+    TemporaryData:CalculateRebirthUpgrades(player, data)
+	local convertPerSecond = 0
+	for upgrade, value in data.PerSecondUpgrades do
+        if PerSecondUpgrades[upgrade] then
+            local reward = PerSecondUpgrades[upgrade].Reward.AddConvert
+            convertPerSecond += value * reward
+        end
+	end
+    player.TemporaryData.ConvertPerSecond.Value = convertPerSecond
+	return convertPerSecond
+end
+	
 function TemporaryData:CalculateValue(player, data)
     local value = 0
     for GUID, ID in data.Accessories do
@@ -148,5 +173,24 @@ function TemporaryData:CalculateRebirthInfo(value)
     return rebirthTixReward, valueCost, VALUE_TO_REBIRTH_TIX
 end
 
+function TemporaryData:CalculateTag(player, GUID)
+    for index, data in player.ReplicatedData.Accessories:GetChildren() do
+        if data.Name == GUID then
+            local ID = data.Value
+            local accessory = Accessories[ID]
+            local equippedAccessory = player.ReplicatedData.EquippedAccessories:FindFirstChild(ID)
+            local rarity = accessory.Rarity
+            if equippedAccessory then
+                if equippedAccessory.Value == GUID then
+                    return "@".. RarityTags[rarity] .. ID .. GUID
+                else
+                    return RarityTags[rarity] .. ID .. GUID
+                end
+            else
+                return RarityTags[rarity] .. ID .. GUID
+            end
+        end
+    end
+end
 
 return TemporaryData

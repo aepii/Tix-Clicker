@@ -88,6 +88,7 @@ PurchaseUpgradeRemote.OnServerInvoke = (function(player, upgradeID)
             DataManager:UpdateLeaderstats(player, profile, "Rocash")
             print(player, upgrade, "SERVER")
             UpdateClientInventoryRemote:FireClient(player, upgrade, "ADD")
+            return cost
         end
     end
     

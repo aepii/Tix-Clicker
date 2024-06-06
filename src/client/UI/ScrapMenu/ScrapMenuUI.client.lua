@@ -11,13 +11,14 @@ local TweenButton = require(Modules.TweenButton)
 local ButtonStatus = require(Modules.ButtonStatus)
 local Accessories = require(ReplicatedStorage.Data.Accessories)
 local RarityColors = require(Modules.RarityColors)
+local TemporaryData = require(Modules.TemporaryData)
 
 ---- Data ----
 
 local ReplicatedData = Player:WaitForChild("ReplicatedData")
-local TemporaryData = Player:WaitForChild("TemporaryData")
+local ReplicatedTemporaryData = Player:WaitForChild("TemporaryData")
 local ReplicatedAccessories = ReplicatedData.Accessories
-local accessoriesLimit = TemporaryData.AccessoriesLimit
+local accessoriesLimit = ReplicatedTemporaryData.AccessoriesLimit
 
 ---- UI ----
 
@@ -39,12 +40,15 @@ IconScript.Parent = IconCopy
 
 local CurrentAccessory = ScrapFrame.CurrentAccessory
 local UIVisible = UI.UIVisible
+local UIVisibleScrap = ScrapFrame.UIVisible
 local CurrentUI = UI.CurrentUI
 
 ---- Sound ----
 
 local Sounds = Player:WaitForChild("Sounds")
 local ClickSound = Sounds:WaitForChild("ClickSound")
+local ScrapSound = Sounds:WaitForChild("ScrapSound")
+local ErrorSound = Sounds:WaitForChild("ErrorSound")
 
 ---- Networking ----
 
@@ -55,9 +59,14 @@ local UpdateClientAccessoriesInventoryRemote = Networking.UpdateClientAccessorie
 ---- Private Functions ----
 
 local function scrapAccessory(accessoryGUID)
-    print("SCRAPP")
-    print(ScrapAccessoryRemote)
-    ScrapAccessoryRemote:InvokeServer(accessoryGUID)
+    local response = ScrapAccessoryRemote:InvokeServer(accessoryGUID)
+    if response then
+        SoundService:PlayLocalSound(ScrapSound)
+        ScrapFrame:TweenPosition(UDim2.new(0,0,2,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+        UIVisibleScrap.Value = false
+    else
+        SoundService:PlayLocalSound(ErrorSound)
+    end
 end
 
 local function updateInventory(ID, GUID, method)
@@ -71,16 +80,13 @@ local function updateInventory(ID, GUID, method)
     elseif method == "ADD" then
         local icon = IconCopy:Clone()
         icon.Visible = true
-        icon.Name = GUID
+        icon.Name = TemporaryData:CalculateTag(Player, GUID)
+        icon.ID.Value = ID
+        icon.GUID.Value = GUID
         icon.IconImage.Image = "http://www.roblox.com/Thumbs/Asset.ashx?Width=256&Height=256&AssetID="..Accessories[ID].AssetID
         icon.UIGradient.Color = RarityColors:GetGradient(Accessories[ID].Rarity)
         icon.Parent = InvHolder
         icon.IconScript.Enabled = true
-    elseif method == "DEL" then
-        local icon = InvHolder:FindFirstChild(GUID)
-        if icon then
-            icon:Destroy()
-        end
     end
     AccessoriesLimitText.Text = #ReplicatedAccessories:GetChildren() .. "/" .. accessoriesLimit.Value
 end
@@ -140,8 +146,10 @@ end
 local function scrapMouseDown()
     playClickSound()
     TweenButton:Shrink(ScrapButton, SCRAPBUTTON_ORIGINALSIZE)
-    scrapAccessory(CurrentAccessory.Value)
-    --ButtonStatus:AccessoryInventory(Player, CurrentAccessory.Value, ScrapButton)
+    local currentIcon = InvHolder:FindFirstChild(CurrentAccessory.Value)
+    if currentIcon then
+        scrapAccessory(currentIcon.GUID.Value, ScrapFrame, UIVisibleScrap)
+    end
 end
 
 local function scrapMouseUp()

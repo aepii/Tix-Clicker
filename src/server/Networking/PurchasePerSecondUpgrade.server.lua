@@ -42,6 +42,7 @@ PurchasePerSecondUpgradeRemote.OnServerInvoke = (function(player, upgradeID)
         DataManager:SetValue(player, profile, {"Rocash"}, data.Rocash - cost)
         DataManager:UpdateLeaderstats(player, profile, "Rocash")
         UpdateClientShopInfoRemote:FireClient(player, "PerSecondUpgrade")
+        return cost
     end
     
 end)

@@ -97,8 +97,9 @@ function TixUIAnim:Animate(player, detail, value)
         wait(0.75)
         
         TweenService:Create(detail.Amount, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {TextSize = 0}):Play()
-        detail:TweenSize(
+        detail:TweenSizeAndPosition(
             UDim2.new(0, 0, 0, 0),
+            UDim2.new(randomX, 0, randomY, 0), 
             Enum.EasingDirection.Out,
             Enum.EasingStyle.Quint,
             1,
@@ -158,6 +159,36 @@ function TixUIAnim:Animate(player, detail, value)
             0.05,
             true
         )
+    elseif detail.Name == "NegateRocashDetail" then
+        detail.Amount.Text = "-" .. SuffixHandler:Convert(value)
+    
+        local randomX = math.random(400, 600) / 1000
+        local randomY = math.random(400, 600) / 1000
+
+        detail.Rotation = -45
+        detail.Position = UDim2.new(0.965, 0, 0.5, 0)
+        
+        detail:TweenSize(
+            UDim2.new(0.04, 0, 0.1, 0),
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Elastic,
+            0.5,
+            true
+        )
+        
+        wait(0.75)
+        
+        TweenService:Create(detail.Amount, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {TextSize = 0}):Play()
+        detail:TweenSizeAndPosition(
+            UDim2.new(0, 0, 0, 0),
+            UDim2.new(randomX, 0, randomY, 0), 
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Quint,
+            1,
+            true
+        )
+
+        wait(0.5)
     end
     
     detail.Amount.Visible = false    

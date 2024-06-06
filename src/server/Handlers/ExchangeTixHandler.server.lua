@@ -26,7 +26,7 @@ local function exchangeTix(player)
         local rocashGained = math.floor(data.Tix / 20)
 
         DataManager:SetValue(player, profile, {"Rocash"}, data.Rocash + rocashGained)
-        DataManager:SetValue(player, profile, {"Lifetime Rocash"}, data.Rocash + math.floor(data.Tix / 20))
+        DataManager:SetValue(player, profile, {"Lifetime Rocash"}, data.Rocash + rocashGained)
         DataManager:SetValue(player, profile, {"Tix"}, data.Tix - tixExchanged)
         DataManager:UpdateLeaderstats(player, profile, "Tix")
         DataManager:UpdateLeaderstats(player, profile, "Rocash")

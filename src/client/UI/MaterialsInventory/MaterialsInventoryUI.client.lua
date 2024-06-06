@@ -33,7 +33,7 @@ local UpdateClientMaterialsInventoryRemote = Networking.UpdateClientMaterialsInv
 local function updateMaterialsInventory(amount, materialID, method)
     if method == "INIT" then
         for index, icon in MaterialsHolder:GetChildren() do
-            if icon:IsA("Frame") and icon ~= IconCopy then
+            if icon:IsA("Frame") and icon ~= MaterialCopy then
                 icon:Destroy()
             end
         end

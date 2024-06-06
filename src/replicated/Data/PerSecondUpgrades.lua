@@ -3,7 +3,7 @@ local perSecondUpgrades = {
 		Name = "Tix Piggy Bank";
 		Cost = 2;
 		Modifier = 1.04;
-		Reward = 1;
+		Reward = {AddPerSecond = 1, AddConvert = 2};
 		Image = "rbxassetid://17206305363",
 		ID = "P1"
 	};
@@ -11,7 +11,7 @@ local perSecondUpgrades = {
 		Name = "Tix Dispenser";
 		Cost = 10;
 		Modifier = 1.039;
-		Reward = 2;
+		Reward = {AddPerSecond = 2, AddConvert = 4};
 		Image = "rbxassetid://17206348574",
 		ID = "P2"
 	};

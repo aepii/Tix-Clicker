@@ -68,7 +68,7 @@ ScrapAccessoryRemote.OnServerInvoke = (function(player, accessoryGUID)
         DataManager:SetValue(player, profile, {"Accessories", accessoryGUID}, nil)
         DataManager:UpdateLeaderstats(player, profile, "Value")
 
-        UpdateClientAccessoriesInventoryRemote:FireClient(player, accessoryID, accessoryGUID, "DEL") 
+        UpdateClientAccessoriesInventoryRemote:FireClient(player, nil, nil, "INIT") 
 
         if amount > 0 then
             print(amount, "AMOUNT")
@@ -79,5 +79,7 @@ ScrapAccessoryRemote.OnServerInvoke = (function(player, accessoryGUID)
                 UpdateClientMaterialsInventoryRemote:FireClient(player, newMaterialValue, materialID, "UPDATE")
             end
         end
+
+        return true
     end
 end)

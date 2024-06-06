@@ -44,6 +44,7 @@ PurchaseCaseRemote.OnServerInvoke = (function(player, caseID)
         if data.Cases[caseID] then
             UpdateClientCaseInventoryRemote:FireClient(player, case, "UPDATE")
         end
+        return cost
     end
     
 end)

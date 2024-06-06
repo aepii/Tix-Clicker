@@ -117,38 +117,49 @@ local function updateShopInfo(nearest, shopInfo)
     local item;
     if shopInfo.Name == "CaseInfo" then
         item = Cases[nearest]
-        local ownedValue = Player.ReplicatedData.Cases:FindFirstChild(nearest) and Player.ReplicatedData.Cases[nearest].Value or 0
-        PurchaseButton.PriceFrame.PriceText.Text = SuffixHandler:Convert(item.Cost)
-        InfoFrame.OwnedFrame.Owned.Text = "Owned " .. ownedValue
-        populateCaseRarity(item.Weights, RewardsFrame)
+        if item then
+            local ownedValue = Player.ReplicatedData.Cases:FindFirstChild(nearest) and Player.ReplicatedData.Cases[nearest].Value or 0
+            PurchaseButton.PriceFrame.PriceText.Text = SuffixHandler:Convert(item.Cost)
+            InfoFrame.OwnedFrame.Owned.Text = "Owned " .. ownedValue
+            populateCaseRarity(item.Weights, RewardsFrame)
+        end
     elseif shopInfo.Name == "PerSecInfo" then
         item = PerSecondUpgrades[nearest]
-        local levelValue = Player.ReplicatedData.PerSecondUpgrades:FindFirstChild(nearest) and Player.ReplicatedData.PerSecondUpgrades[nearest].Value or 0
-        PurchaseButton.PriceFrame.PriceText.Text = SuffixHandler:Convert(TemporaryData:CalculateTixPerSecondCost(levelValue, nearest, 1))
-        InfoFrame.LevelFrame.Level.Text = "Level " .. levelValue  
-        RewardsFrame.TixPerSec.RewardText.Text = "+".. SuffixHandler:Convert(item.Reward)
+        if item then
+            local levelValue = Player.ReplicatedData.PerSecondUpgrades:FindFirstChild(nearest) and Player.ReplicatedData.PerSecondUpgrades[nearest].Value or 0
+            PurchaseButton.PriceFrame.PriceText.Text = SuffixHandler:Convert(TemporaryData:CalculateTixPerSecondCost(levelValue, nearest, 1))
+            InfoFrame.LevelFrame.Level.Text = "Level " .. levelValue  
+            RewardsFrame["1"].RewardText.Text = "+".. SuffixHandler:Convert(item.Reward.AddPerSecond)
+            RewardsFrame["2"].RewardText.Text = "-".. SuffixHandler:Convert(item.Reward.AddConvert)
+        end
     elseif shopInfo.Name == "UpgradeInfo" then
         local MaterialsHolder = InfoFrame.MaterialsFrame.MaterialsHolder
         item = Upgrades[nearest]
-        PurchaseButton.PriceFrame.PriceText.Text = SuffixHandler:Convert(item.Cost["Rocash"])
-        RewardsFrame.MultPerClick.RewardText.Text = "x"..SuffixHandler:Convert(item.Reward["MultPerClick"])
-        RewardsFrame.MultStorage.RewardText.Text = "x"..SuffixHandler:Convert(item.Reward["MultStorage"])
-        populateMaterialCost(item.Cost["Materials"] or nil, MaterialsHolder)
-        ButtonStatus:Upgrade(Player, CurrentUI.Value, PurchaseButton)
+        if item then
+            PurchaseButton.PriceFrame.PriceText.Text = SuffixHandler:Convert(item.Cost["Rocash"])
+            RewardsFrame.MultPerClick.RewardText.Text = "x"..SuffixHandler:Convert(item.Reward["MultPerClick"])
+            RewardsFrame.MultStorage.RewardText.Text = "x"..SuffixHandler:Convert(item.Reward["MultStorage"])
+            populateMaterialCost(item.Cost["Materials"] or nil, MaterialsHolder)
+            ButtonStatus:Upgrade(Player, CurrentUI.Value, PurchaseButton)
+        end
     elseif shopInfo.Name == "RebirthInfo" then
         item = RebirthUpgrades[nearest]
-        local levelValue = Player.ReplicatedData.RebirthUpgrades:FindFirstChild(nearest) and Player.ReplicatedData.RebirthUpgrades[nearest].Value or 0
-        PurchaseButton.PriceFrame.PriceText.Text = SuffixHandler:Convert(TemporaryData:CalculateRebirthUpgradeCost(levelValue, nearest, 1))
-        InfoFrame.LevelFrame.Level.Text = "Level " .. levelValue  .. "/" .. item.Limit
+        if item then
+            local levelValue = Player.ReplicatedData.RebirthUpgrades:FindFirstChild(nearest) and Player.ReplicatedData.RebirthUpgrades[nearest].Value or 0
+            PurchaseButton.PriceFrame.PriceText.Text = SuffixHandler:Convert(TemporaryData:CalculateRebirthUpgradeCost(levelValue, nearest, 1))
+            InfoFrame.LevelFrame.Level.Text = "Level " .. levelValue  .. "/" .. item.Limit
 
-        local ampersandReplacement = item.Initial + (levelValue * item.Reward)
-        local initialMessage = item.InitialMessage:gsub("&", ampersandReplacement)
+            local ampersandReplacement = item.Initial + (levelValue * item.Reward)
+            local initialMessage = item.InitialMessage:gsub("&", ampersandReplacement)
 
-        RewardsFrame.InitialText.Text = initialMessage
-        RewardsFrame.RewardText.Text = item.RewardMessage
+            RewardsFrame.InitialText.Text = initialMessage
+            RewardsFrame.RewardText.Text = item.RewardMessage
+        end
     end
-    Icon.IconImage.Image = item.Image
-    ItemName.Title.Text = item.Name
+    if item then
+        Icon.IconImage.Image = item.Image
+        ItemName.Title.Text = item.Name
+    end
 end
 
 local function getNearest()

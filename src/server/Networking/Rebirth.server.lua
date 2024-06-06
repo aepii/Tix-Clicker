@@ -52,6 +52,9 @@ local function setClientData(player, profile)
     DataManager:UpdateLeaderstats(player, profile, "Value")
     DataManager:UpdateLeaderstats(player, profile, "Rebirth Tix")
 
+    player.TemporaryData.XP.Value = 0
+    player.TemporaryData.QueuedTix.Value = 0
+
     UpdateEquippedAccessoriesRemote:FireClient(player)
     UpdateClientAccessoriesInventoryRemote:FireClient(player, nil, nil, "INIT")
     UpdateClientCaseInventoryRemote:FireClient(player, nil, "INIT")
