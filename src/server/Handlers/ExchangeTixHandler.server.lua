@@ -20,17 +20,19 @@ local ExchangeTixRemote = Networking.ExchangeTix
 local function exchangeTix(player)
     local profile = ProfileCacher:GetProfile(player)
     local data = ProfileCacher:GetProfile(player).Data
+    
+    if player.TemporaryData.ActiveCaseOpening.Value == false then
+        if data.Tix >= 20 then
+            local tixExchanged = math.floor(data.Tix / 20) * 20
+            local rocashGained = math.floor(data.Tix / 20)
 
-    if data.Tix >= 20 then
-        local tixExchanged = math.floor(data.Tix / 20) * 20
-        local rocashGained = math.floor(data.Tix / 20)
-
-        DataManager:SetValue(player, profile, {"Rocash"}, data.Rocash + rocashGained)
-        DataManager:SetValue(player, profile, {"Lifetime Rocash"}, data.Rocash + rocashGained)
-        DataManager:SetValue(player, profile, {"Tix"}, data.Tix - tixExchanged)
-        DataManager:UpdateLeaderstats(player, profile, "Tix")
-        DataManager:UpdateLeaderstats(player, profile, "Rocash")
-        ExchangeTixRemote:FireClient(player, tixExchanged, rocashGained)
+            DataManager:SetValue(player, profile, {"Rocash"}, data.Rocash + rocashGained)
+            DataManager:SetValue(player, profile, {"Lifetime Rocash"}, data.Rocash + rocashGained)
+            DataManager:SetValue(player, profile, {"Tix"}, data.Tix - tixExchanged)
+            DataManager:UpdateLeaderstats(player, profile, "Tix")
+            DataManager:UpdateLeaderstats(player, profile, "Rocash")
+            ExchangeTixRemote:FireClient(player, tixExchanged, rocashGained)
+        end
     end
 end
 

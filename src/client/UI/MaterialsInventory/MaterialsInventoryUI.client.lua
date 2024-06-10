@@ -49,7 +49,6 @@ local function updateMaterialsInventory(amount, materialID, method)
         local gradient = RarityColors:GetGradient(Materials[materialID].Rarity)
         icon.IconImage.Amount.UIGradient.Color = gradient
     elseif method == "UPDATE" then
-        print("UPDATEDDDD", amount)
         local icon = MaterialsHolder:FindFirstChild(materialID)
         if icon then
             icon.IconImage.Amount.Text = amount

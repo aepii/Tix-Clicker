@@ -30,7 +30,7 @@ UserInputService.InputBegan:Connect(function(input,_gameProcessed)
             if response then
                 coroutine.wrap(function()
                     SoundService:PlayLocalSound(ClickSound)
-                    TixUIAnim:Animate(Player, "TixDetail", response)
+                    TixUIAnim:Animate(Player, "TixDetail", response, nil)
                     SoundService:PlayLocalSound(PopSound)
                 end)()
             end

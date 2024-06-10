@@ -22,6 +22,11 @@
         "FilteringEnabled": true
       }
     },
+
+    "Lighting": {
+      "$properties": {
+      }
+    },
     "SoundService": {
       "$properties": {
         "RespectFilteringEnabled": true

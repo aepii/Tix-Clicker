@@ -44,36 +44,40 @@ end
 local Networking = ReplicatedStorage.Networking
 local EquipAccessoryRemote = Networking.EquipAccessory
 local EquipAccessoryBindableRemote = Networking.EquipAccessoryBindable
-local UpdateEquippedAccessoriesRemote = Networking.UpdateEquippedAccessories
 local UpdateClientAccessoriesInventoryRemote = Networking.UpdateClientAccessoriesInventory
 
 EquipAccessoryRemote.OnServerInvoke = function(player, GUID)
     local profile = ProfileCacher:GetProfile(player)
     local data = profile.Data
 
+    local temporaryData = player.TemporaryData
+
     local equippedAccessories = data.EquippedAccessories
     local accessoriesInventory = data.Accessories
     local ID = accessoriesInventory[GUID]
 
-    if data.Accessories[GUID] then
-        local count = 0
-        for _ in equippedAccessories do
-            count += 1
-        end
+    if temporaryData.ActiveCaseOpening.Value == false then
+        if data.Accessories[GUID] then
+            local count = 0
+            for _ in equippedAccessories do
+                count += 1
+            end
 
-        if equippedAccessories[ID] == GUID then
-            print("UNEQUIPP")
-            DataManager:SetValue(player, profile, {"EquippedAccessories", ID}, nil)
-            physicalUnequip(ID, player.Character.Humanoid)
-        elseif equippedAccessories[ID] then
-            return
-        elseif count < player.TemporaryData.EquippedAccessoriesLimit.Value then
-            print("EQUIPP")
-            DataManager:SetValue(player, profile, {"EquippedAccessories", ID}, GUID)
-            physicalEquip(ID, player.Character.Humanoid)
+            if equippedAccessories[ID] == GUID then
+                print("UNEQUIPP")
+                DataManager:SetValue(player, profile, {"EquippedAccessories", ID}, nil)
+                UpdateClientAccessoriesInventoryRemote:FireClient(player, ID, GUID, "UNEQUIP") 
+                physicalUnequip(ID, player.Character.Humanoid)
+            elseif equippedAccessories[ID] then
+                return
+            elseif count < player.TemporaryData.EquippedAccessoriesLimit.Value then
+                print("EQUIPP")
+                UpdateClientAccessoriesInventoryRemote:FireClient(player, ID, GUID, "EQUIP") 
+                DataManager:SetValue(player, profile, {"EquippedAccessories", ID}, GUID)
+                physicalEquip(ID, player.Character.Humanoid)
+            end
+
         end
-        UpdateClientAccessoriesInventoryRemote:FireClient(player, nil, nil, "INIT") 
-        UpdateEquippedAccessoriesRemote:FireClient(player)
     end
 end
 

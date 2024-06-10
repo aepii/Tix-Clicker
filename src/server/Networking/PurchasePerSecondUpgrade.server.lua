@@ -28,6 +28,8 @@ PurchasePerSecondUpgradeRemote.OnServerInvoke = (function(player, upgradeID)
     local profile = ProfileCacher:GetProfile(player)
     local data = profile.Data
 
+    local temporaryData = player.TemporaryData
+
     local perSecondUpgrade = PerSecondUpgrades[upgradeID]
     local upgradeData = data.PerSecondUpgrades[upgradeID]
 
@@ -37,12 +39,13 @@ PurchasePerSecondUpgradeRemote.OnServerInvoke = (function(player, upgradeID)
         cost = perSecondUpgrade.Cost
     end
 
-    if data.Rocash >= cost then
-        DataManager:SetValue(player, profile, {"PerSecondUpgrades", upgradeID}, (upgradeData or 0) + 1)
-        DataManager:SetValue(player, profile, {"Rocash"}, data.Rocash - cost)
-        DataManager:UpdateLeaderstats(player, profile, "Rocash")
-        UpdateClientShopInfoRemote:FireClient(player, "PerSecondUpgrade")
-        return cost
+    if temporaryData.ActiveCaseOpening.Value == false then
+        if data.Rocash >= cost then
+            DataManager:SetValue(player, profile, {"PerSecondUpgrades", upgradeID}, (upgradeData or 0) + 1)
+            DataManager:SetValue(player, profile, {"Rocash"}, data.Rocash - cost)
+            DataManager:UpdateLeaderstats(player, profile, "Rocash")
+            UpdateClientShopInfoRemote:FireClient(player, "PerSecondUpgrade")
+            return cost
+        end
     end
-    
 end)

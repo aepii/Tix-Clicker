@@ -26,19 +26,24 @@ ClickTixRemote.OnServerInvoke = (function(player)
     local profile = ProfileCacher:GetProfile(player)
     local data = profile.Data
 
+    local temporaryData = player.TemporaryData
+
     local tixStorage = TemporaryData:CalculateTixStorage(player, data)
     local tixPerClick = TemporaryData:CalculateTixPerClick(player, data)
     
-    player.TemporaryData.LastClickTime.Value = os.time()
-    if data.Tix < tixStorage then
-        local tixValue = math.min(data.Tix + tixPerClick, tixStorage)
+    temporaryData.LastClickTime.Value = os.time()
 
-        DataManager:SetValue(player, profile, {"Tix"}, tixValue)
-        DataManager:SetValue(player, profile, {"Lifetime Tix"}, tixValue)
+    if temporaryData.ActiveCaseOpening.Value == false then
+        if data.Tix < tixStorage then
+            local tixValue = math.min(data.Tix + tixPerClick, tixStorage)
 
-        DataManager:UpdateLeaderstats(player, profile, "Tix")
+            DataManager:SetValue(player, profile, {"Tix"}, tixValue)
+            DataManager:SetValue(player, profile, {"Lifetime Tix"}, tixValue)
 
-        player.TemporaryData.XP.Value += 1
-        return tixPerClick
+            DataManager:UpdateLeaderstats(player, profile, "Tix")
+            
+            temporaryData.XP.Value += 1
+            return tixPerClick
+        end
     end
 end)

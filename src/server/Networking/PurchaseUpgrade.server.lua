@@ -60,36 +60,38 @@ PurchaseUpgradeRemote.OnServerInvoke = (function(player, upgradeID)
     local data = profile.Data
 
     local replicatedData = player.ReplicatedData
+    local temporaryData = player.TemporaryData
 
     local upgrade = Upgrades[upgradeID]
     local cost = upgrade.Cost["Rocash"]
 
-    if not table.find(data["Upgrades"], upgradeID) then
-        if canPurchase(data, upgrade) then
-            if upgrade.Cost["Materials"] then
-                local materialCost = upgrade.Cost["Materials"] 
-                for key, materialData in materialCost do
-                    local materialID = materialData[1]
-                    local materialCost = materialData[2]
-                    local newMaterialValue = (data.Materials[materialID] or 0) - materialCost
-                    DataManager:SetValue(player, profile, {"Materials", materialID}, newMaterialValue)
-                    if newMaterialValue ~= 0 then
-                        UpdateClientMaterialsInventoryRemote:FireClient(player, newMaterialValue, materialID, "UPDATE")
-                    else
-                        DataManager:SetValue(player, profile, {"Materials", materialID}, nil)
-                        UpdateClientMaterialsInventoryRemote:FireClient(player, newMaterialValue, materialID, "DEL")
+    if temporaryData.ActiveCaseOpening.Value == false then 
+        if not table.find(data["Upgrades"], upgradeID) then
+            if canPurchase(data, upgrade) then
+                if upgrade.Cost["Materials"] then
+                    local materialCost = upgrade.Cost["Materials"] 
+                    for key, materialData in materialCost do
+                        local materialID = materialData[1]
+                        local materialCost = materialData[2]
+                        local newMaterialValue = (data.Materials[materialID] or 0) - materialCost
+                        DataManager:SetValue(player, profile, {"Materials", materialID}, newMaterialValue)
+                        if newMaterialValue ~= 0 then
+                            UpdateClientMaterialsInventoryRemote:FireClient(player, newMaterialValue, materialID, "UPDATE")
+                        else
+                            DataManager:SetValue(player, profile, {"Materials", materialID}, nil)
+                            UpdateClientMaterialsInventoryRemote:FireClient(player, newMaterialValue, materialID, "DEL")
+                        end
                     end
                 end
+                
+                DataManager:SetValue(player, profile, {"Rocash"}, data.Rocash - cost)
+                DataManager:ArrayInsert(player, profile, {"Upgrades"}, upgradeID)
+                print(data.Upgrades)
+                DataManager:UpdateLeaderstats(player, profile, "Rocash")
+                print(player, upgrade, "SERVER")
+                UpdateClientInventoryRemote:FireClient(player, upgrade, "ADD")
+                return cost
             end
-            
-            DataManager:SetValue(player, profile, {"Rocash"}, data.Rocash - cost)
-            DataManager:ArrayInsert(player, profile, {"Upgrades"}, upgradeID)
-            print(data.Upgrades)
-            DataManager:UpdateLeaderstats(player, profile, "Rocash")
-            print(player, upgrade, "SERVER")
-            UpdateClientInventoryRemote:FireClient(player, upgrade, "ADD")
-            return cost
         end
     end
-    
 end)

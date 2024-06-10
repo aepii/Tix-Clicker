@@ -49,13 +49,17 @@ EquipTixRemote.OnServerInvoke = (function(player, upgradeID)
 
     local upgrade = Upgrades[upgradeID]
 
-    if table.find(data.Upgrades, upgradeID) then
-        if data.ToolEquipped ~= upgradeID then
-            DataManager:SetValue(player, profile, {"ToolEquipped"}, upgradeID)
-            unequipTool(player)
-            local tool = upgrade.Tool
-            equipTool(player, tool)
-            return true
+    local temporaryData = player.TemporaryData
+
+    if temporaryData.ActiveCaseOpening.Value == false then
+        if table.find(data.Upgrades, upgradeID) then
+            if data.ToolEquipped ~= upgradeID then
+                DataManager:SetValue(player, profile, {"ToolEquipped"}, upgradeID)
+                unequipTool(player)
+                local tool = upgrade.Tool
+                equipTool(player, tool)
+                return true
+            end
         end
     end
 end)

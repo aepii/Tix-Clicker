@@ -54,14 +54,12 @@ end
 local function updateInventory(case, method)
     if method == "INIT" then
         for index, icon in InvHolder:GetChildren() do
-            print(icon)
             if icon:IsA("Frame") and icon ~= IconCopy then
                 icon:Destroy()
             end
         end
         initInventory()
     elseif method == "ADD" then
-        print(case.ID)
         local icon = IconCopy:Clone()
         icon.Visible = true
         icon.Name = case.ID

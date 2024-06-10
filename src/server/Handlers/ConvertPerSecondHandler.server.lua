@@ -28,39 +28,41 @@ local function playerAdded(player)
 
     coroutine.resume(coroutine.create(function()
         while task.wait() and player:IsDescendantOf(Players) do
-            local tixStorage = TemporaryData:CalculateTixStorage(player, data)
-            local convertPerSecond = TemporaryData:CalculateConvertPerSecond(player, data)
-            queuedTix.Value += convertPerSecond
+            if player.TemporaryData.ActiveCaseOpening.Value == false then
+                local tixStorage = TemporaryData:CalculateTixStorage(player, data)
+                local convertPerSecond = TemporaryData:CalculateConvertPerSecond(player, data)
+                queuedTix.Value += convertPerSecond
 
-            if queuedTix.Value >= 20 and data.Tix >= queuedTix.Value then
-                local tixExchanged = math.floor(queuedTix.Value / 20) * 20
-                local rocashGained = math.floor(queuedTix.Value / 20)
+                if queuedTix.Value >= 20 and data.Tix >= queuedTix.Value then
+                    local tixExchanged = math.floor(queuedTix.Value / 20) * 20
+                    local rocashGained = math.floor(queuedTix.Value / 20)
 
-                DataManager:SetValue(player, profile, {"Rocash"}, data.Rocash + rocashGained)
-                DataManager:SetValue(player, profile, {"Lifetime Rocash"}, data.Rocash + rocashGained)
-                DataManager:SetValue(player, profile, {"Tix"}, data.Tix - tixExchanged)
-                DataManager:UpdateLeaderstats(player, profile, "Tix")
-                DataManager:UpdateLeaderstats(player, profile, "Rocash")
+                    DataManager:SetValue(player, profile, {"Rocash"}, data.Rocash + rocashGained)
+                    DataManager:SetValue(player, profile, {"Lifetime Rocash"}, data.Rocash + rocashGained)
+                    DataManager:SetValue(player, profile, {"Tix"}, data.Tix - tixExchanged)
+                    DataManager:UpdateLeaderstats(player, profile, "Tix")
+                    DataManager:UpdateLeaderstats(player, profile, "Rocash")
 
-                queuedTix.Value -= tixExchanged
+                    queuedTix.Value -= tixExchanged
 
-                ExchangeTixRemote:FireClient(player, tixExchanged, rocashGained)
-            elseif queuedTix.Value >= 20 and data.Tix >= 20 and data.Tix < queuedTix.Value then
-                local tixExchanged = math.floor(data.Tix / 20) * 20
-                local rocashGained = math.floor(data.Tix / 20)
+                    ExchangeTixRemote:FireClient(player, tixExchanged, rocashGained)
+                elseif queuedTix.Value >= 20 and data.Tix >= 20 and data.Tix < queuedTix.Value then
+                    local tixExchanged = math.floor(data.Tix / 20) * 20
+                    local rocashGained = math.floor(data.Tix / 20)
 
-                DataManager:SetValue(player, profile, {"Rocash"}, data.Rocash + rocashGained)
-                DataManager:SetValue(player, profile, {"Lifetime Rocash"}, data.Rocash + rocashGained)
-                DataManager:SetValue(player, profile, {"Tix"}, data.Tix - tixExchanged)
-                DataManager:UpdateLeaderstats(player, profile, "Tix")
-                DataManager:UpdateLeaderstats(player, profile, "Rocash")
+                    DataManager:SetValue(player, profile, {"Rocash"}, data.Rocash + rocashGained)
+                    DataManager:SetValue(player, profile, {"Lifetime Rocash"}, data.Rocash + rocashGained)
+                    DataManager:SetValue(player, profile, {"Tix"}, data.Tix - tixExchanged)
+                    DataManager:UpdateLeaderstats(player, profile, "Tix")
+                    DataManager:UpdateLeaderstats(player, profile, "Rocash")
 
-                queuedTix.Value -= tixExchanged
+                    queuedTix.Value = math.min((queuedTix.Value - tixExchanged), convertPerSecond)
 
-                ExchangeTixRemote:FireClient(player, tixExchanged, rocashGained)
+                    ExchangeTixRemote:FireClient(player, tixExchanged, rocashGained)
+                end
+                task.wait(1)
             end
-            task.wait(1)
-		end
+        end
     end))
 end
 

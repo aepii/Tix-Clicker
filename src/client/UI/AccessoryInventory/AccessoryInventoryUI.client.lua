@@ -18,6 +18,7 @@ local TemporaryData = require(Modules.TemporaryData)
 local ReplicatedData = Player:WaitForChild("ReplicatedData")
 local ReplicatedTemporaryData = Player:WaitForChild("TemporaryData")
 local ReplicatedAccessories = ReplicatedData.Accessories
+local EquippedAccessories = ReplicatedData.EquippedAccessories
 local accessoriesLimit = ReplicatedTemporaryData.AccessoriesLimit
 
 ---- UI ----
@@ -59,15 +60,38 @@ local function equipAccessory(accessoryName)
     EquipAccessoryRemote:InvokeServer(accessoryName)
 end
 
+local function isEquipped(GUID)
+    local ID = ReplicatedAccessories[GUID].Value
+    local equippedAccessory = EquippedAccessories:FindFirstChild(ID)
+    if equippedAccessory and equippedAccessory.Value == GUID then
+        return true
+    else
+       return false
+    end
+end
+
+local function getIcon(GUID)
+    for index, icon in InvHolder:GetChildren() do
+        if icon:IsA("Frame") and icon.GUID.Value == GUID then
+            return icon
+        end
+    end
+    return false
+end
+
 local function updateInventory(ID, GUID, method)
     if method == "INIT" then
         for index, icon in InvHolder:GetChildren() do
-            print(icon.Name)
             if icon:IsA("Frame") and icon ~= IconCopy then
                 icon:Destroy()
             end
         end
         initInventory()
+    elseif method == "DEL" then
+        local icon = getIcon(GUID)
+        if icon then
+            icon:Destroy()
+        end
     elseif method == "ADD" then
         local icon = IconCopy:Clone()
         icon.Visible = true
@@ -77,7 +101,25 @@ local function updateInventory(ID, GUID, method)
         icon.IconImage.Image = "http://www.roblox.com/Thumbs/Asset.ashx?Width=256&Height=256&AssetID="..Accessories[ID].AssetID
         icon.UIGradient.Color = RarityColors:GetGradient(Accessories[ID].Rarity)
         icon.Parent = InvHolder
+        if isEquipped(GUID) then
+            icon.EquippedIcon.Visible = true
+        else
+            print("NOT")
+            icon.EquippedIcon.Visible = false
+        end
         icon.IconScript.Enabled = true
+    elseif method == "EQUIP" then
+        local icon = getIcon(GUID)
+        if icon then
+            icon.Name = TemporaryData:CalculateTag(Player, GUID)
+            icon.EquippedIcon.Visible = true
+        end
+    elseif method == "UNEQUIP" then  
+        local icon = getIcon(GUID)
+        if icon then
+            icon.Name = TemporaryData:CalculateTag(Player, GUID)
+            icon.EquippedIcon.Visible = false
+        end
     end
     AccessoriesLimitText.Text = #ReplicatedAccessories:GetChildren() .. "/" .. accessoriesLimit.Value
 end

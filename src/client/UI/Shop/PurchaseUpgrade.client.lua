@@ -44,7 +44,7 @@ local function purchaseUpgrade(upgradeName)
     coroutine.wrap(function()
         if response then
             SoundService:PlayLocalSound(MoneySound)
-            TixUIAnim:Animate(Player, "NegateRocashDetail", response)
+            TixUIAnim:Animate(Player, "NegateRocashDetail", response, nil)
             SoundService:PlayLocalSound(PopSound)
         else
             SoundService:PlayLocalSound(ErrorSound)

@@ -28,23 +28,26 @@ PurchaseCaseRemote.OnServerInvoke = (function(player, caseID)
     local profile = ProfileCacher:GetProfile(player)
     local data = profile.Data
 
+    local temporaryData = player.TemporaryData
+    
     local case = Cases[caseID]
     local cost = case.Cost
 
-    if data.Rocash >= cost then
-        if not data.Cases[caseID] then
-            UpdateClientCaseInventoryRemote:FireClient(player, case, "ADD")
-        end
+    if temporaryData.ActiveCaseOpening.Value == false then
+        if data.Rocash >= cost then
+            if not data.Cases[caseID] then
+                UpdateClientCaseInventoryRemote:FireClient(player, case, "ADD")
+            end
 
-        DataManager:SetValue(player, profile, {"Cases", caseID}, (data.Cases[caseID] or 0) + 1)
-        DataManager:SetValue(player, profile, {"Rocash"}, data.Rocash - cost)
-        DataManager:UpdateLeaderstats(player, profile, "Rocash")
-        UpdateClientShopInfoRemote:FireClient(player, "Case")
+            DataManager:SetValue(player, profile, {"Cases", caseID}, (data.Cases[caseID] or 0) + 1)
+            DataManager:SetValue(player, profile, {"Rocash"}, data.Rocash - cost)
+            DataManager:UpdateLeaderstats(player, profile, "Rocash")
+            UpdateClientShopInfoRemote:FireClient(player, "Case")
 
-        if data.Cases[caseID] then
-            UpdateClientCaseInventoryRemote:FireClient(player, case, "UPDATE")
+            if data.Cases[caseID] then
+                UpdateClientCaseInventoryRemote:FireClient(player, case, "UPDATE")
+            end
+            return cost
         end
-        return cost
     end
-    
 end)

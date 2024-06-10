@@ -18,17 +18,29 @@ PopSound.Parent = Sounds
 local MoneySound = Instance.new("Sound")
 MoneySound.Name = "MoneySound"
 MoneySound.SoundId = "rbxassetid://131886985"
-MoneySound.Volume = 0.125
+MoneySound.Volume = 0.25
 MoneySound.Parent = Sounds
 
 local ScrapSound = Instance.new("Sound")
 ScrapSound.Name = "ScrapSound"
 ScrapSound.SoundId = "rbxassetid://9117624735"
-ScrapSound.Volume = 0.125
+ScrapSound.Volume = 0.25
 ScrapSound.Parent = Sounds
 
 local ErrorSound = Instance.new("Sound")
 ErrorSound.Name = "ErrorSound"
 ErrorSound.SoundId = "rbxassetid://5148302439"
-ErrorSound.Volume = 0.125
+ErrorSound.Volume = 0.25
 ErrorSound.Parent = Sounds
+
+local RewardSound = Instance.new("Sound")
+RewardSound.Name = "RewardSound"
+RewardSound.SoundId = "rbxassetid://7933571710"
+RewardSound.Volume = 0.25
+RewardSound.Parent = Sounds
+
+local SpinSound = Instance.new("Sound")
+SpinSound.Name = "SpinSound"
+SpinSound.SoundId = "rbxassetid://7818374501"
+SpinSound.Volume = 0.25
+SpinSound.Parent = Sounds

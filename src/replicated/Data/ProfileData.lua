@@ -12,6 +12,8 @@ ProfileData.Data = {
 	["ToolEquipped"] = "U1";
 	["EquippedAccessories"] = {};
 
+	["EquippedAmulet"] = "";
+
 	["AlphaTester"] = true;
 	
 	["Upgrades"] = {"U1"};
@@ -37,6 +39,10 @@ ProfileData.TemporaryData = {
 	["LastClickTime"] = {
 		Value = 0,
 		Type = "Number"
+	};
+	["ActiveCaseOpening"] = {
+		Value = false,
+		Type = "Bool"
 	};
 	["XP"] = {
 		Value = 0,

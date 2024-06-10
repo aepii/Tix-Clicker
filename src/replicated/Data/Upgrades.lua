@@ -28,7 +28,7 @@ local upgrades = {
 	};
 	U4 = {
 		Name = "Tix Bag";
-		Cost = {Rocash = 1000, Materials = {[1] = {"M1", 15}, [2] = {"M2", 7}, [3] = {"M3", 3}}};
+		Cost = {Rocash = 1000, Materials = {[1] = {"M1", 10}, [2] = {"M2", 5}, [3] = {"M3", 2}}};
 		Reward = {MultPerClick = 8, MultStorage = 15};
 		Tool = Tools["Tix Bag"];
 		Image = "rbxassetid://17273972764",
@@ -36,7 +36,7 @@ local upgrades = {
 	};
 	U5 = {
 		Name = "Tix Sack";
-		Cost = {Rocash = 25000, Materials = {[1] = {"M3", 50}, [2] = {"M4", 10}}};
+		Cost = {Rocash = 25000, Materials = {[1] = {"M2", 15}, [2] = {"M3", 7}, [3] = {"M4", 3}}};
 		Reward = {MultPerClick = 15, MultStorage = 30};
 		Tool = Tools["Tix Sack"];
 		Image = "rbxassetid://17273942251",

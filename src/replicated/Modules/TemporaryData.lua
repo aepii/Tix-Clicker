@@ -26,8 +26,10 @@ local RarityTags = {
     Uncommon = "C",
     Fine = "D",
     Rare = "E",
-    Epic = "F",
-    Legendary = "G"
+    Exceptional = "F",
+    Epic = "G",
+    Heroic = "H",
+    Legendary = "I"
 }
 
 ---- Temporary Data ----

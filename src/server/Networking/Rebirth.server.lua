@@ -23,7 +23,6 @@ local UpdateClientAccessoriesInventoryRemote = Networking.UpdateClientAccessorie
 local UpdateClientCaseInventoryRemote = Networking.UpdateClientCaseInventory
 local UpdateClientInventoryRemote = Networking.UpdateClientInventory
 local UpdateClientMaterialsInventoryRemote = Networking.UpdateClientMaterialsInventory
-local UpdateEquippedAccessoriesRemote = Networking.UpdateEquippedAccessories
 
 local BindableEquipTix = Networking.BindableEquipTix
 
@@ -55,7 +54,6 @@ local function setClientData(player, profile)
     player.TemporaryData.XP.Value = 0
     player.TemporaryData.QueuedTix.Value = 0
 
-    UpdateEquippedAccessoriesRemote:FireClient(player)
     UpdateClientAccessoriesInventoryRemote:FireClient(player, nil, nil, "INIT")
     UpdateClientCaseInventoryRemote:FireClient(player, nil, "INIT")
     UpdateClientInventoryRemote:FireClient(player, nil, "INIT")
@@ -77,10 +75,12 @@ RebirthRemote.OnServerInvoke = (function(player)
 
     local rebirthTixReward, valueCost, VALUE_TO_REBIRTH_TIX = TemporaryData:CalculateRebirthInfo(value.Value)
 
-    if valueCost >= VALUE_TO_REBIRTH_TIX then
-        setData(player, profile, rebirthTixReward)
-        setClientData(player, profile)
-        resetPhysicalStates(player)
+    if temporaryData.ActiveCaseOpening.Value == false then
+        if valueCost >= VALUE_TO_REBIRTH_TIX then
+            setData(player, profile, rebirthTixReward)
+            setClientData(player, profile)
+            resetPhysicalStates(player)
+        end
     end
     print("FINISHED", tick())
 end)

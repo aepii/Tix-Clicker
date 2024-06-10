@@ -26,8 +26,9 @@ end
 function ButtonStatus:AccessoryInventory(player, GUID, equipButton)
     local ID = player.ReplicatedData.Accessories[GUID].Value
     local equippedAccessory = player.ReplicatedData.EquippedAccessories:FindFirstChild(ID)
+    local equippedAccessoriesCount = #player.ReplicatedData.EquippedAccessories:GetChildren()
+    local equippedAccessoriesLimit = player.TemporaryData.EquippedAccessoriesLimit
     local equipText, backgroundColor, shadowColor, strokeColor
-    print(GUID, equippedAccessory)
     if equippedAccessory then
         if equippedAccessory.Value == GUID then
             equipText = "Unequip"
@@ -41,10 +42,18 @@ function ButtonStatus:AccessoryInventory(player, GUID, equipButton)
             strokeColor = Color3.fromRGB(36, 35, 35)
         end
     else
-        equipText = "Equip"
-        backgroundColor = Color3.fromRGB(85, 170, 127)
-        shadowColor = Color3.fromRGB(34, 68, 50)
-        strokeColor = Color3.fromRGB(34, 68, 50)
+        print(equippedAccessoriesLimit.Value, equippedAccessoriesCount)
+        if equippedAccessoriesLimit.Value <= equippedAccessoriesCount then
+            equipText = "3/3 Equipped"
+            backgroundColor = Color3.fromRGB(82, 81, 81)
+            shadowColor = Color3.fromRGB(36, 35, 35)
+            strokeColor = Color3.fromRGB(36, 35, 35)
+        else
+            equipText = "Equip"
+            backgroundColor = Color3.fromRGB(85, 170, 127)
+            shadowColor = Color3.fromRGB(34, 68, 50)
+            strokeColor = Color3.fromRGB(34, 68, 50)
+        end
     end
 
     equipButton.EquipText.Text = equipText

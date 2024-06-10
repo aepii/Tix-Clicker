@@ -163,7 +163,7 @@ local function updateShopInfo(nearest, shopInfo)
 end
 
 local function getNearest()
-    local distance = 5
+    local distance = 10
     local nearest = nil
 
     for _, item in Shop:GetChildren() do

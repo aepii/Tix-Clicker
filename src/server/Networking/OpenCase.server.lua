@@ -16,6 +16,7 @@ local Accessories = require(ReplicatedStorage.Data.Accessories)
 
 local Networking = ReplicatedStorage.Networking
 local OpenCaseRemote = Networking.OpenCase
+local OpenCaseAnimRemote = Networking.OpenCaseAnim
 local UpdateClientCaseInventoryRemote = Networking.UpdateClientCaseInventory
 local UpdateClientAccessoriesInventoryRemote = Networking.UpdateClientAccessoriesInventory
 local UpdateClientShopInfoRemote = Networking.UpdateClientShopInfo
@@ -43,7 +44,7 @@ local function roll(caseID)
         totalWeight = totalWeight + entry[2]
     end
 
-    local randomNumber = math.random(1, totalWeight)
+    local randomNumber = math.random() * totalWeight
 
     local currentWeight = 0
     for _, entry in weights do
@@ -64,24 +65,30 @@ OpenCaseRemote.OnServerInvoke = (function(player, caseID)
     local case = Cases[caseID]
     local owned = data.Cases[caseID]
 
-    if #replicatedData.Accessories:GetChildren() < temporaryData.AccessoriesLimit.Value then 
-        if owned >= 1 then
-            local GUID = HttpService:GenerateGUID(false)
-            local item = roll(caseID)
+    if temporaryData.ActiveCaseOpening.Value == false then
+        if #replicatedData.Accessories:GetChildren() < temporaryData.AccessoriesLimit.Value then 
+            if owned >= 1 then
+                local GUID = HttpService:GenerateGUID(false)
+                local item = roll(caseID)
 
-            DataManager:SetValue(player, profile, {"Cases", caseID}, data["Cases"][caseID] - 1)
-            DataManager:SetValue(player, profile, {"Accessories", GUID}, item.ID)
-            DataManager:UpdateLeaderstats(player, profile, "Value")
-            
-            UpdateClientAccessoriesInventoryRemote:FireClient(player, item.ID, GUID, "ADD") 
-            UpdateClientShopInfoRemote:FireClient(player, "Case")
+                DataManager:SetValue(player, profile, {"Cases", caseID}, data["Cases"][caseID] - 1)
+                DataManager:SetValue(player, profile, {"Accessories", GUID}, item.ID)
+                
+                UpdateClientAccessoriesInventoryRemote:FireClient(player, item.ID, GUID, "ADD") 
+                UpdateClientShopInfoRemote:FireClient(player, "Case")
 
-            if data.Cases[caseID] then
-                UpdateClientCaseInventoryRemote:FireClient(player, case, "UPDATE") 
-            end
-            if data.Cases[caseID] == 0 then
-                DataManager:SetValue(player, profile, {"Cases", caseID}, nil)
-                UpdateClientCaseInventoryRemote:FireClient(player, case, "DEL")
+                if data.Cases[caseID] then
+                    UpdateClientCaseInventoryRemote:FireClient(player, case, "UPDATE") 
+                end
+                if data.Cases[caseID] == 0 then
+                    DataManager:SetValue(player, profile, {"Cases", caseID}, nil)
+                    UpdateClientCaseInventoryRemote:FireClient(player, case, "DEL")
+                end
+                temporaryData.ActiveCaseOpening.Value = true
+                OpenCaseAnimRemote:FireClient(player, caseID, item)
+                task.wait(10)
+                DataManager:UpdateLeaderstats(player, profile, "Value")
+                temporaryData.ActiveCaseOpening.Value = false
             end
         end
     end

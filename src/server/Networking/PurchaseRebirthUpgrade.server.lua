@@ -28,6 +28,8 @@ PurchaseRebirthUpgradeRemote.OnServerInvoke = (function(player, upgradeID)
     local profile = ProfileCacher:GetProfile(player)
     local data = profile.Data
 
+    local temporaryData = player.TemporaryData
+
     local rebirthUpgrade = RebirthUpgrades[upgradeID]
     local upgradeData = data.RebirthUpgrades[upgradeID]
 
@@ -41,11 +43,12 @@ PurchaseRebirthUpgradeRemote.OnServerInvoke = (function(player, upgradeID)
 
     local owned = (upgradeData or 0)
 
-    if data["Rebirth Tix"] >= cost and owned < limit then
-        DataManager:SetValue(player, profile, {"RebirthUpgrades", upgradeID}, owned + 1)
-        DataManager:SetValue(player, profile, {"Rebirth Tix"}, data["Rebirth Tix"] - cost)
-        DataManager:UpdateLeaderstats(player, profile, "Rebirth Tix")
-        UpdateClientShopInfoRemote:FireClient(player, "RebirthUpgrade")
+    if temporaryData.ActiveCaseOpening.Value == false then
+        if data["Rebirth Tix"] >= cost and owned < limit then
+            DataManager:SetValue(player, profile, {"RebirthUpgrades", upgradeID}, owned + 1)
+            DataManager:SetValue(player, profile, {"Rebirth Tix"}, data["Rebirth Tix"] - cost)
+            DataManager:UpdateLeaderstats(player, profile, "Rebirth Tix")
+            UpdateClientShopInfoRemote:FireClient(player, "RebirthUpgrade")
+        end
     end
-    
 end)

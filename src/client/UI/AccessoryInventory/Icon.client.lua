@@ -17,7 +17,6 @@ local TemporaryData = require(Modules.TemporaryData)
 ---- Data ----
 
 local ReplicatedData = Player:WaitForChild("ReplicatedData")
-local EquippedAccessories = ReplicatedData.EquippedAccessories
 local ReplicatedAccessories = ReplicatedData.Accessories
 
 ---- UI ----
@@ -40,7 +39,6 @@ local UIVisible = EquipFrame.UIVisible
 local CurrentAccessory = EquipFrame.CurrentAccessory
 
 local GUID = IconButton.GUID
-local EquippedTag = IconButton.Equipped
 
 ---- Sound ----
 
@@ -50,26 +48,8 @@ local ClickSound = Sounds:WaitForChild("ClickSound")
 ---- Networking ----
 
 local Networking = ReplicatedStorage.Networking
-local UpdateEquippedAccessoriesRemote = Networking.UpdateEquippedAccessories
 
 ---- Private Functions ----
-
-local function updateEquippedIcon()
-    local ID = ReplicatedAccessories[GUID.Value].Value
-    local equippedAccessory = EquippedAccessories:FindFirstChild(ID)
-    if equippedAccessory and equippedAccessory.Value == GUID.Value then
-        EquippedTag.Value = true
-        EquippedIcon.Visible = true
-    else
-        EquippedTag.Value = false
-        EquippedIcon.Visible = false
-    end
-end
-updateEquippedIcon()
-
-UpdateEquippedAccessoriesRemote.OnClientEvent:Connect(function()
-    updateEquippedIcon()
-end)
 
 local function updateEquipFrame()
     local ID = Player.ReplicatedData.Accessories[GUID.Value].Value
@@ -78,12 +58,10 @@ local function updateEquipFrame()
     local taggedName = TemporaryData:CalculateTag(Player, GUID.Value)
 
     if InvFrame.Holder:FindFirstChild(CurrentAccessory.Value) then
-        print("BLUEING")
         InvFrame.Holder[CurrentAccessory.Value].Shadow.BackgroundColor3 = Color3.fromRGB(0, 83, 125)
     end
 
     if CurrentAccessory.Value == taggedName and UIVisible.Value == false then
-        print("oh no")
         return
     end
 

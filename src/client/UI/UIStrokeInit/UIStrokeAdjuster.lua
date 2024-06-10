@@ -175,7 +175,7 @@ CollectionService:GetInstanceAddedSignal(Billboard_Tag):Connect(function(billboa
 				if not stroke.Parent then
 					BillboardStrokes[stroke] = nil
 				else
-					stroke.Thickness = originalThickness * distanceRatio * getScreenRatio()
+					stroke.Thickness = originalThickness * distanceRatio * getScreenRatio() * 4
 					if not stroke.Parent:IsA("TextLabel") then
 						stroke.Parent.Size = UDim2.new(stroke.Parent.Size.X.Scale, stroke.Thickness, stroke.Parent.Size.Y.Scale, stroke.Thickness)
 						stroke.Enabled = false

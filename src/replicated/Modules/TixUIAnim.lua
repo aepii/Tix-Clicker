@@ -7,12 +7,13 @@ local TweenService = game:GetService("TweenService")
 
 local Modules = ReplicatedStorage.Modules
 local SuffixHandler = require(Modules.SuffixHandler)
+local RarityColors = require(Modules.RarityColors)
 
 ---- Tix Anim ----
 
 local TixUIAnim = {}
 
-function TixUIAnim:Animate(player, detail, value)
+function TixUIAnim:Animate(player, detail, value, valueData)
     
     local PlayerGui = player:WaitForChild("PlayerGui")
     local UI = PlayerGui:WaitForChild("UI")
@@ -189,6 +190,61 @@ function TixUIAnim:Animate(player, detail, value)
         )
 
         wait(0.5)
+    elseif detail.Name == "MaterialDetail" then
+        detail.Amount.Text = "+" .. SuffixHandler:Convert(value)
+        detail.Image = valueData.Image
+        detail.Amount.UIGradient.Color = RarityColors:GetGradient(valueData.Rarity)
+        
+        local randomX = math.random(400, 600) / 1000
+        local randomY = math.random(400, 600) / 1000
+        
+        detail.Rotation = math.random(270 - 50, 270 + 50)
+        detail.Position = UDim2.new(randomX, 0, randomY, 0)
+        
+        detail:TweenSize(
+            UDim2.new(0.04, 0, 0.1, 0),
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Elastic,
+            0.5,
+            true
+        )
+        
+        wait(0.75)
+        
+        TweenService:Create(detail.Amount, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {TextSize = 0}):Play()
+        detail:TweenSizeAndPosition(
+            UDim2.new(0, 0, 0, 0),
+            UDim2.new(0.965, 0, 0.965, 0),
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Quint,
+            1,
+            true
+        )
+        
+        wait(0.5)
+        
+        local statsDisplay = detail.Parent.Parent.MaterialsButton.MaterialsFrame.MaterialsHolder:FindFirstChild(valueData.ID)
+        print(valueData.ID)
+        if statsDisplay then
+            print(statsDisplay)
+            statsDisplay.IconImage:TweenSize(
+                UDim2.new(1.5, 0, 1.5, 0),
+                Enum.EasingDirection.Out,
+                Enum.EasingStyle.Quint,
+                0.05,
+                true
+            )
+            
+            wait(0.05)
+
+            statsDisplay.IconImage:TweenSize(
+                UDim2.new(1, 0, 1, 0),
+                Enum.EasingDirection.Out,
+                Enum.EasingStyle.Quint,
+                0.05,
+                true
+            )
+        end    
     end
     
     detail.Amount.Visible = false    

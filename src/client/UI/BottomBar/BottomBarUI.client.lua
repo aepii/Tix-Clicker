@@ -121,7 +121,6 @@ local function buttonBehavior(button, originalSize, inventory, uiValue)
                 inventory:TweenPosition(UDim2.new(0.5, 0, 0.5, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.25, true)
                 local currentFrame = UIFrames[CurrentUI.Value]
                 if currentFrame then
-                    print(currentFrame)
                     currentFrame:TweenPosition(UDim2.new(0.5, 0, 2, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.25, true)
                 end
                 CurrentUI.Value = uiValue

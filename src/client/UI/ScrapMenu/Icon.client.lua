@@ -18,7 +18,6 @@ local TemporaryData = require(Modules.TemporaryData)
 ---- Data ----
 
 local ReplicatedData = Player:WaitForChild("ReplicatedData")
-local EquippedAccessories = ReplicatedData.EquippedAccessories
 local ReplicatedAccessories = ReplicatedData.Accessories
 
 ---- UI ----
@@ -41,7 +40,6 @@ local UIVisible = ScrapFrame.UIVisible
 local CurrentAccessory = ScrapFrame.CurrentAccessory
 
 local GUID = IconButton.GUID
-local EquippedTag = IconButton.Equipped
 
 ---- Sound ----
 
@@ -51,24 +49,8 @@ local ClickSound = Sounds:WaitForChild("ClickSound")
 ---- Networking ----
 
 local Networking = ReplicatedStorage.Networking
-local UpdateEquippedAccessoriesRemote = Networking.UpdateEquippedAccessories
 
 ---- Private Functions ----
-
-local function updateEquippedIcon()
-    local ID = ReplicatedAccessories[GUID.Value].Value
-    local equippedAccessory = EquippedAccessories:FindFirstChild(ID)
-    if equippedAccessory and equippedAccessory.Value ==  GUID.Value then
-        EquippedIcon.Visible = true
-    else
-        EquippedIcon.Visible = false
-    end
-end
-updateEquippedIcon()
-
-UpdateEquippedAccessoriesRemote.OnClientEvent:Connect(function()
-    updateEquippedIcon()
-end)
 
 local function updateScrapFrame()
     local ID = Player.ReplicatedData.Accessories[GUID.Value].Value
@@ -94,7 +76,7 @@ local function updateScrapFrame()
             local prefix = "x"
             rewardFrame.RewardText.UIGradient.Color = gradient
             rewardFrame.RewardText.Text = prefix  .. "0-" .. quantity
-            rewardFrame.ChanceText.Text = chanceToReceive*100 .."%/drop"
+            rewardFrame.ChanceText.Text = string.format("%.1f", chanceToReceive*100).."%/drop"
             rewardFrame.RewardIcon.Image = Materials[materialID].Image
             rewardFrame.Visible = true
             rewardFrame.Parent = ScrapFrame.RewardsFrame
