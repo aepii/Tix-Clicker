@@ -116,7 +116,7 @@ local accessories = {
         Type = "Accessory",
         AssetID = 1038669,
         Reward = {AddStorage = 1},
-        Value = 2000,
+        Value = 1900,
         Rarity = nil,
         Cases = {"C1", "C2"},
         ID = "A15"
@@ -172,13 +172,13 @@ local accessories = {
         ID = "A20"
     },
     A21 = {
-        Name = "Space Sandwich",
+        Name = "Empyrean Reignment",
         Type = "Accessory",
-        AssetID = 12547976,
+        AssetID = 15967743,
         Reward = {AddPerClick = 0.75, AddStorage = 0.25},
-        Value = 30,
+        Value = 2000,
         Rarity = nil,
-        Cases = {"C1", "C2"},
+        Cases = {"C1", "C2", "C3"},
         ID = "A21"
     },
     A22 = {
@@ -448,7 +448,7 @@ local accessories = {
         Reward = {AddPerClick = 0.5, AddStorage = 0.5},
         Value = 270,
         Rarity = nil,
-        Cases = {"C1", "C2"},
+        Cases = {"C1", "C2", "C3"},
         ID = "A48"
     },
     A49 = {
@@ -458,7 +458,7 @@ local accessories = {
         Reward = {AddPerClick = 0.5, AddStorage = 0.5},
         Value = 900,
         Rarity = nil,
-        Cases = {"C1", "C2"},
+        Cases = {"C1", "C2", "C3"},
         ID = "A49"
     },
     A50 = {
@@ -468,7 +468,7 @@ local accessories = {
         Reward = {AddPerClick = 0.25, AddStorage = 0.75},
         Value = 500,
         Rarity = nil,
-        Cases = {"C1", "C2"},
+        Cases = {"C1", "C2", "C3"},
         ID = "A50"
     },
     A51 = {
@@ -478,7 +478,7 @@ local accessories = {
         Reward = {AddPerClick = 0.75, AddStorage = 0.25},
         Value = 725,
         Rarity = nil,
-        Cases = {"C1", "C2"},
+        Cases = {"C1", "C2", "C3"},
         ID = "A51"
     },
     A52 = {
@@ -488,7 +488,7 @@ local accessories = {
         Reward = {AddPerClick = 0.5, AddStorage = 0.5},
         Value = 800,
         Rarity = nil,
-        Cases = {"C1", "C2"},
+        Cases = {"C1", "C2", "C3"},
         ID = "A52"
     },
     A53 = {
@@ -498,7 +498,7 @@ local accessories = {
         Reward = {AddPerClick = 1.0},
         Value = 850,
         Rarity = nil,
-        Cases = {"C1", "C2"},
+        Cases = {"C1", "C2", "C3"},
         ID = "A53"
     },
     A54 = {
@@ -508,17 +508,476 @@ local accessories = {
         Reward = {AddStorage = 1},
         Value = 325,
         Rarity = nil,
-        Cases = {"C1", "C2"},
+        Cases = {"C1", "C2", "C3"},
         ID = "A54"
     },
-
+    A55 = {
+        Name = "Midnight Shades",
+        Type = "Accessory",
+        AssetID = 30331986,
+        Reward = {AddStorage = 1},
+        Value = 400,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A55"
+    },
+    A56 = {
+        Name = "Skull",
+        Type = "Accessory",
+        AssetID = 36883367,
+        Reward = {AddPerClick = 1},
+        Value = 450,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A56"
+    },
+    A57 = {
+        Name = "Man Bun Hair",
+        Type = "Accessory",
+        AssetID = 343584973,
+        Reward = {AddPerClick = 0.5, AddStorage= 0.5},
+        Value = 550,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A57"
+    },
+    A58 = {
+        Name = "Beautiful Hair for Purple People",
+        Type = "Accessory",
+        AssetID = 17424092,
+        Reward = {AddPerClick = 1.0},
+        Value = 910,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A58"
+    },
+    A59 = {
+        Name = "Red Whoosh with Headphones",
+        Type = "Accessory",
+        AssetID = 161246757,
+        Reward = {AddPerClick = 0.5, AddStorage = 0.5},
+        Value = 970,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A59"
+    },
+    A60 = {
+        Name = "Green Whoosh and Headphones",
+        Type = "Accessory",
+        AssetID = 187845417,
+        Reward = {AddPerClick = 0.75, AddStorage= 0.25},
+        Value = 1050,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A60"
+    },
+    A61 = {
+        Name = "Modern Pompadour",
+        Type = "Accessory",
+        AssetID = 161246595,
+        Reward = {AddPerClick = .25, AddStorage= .75},
+        Value = 1200,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A61"
+    },
+    A62 = {
+        Name = "Serious Scar Face",
+        Type = "Face",
+        AssetID = 255827175,
+        Reward = {AddPerClick = .5, AddStorage= .5},
+        Value = 1350,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A62"
+    },
+    A63 = {
+        Name = "Hmmm...",
+        Type = "Face",
+        AssetID = 7076076,
+        Reward = {AddStorage= 1.0},
+        Value = 1500,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A63"
+    },
+    A64 = {
+        Name = "Tiger Chase Fear Face",
+        Type = "Face",
+        AssetID = 258198928,
+        Reward = {AddPerClick = 1.0},
+        Value = 1700,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A64"
+    },
+    A65 = {
+        Name = "Woebegone",
+        Type = "Face",
+        AssetID = 21755022,
+        Reward = {AddPerClick = .5, AddStorage= .5},
+        Value = 1800,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A65"
+    },
+    A66 = {
+        Name = "Bluesteel Warhelm of Rekt",
+        Type = "Accessory",
+        AssetID = 147144545,
+        Reward = {AddPerClick = .25, AddStorage= .75},
+        Value = 2150,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A66"
+    },
+    A67 = {
+        Name = "Silver Aviators",
+        Type = "Accessory",
+        AssetID = 134823161,
+        Reward = {AddPerClick = 0.25, AddStorage= .75},
+        Value = 2400,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A67"
+    },
+    A68 = {
+        Name = "Sonic Shades",
+        Type = "Accessory",
+        AssetID = 1743984961,
+        Reward = {AddPerClick = 0.5, AddStorage= 0.5},
+        Value = 2700,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A68"
+    },
+    A69 = {
+        Name = "Steampunk Cyborg Face",
+        Type = "Accessory",
+        AssetID = 1380773045,
+        Reward = {AddPerClick = 1.0},
+        Value = 2900,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A69"
+    },
+    A70 = {
+        Name = "Telamon's Other Chicken Suit",
+        Type = "Accessory",
+        AssetID = 121390996,
+        Reward = {AddPerClick = .25, AddStorage= 0.75},
+        Value = 2950,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A70"
+    },
+    A71 = {
+        Name = "Telamon's Vampire Chicken Suit",
+        Type = "Accessory",
+        AssetID = 517267524,
+        Reward = {AddPerClick = 0.75, AddStorage= 0.25},
+        Value = 3000,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A71"
+    },
+    A72 = {
+        Name = "Midnight Motor Magnifique",
+        Type = "Accessory",
+        AssetID = 456225312,
+        Reward = {AddPerClick = 0.5, AddStorage= 0.5},
+        Value = 3100,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A72"
+    },
+    A73 = {
+        Name = "Adurite Hair for Beautiful People",
+        Type = "Accessory",
+        AssetID = 1191145114,
+        Reward = {AddStorage= 1.0},
+        Value = 3150,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A73"
+    },
+    A74 = {
+        Name = "Flaming Mohawk",
+        Type = "Accessory",
+        AssetID = 191101707,
+        Reward = {AddPerClick = .5, AddStorage= .5},
+        Value = 2600,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A74"
+    },
+    A75 = {
+        Name = "Don't Wake Me Up",
+        Type = "Face",
+        AssetID = 343619993,
+        Reward = {AddPerClick = .25, AddStorage= .75},
+        Value = 3250,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A75"
+    },
+    A76 = {
+        Name = "Bored",
+        Type = "Face",
+        AssetID = 66330106,
+        Reward = {AddPerClick = .75, AddStorage= .25},
+        Value = 3400,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A76"
+    },
+    A77 = {
+        Name = "Sadfaic",
+        Type = "Face",
+        AssetID = 117522793,
+        Reward = {AddPerClick = 0.5, AddStorage= 0.5},
+        Value = 1600,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A77"
+    },
+    A78 = {
+        Name = "Dark Age Ninja Cape",
+        Type = "Accessory",
+        AssetID = 928853280,
+        Reward = {AddPerClick = 1.0},
+        Value = 3500,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A78"
+    },
+    A79 = {
+        Name = "Sparkling Angel Wings",
+        Type = "Accessory",
+        AssetID = 192557913,
+        Reward = {AddPerClick = 0.5, AddStorage= 0.5},
+        Value = 5000,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A79"
+    },
+    A80 = {
+        Name = "Sinister F",
+        Type = "Accessory",
+        AssetID = 4078588496,
+        Reward = {AddPerClick = 0.25, AddStorage= 0.75},
+        Value = 3600,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A80"
+    },
+    A81 = {
+        Name = "Black 8-Bit Headphones",
+        Type = "Accessory",
+        AssetID = 1425126225,
+        Reward = {AddPerClick = .75, AddStorage= 0.25},
+        Value = 3800,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A81"
+    },
+    A82 = {
+        Name = "Sad",
+        Type = "Face",
+        AssetID = 7699177,
+        Reward = {AddPerClick = 0.5, AddStorage= 0.5},
+        Value = 4000,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A82"
+    },
+    A83 = {
+        Name = "Frightening Unibrow",
+        Type = "Face",
+        AssetID = 8560985,
+        Reward = {AddStorage= 1.0},
+        Value = 4250,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A83"
+    },
+    A84 = {
+        Name = "Elvis Hair",
+        Type = "Accessory",
+        AssetID = 12314098,
+        Reward = {AddPerClick = 0.25, AddStorage= 0.75},
+        Value = 4700,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A84"
+    },
+    A85 = {
+        Name = "Elton John - Classic Hair",
+        Type = "Accessory",
+        AssetID = 11452955059,
+        Reward = {AddPerClick = .75, AddStorage= .25},
+        Value = 5200,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A85"
+    },
+    A86 = {
+        Name = "Classic Vampire",
+        Type = "Face",
+        AssetID = 7074836,
+        Reward = {AddPerClick = .5, AddStorage= .5},
+        Value = 5600,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A86"
+    },
+    A87 = {
+        Name = "Sad Zombie",
+        Type = "Face",
+        AssetID = 7131361,
+        Reward = {AddPerClick = .75, AddStorage= .25},
+        Value = 6000,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A87"
+    },
+    A88 = {
+        Name = "Black Wings",
+        Type = "Accessory",
+        AssetID = 215719598,
+        Reward = {AddPerClick = .25, AddStorage= .75},
+        Value = 6700,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A88"
+    },
+    A89 = {
+        Name = "Crimson Wings",
+        Type = "Accessory",
+        AssetID = 409739014,
+        Reward = {AddPerClick = 1.0},
+        Value = 7100,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A89"
+    },
+    A90 = {
+        Name = "Counterfeit Wizard’s Hat",
+        Type = "Accessory",
+        AssetID = 1743924583,
+        Reward = {AddPerClick = .5, AddStorage= .5},
+        Value = 7500,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A90"
+    },
+    A91 = {
+        Name = "Shaggy",
+        Type = "Accessory",
+        AssetID = 20573078,
+        Reward = {AddStorage= 1.0},
+        Value = 8100,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A91"
+    },
+    A92 = {
+        Name = "Bling Shades",
+        Type = "Accessory",
+        AssetID = 44114585,
+        Reward = {AddPerClick = .5, AddStorage= .5},
+        Value = 8500,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A92"
+    },
+    A93 = {
+        Name = "Sleek Sunglasses",
+        Type = "Accessory",
+        AssetID = 51245241,
+        Reward = {AddStorage= 1.0},
+        Value = 9100,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A93"
+    },
+    A94 = {
+        Name = "Blue Top Hat",
+        Type = "Accessory",
+        AssetID = 1016145591,
+        Reward = {AddPerClick = 1.0},
+        Value = 10000,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A94"
+    },
+    A95 = {
+        Name = "Lucky Clover Necklace",
+        Type = "Accessory",
+        AssetID = 96680926,
+        Reward = {AddPerClick = .5, AddStorage= .5},
+        Value = 11000,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A95"
+    },
+    A96 = {
+        Name = "Christmas Tie",
+        Type = "Accessory",
+        AssetID = 67318186,
+        Reward = {AddPerClick = .75, AddStorage= .25},
+        Value = 12000,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A96"
+    },
+    A97 = {
+        Name = "Turkey Tie 2012",
+        Type = "Accessory",
+        AssetID = 98421766,
+        Reward = {AddPerClick = .25, AddStorage= .75},
+        Value = 11500,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A97"
+    },
+    A98 = {
+        Name = "Gentleman Patriot",
+        Type = "Accessory",
+        AssetID = 29715001,
+        Reward = {AddPerClick = 1.0},
+        Value = 14000,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A98"
+    },
+    A99 = {
+        Name = "Pirate Captain's Hat",
+        Type = "Accessory",
+        AssetID = 1028859,
+        Reward = {AddStorage= 1.0},
+        Value = 13500,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A99"
+    },
+    A100 = {
+        Name = "Adurite Bucket",
+        Type = "Accessory",
+        AssetID = 928910453,
+        Reward = {AddPerClick = .5, AddStorage= .5},
+        Value = 13000,
+        Rarity = nil,
+        Cases = {"C1", "C2", "C3"},
+        ID = "A100"
+    }
 }
 
 local RarityRanges = {
     Basic = {Lower = 1, Upper = 10},
     Common = {Lower = 11, Upper = 50},
     Uncommon = {Lower = 51, Upper = 250},
-    Fine = {Lower = 250, Upper = 900},
+    Fine = {Lower = 251, Upper = 900},
     Rare = {Lower = 901, Upper = 3500},
     Exceptional = {Lower = 3501, Upper = 14000},
     Epic = {Lower = 14001, Upper = 55000},

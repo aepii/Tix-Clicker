@@ -48,7 +48,7 @@ function TixUIAnim:Animate(player, detail, value, valueData)
         TweenService:Create(detail.Amount, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {TextSize = 0}):Play()
         detail:TweenSizeAndPosition(
             UDim2.new(0, 0, 0, 0),
-            UDim2.new(0.965, 0, 0.4, 0),
+            UDim2.new(0.965, 0, 0.35, 0),
             Enum.EasingDirection.Out,
             Enum.EasingStyle.Quint,
             1,
@@ -77,7 +77,57 @@ function TixUIAnim:Animate(player, detail, value, valueData)
             0.05,
             true
         )
+    elseif detail.Name == "TixCritDetail" then
+        detail.Amount.Text = "+" .. SuffixHandler:Convert(value)
+    
+        local randomX = math.random(100, 900) / 1000
+        local randomY = math.random(100, 900) / 1000
         
+        detail.Rotation = math.random(270 - 50, 270 + 50)
+        detail.Position = UDim2.new(randomX, 0, randomY, 0)
+        
+        detail:TweenSize(
+            UDim2.new(0.06, 0, 0.15, 0),
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Elastic,
+            0.5,
+            true
+        )
+        
+        wait(0.75)
+        
+        TweenService:Create(detail.Amount, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {TextSize = 0}):Play()
+        detail:TweenSizeAndPosition(
+            UDim2.new(0, 0, 0, 0),
+            UDim2.new(0.965, 0, 0.35, 0),
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Quint,
+            1,
+            true
+        )
+        
+        wait(0.5)
+        
+        local statsDisplay = detail.Parent.Parent.Stats["1"]
+        statsDisplay.Image:TweenSizeAndPosition(
+            UDim2.new(0.5, 0, 1.5, 0),
+            UDim2.new(0.7, 0, 0.5, 0),
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Quint,
+            0.05,
+            true
+        )
+        
+        wait(0.05)
+        
+        statsDisplay.Image:TweenSizeAndPosition(
+            UDim2.new(0.5, 0, 1.25, 0),
+            UDim2.new(0.7, 0, 0.5, 0),
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Quint,
+            0.05,
+            true
+        )
     elseif detail.Name == "NegateTixDetail" then
         detail.Amount.Text = "-" .. SuffixHandler:Convert(value)
     
@@ -85,7 +135,7 @@ function TixUIAnim:Animate(player, detail, value, valueData)
         local randomY = math.random(400, 600) / 1000
 
         detail.Rotation = -45
-        detail.Position = UDim2.new(0.965, 0, 0.4, 0)
+        detail.Position = UDim2.new(0.965, 0, 0.35, 0)
         
         detail:TweenSize(
             UDim2.new(0.04, 0, 0.1, 0),
@@ -131,7 +181,7 @@ function TixUIAnim:Animate(player, detail, value, valueData)
         TweenService:Create(detail.Amount, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {TextSize = 0}):Play()
         detail:TweenSizeAndPosition(
             UDim2.new(0, 0, 0, 0),
-            UDim2.new(0.965, 0, 0.5, 0),
+            UDim2.new(0.965, 0, 0.45, 0),
             Enum.EasingDirection.Out,
             Enum.EasingStyle.Quint,
             1,
@@ -167,7 +217,171 @@ function TixUIAnim:Animate(player, detail, value, valueData)
         local randomY = math.random(400, 600) / 1000
 
         detail.Rotation = -45
-        detail.Position = UDim2.new(0.965, 0, 0.5, 0)
+        detail.Position = UDim2.new(0.965, 0, 0.45, 0)
+        
+        detail:TweenSize(
+            UDim2.new(0.04, 0, 0.1, 0),
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Elastic,
+            0.5,
+            true
+        )
+        
+        wait(0.75)
+        
+        TweenService:Create(detail.Amount, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {TextSize = 0}):Play()
+        detail:TweenSizeAndPosition(
+            UDim2.new(0, 0, 0, 0),
+            UDim2.new(randomX, 0, randomY, 0), 
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Quint,
+            1,
+            true
+        )
+
+        wait(0.5)
+    elseif detail.Name == "RebirthTixDetail" then
+        detail.Amount.Text = "+" .. SuffixHandler:Convert(value)
+        
+        local randomX = math.random(400, 600) / 1000
+        local randomY = math.random(400, 600) / 1000
+
+        detail.Rotation = math.random(270 - 50, 270 + 50)
+        detail.Position = UDim2.new(randomX, 0, randomY, 0)
+        
+        detail:TweenSizeAndPosition(
+            UDim2.new(0.04, 0, 0.1, 0),
+            UDim2.new(randomX, 0, randomX, 0),
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Elastic,
+            0.5,
+            true
+        )
+        
+        wait(0.75)
+        
+        TweenService:Create(detail.Amount, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {TextSize = 0}):Play()
+        detail:TweenSizeAndPosition(
+            UDim2.new(0, 0, 0, 0),
+            UDim2.new(0.965, 0, 0.55, 0),
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Quint,
+            1,
+            true
+        )
+        
+        wait(0.5)
+        
+        local statsDisplay = detail.Parent.Parent.Stats["3"]
+        statsDisplay.Image:TweenSizeAndPosition(
+            UDim2.new(0.5, 0, 1.5, 0),
+            UDim2.new(0.7, 0, 0.5, 0),
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Quint,
+            0.05,
+            true
+        )
+        
+        wait(0.05)
+        
+        statsDisplay.Image:TweenSizeAndPosition(
+            UDim2.new(0.5, 0, 1.25, 0),
+            UDim2.new(0.7, 0, 0.5, 0),
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Quint,
+            0.05,
+            true
+        )
+    elseif detail.Name == "NegateRebirthTixDetail" then
+        detail.Amount.Text = "-" .. SuffixHandler:Convert(value)
+    
+        local randomX = math.random(400, 600) / 1000
+        local randomY = math.random(400, 600) / 1000
+
+        detail.Rotation = -45
+        detail.Position = UDim2.new(0.965, 0, 0.55, 0)
+        
+        detail:TweenSize(
+            UDim2.new(0.04, 0, 0.1, 0),
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Elastic,
+            0.5,
+            true
+        )
+        
+        wait(0.75)
+        
+        TweenService:Create(detail.Amount, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {TextSize = 0}):Play()
+        detail:TweenSizeAndPosition(
+            UDim2.new(0, 0, 0, 0),
+            UDim2.new(randomX, 0, randomY, 0), 
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Quint,
+            1,
+            true
+        )
+
+        wait(0.5)
+    elseif detail.Name == "ValueDetail" then
+        detail.Amount.Text = "+" .. SuffixHandler:Convert(value)
+        
+        local randomX = math.random(400, 600) / 1000
+        local randomY = math.random(400, 600) / 1000
+
+        detail.Rotation = math.random(0 - 50, 0 + 50)
+        detail.Position = UDim2.new(randomX, 0, randomY, 0)
+        
+        detail:TweenSizeAndPosition(
+            UDim2.new(0.04, 0, 0.1, 0),
+            UDim2.new(randomX, 0, randomX, 0),
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Elastic,
+            0.5,
+            true
+        )
+        
+        wait(0.75)
+        
+        TweenService:Create(detail.Amount, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {TextSize = 0}):Play()
+        detail:TweenSizeAndPosition(
+            UDim2.new(0, 0, 0, 0),
+            UDim2.new(0.965, 0, 0.65, 0),
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Quint,
+            1,
+            true
+        )
+        
+        wait(0.5)
+        
+        local statsDisplay = detail.Parent.Parent.Stats["4"]
+        statsDisplay.Image:TweenSizeAndPosition(
+            UDim2.new(0.5, 0, 1.25, 0),
+            UDim2.new(0.7, 0, 0.5, 0),
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Quint,
+            0.05,
+            true
+        )
+        
+        wait(0.05)
+        
+        statsDisplay.Image:TweenSizeAndPosition(
+            UDim2.new(0.5, 0, 1, 0),
+            UDim2.new(0.7, 0, 0.5, 0),
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Quint,
+            0.05,
+            true
+        )
+    elseif detail.Name == "NegateValueetail" then
+        detail.Amount.Text = "-" .. SuffixHandler:Convert(value)
+    
+        local randomX = math.random(400, 600) / 1000
+        local randomY = math.random(400, 600) / 1000
+
+        detail.Rotation = -45
+        detail.Position = UDim2.new(0.965, 0, 0.65, 0)
         
         detail:TweenSize(
             UDim2.new(0.04, 0, 0.1, 0),
@@ -228,7 +442,7 @@ function TixUIAnim:Animate(player, detail, value, valueData)
         if statsDisplay then
             print(statsDisplay)
             statsDisplay.IconImage:TweenSize(
-                UDim2.new(1.5, 0, 1.5, 0),
+                UDim2.new(1.25, 0, 1.25, 0),
                 Enum.EasingDirection.Out,
                 Enum.EasingStyle.Quint,
                 0.05,

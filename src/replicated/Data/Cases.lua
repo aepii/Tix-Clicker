@@ -3,9 +3,9 @@ local cases = {
         Name = "Noob Case",
         Cost = 10,
         Weights = {
-            [1] = {"Basic", 64},
+            [1] = {"Basic", 65},
             [2] = {"Common", 30.5},
-            [3] = {"Uncommon", 5.5},
+            [3] = {"Uncommon", 4.5},
         },
         Image = "rbxassetid://17227170475",
         ID = "C1"
@@ -13,15 +13,27 @@ local cases = {
 
     C2 = {
         Name = "Apprentice Case",
-        Cost = 100,
+        Cost = 200,
         Weights = {
-            [1] = {"Basic", 7.5},
-            [2] = {"Common", 30},
-            [3] = {"Uncommon", 55},
-            [4] = {"Fine", 7.5},
+            [1] = {"Common", 20},
+            [2] = {"Uncommon", 60},
+            [3] = {"Fine", 19.5},
+            [4] = {"Rare", 0.5},
         },
         Image = "rbxassetid://17230178285",
         ID = "C2"
+    },
+
+    C3 = {
+        Name = "Intermediate Case",
+        Cost = 5000,
+        Weights = {
+            [1] = {"Fine", 35},
+            [2] = {"Rare", 45},
+            [3] = {"Exceptional", 20},
+        },
+        Image = "rbxassetid://17812620985",
+        ID = "C3"
     }
 }
 

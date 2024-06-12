@@ -11,6 +11,7 @@ local Modules = ReplicatedStorage.Modules
 local Cases = require(ReplicatedStorage.Data.Cases)
 local Accessories = require(ReplicatedStorage.Data.Accessories)
 local RarityColors = require(Modules.RarityColors)
+local TixUIAnim = require(Modules.TixUIAnim)
 
 ---- Data ----
 
@@ -38,6 +39,7 @@ local Sounds = Player:WaitForChild("Sounds")
 local ClickSound = Sounds:WaitForChild("ClickSound")
 local RewardSound = Sounds:WaitForChild("RewardSound")
 local SpinSound = Sounds:WaitForChild("SpinSound")
+local PopSound = Sounds:WaitForChild("PopSound")
 
 ---- Networking ----
 
@@ -120,6 +122,10 @@ local function showWinner(winner)
     task.wait(0.25)
     CaseWinningFrame.Visible = false
     UI.Enabled = true
+    coroutine.wrap(function()
+        TixUIAnim:Animate(Player, "ValueDetail", winner.Value, nil)
+        SoundService:PlayLocalSound(PopSound)
+    end)()
 end
 
 local function populateCase(caseID, winner)

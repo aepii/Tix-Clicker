@@ -14,6 +14,7 @@ local Shop = Workspace.ShopUpgrades
 
 local Modules = ReplicatedStorage.Modules
 local TweenButton = require(Modules.TweenButton)
+local TixUIAnim = require(Modules.TixUIAnim)
 
 ---- UI ----
 
@@ -26,6 +27,9 @@ local CurrentUI = InfoUI.CurrentUI
 
 local Sounds = Player:WaitForChild("Sounds")
 local ClickSound = Sounds:WaitForChild("ClickSound")
+local MoneySound = Sounds:WaitForChild("MoneySound")
+local PopSound = Sounds:WaitForChild("PopSound")
+local ErrorSound = Sounds:WaitForChild("ErrorSound")
 
 ---- Networking ----
 
@@ -35,7 +39,16 @@ local PurchaseRebirthUpgradeRemote = Networking.PurchaseRebirthUpgrade
 ---- Private Functions ----
 
 local function purchaseRebirthUpgrade(upgradeName)
-    PurchaseRebirthUpgradeRemote:InvokeServer(upgradeName)
+    local response = PurchaseRebirthUpgradeRemote:InvokeServer(upgradeName)
+    coroutine.wrap(function()
+        if response then
+            SoundService:PlayLocalSound(MoneySound)
+            TixUIAnim:Animate(Player, "NegateRebirthTixDetail", response, nil)
+            SoundService:PlayLocalSound(PopSound)
+        else
+            SoundService:PlayLocalSound(ErrorSound)
+        end
+    end)()
 end
 
 ---- Buttons ----

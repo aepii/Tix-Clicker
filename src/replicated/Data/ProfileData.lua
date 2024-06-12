@@ -52,6 +52,14 @@ ProfileData.TemporaryData = {
 		Value = 500,
 		Type = "Number"
 	};
+	["RageModeTime"] = {
+		Value = 15,
+		Type = "Number"
+	};
+	["RageMode"] = {
+		Value = false,
+		Type = "Bool"
+	};
 	["TixPerClick"] = {
 		Value = 1,
 		Type = "Number"
@@ -74,6 +82,14 @@ ProfileData.TemporaryData = {
 	};
 	["TixStorage"] = {
 		Value = 20,
+		Type = "Number"
+	};
+	["CriticalChance"] = {
+		Value = 1,
+		Type = "Number"
+	};
+	["ClickRate"] = {
+		Value = 15,
 		Type = "Number"
 	};
 	["EquippedAccessoriesLimit"] = {

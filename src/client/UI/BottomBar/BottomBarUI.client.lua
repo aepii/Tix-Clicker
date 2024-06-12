@@ -45,7 +45,7 @@ local ClickSound = Sounds:WaitForChild("ClickSound")
 ---- Private Functions ----
 
 local function animateXPBar()
-    XPBar:TweenSize(UDim2.new(math.min((XP.Value/requiredXP.Value)*0.95, 0.95), 0, 0.7, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Linear, 0.5, true)
+    XPBar:TweenSize(UDim2.new(math.min((XP.Value/requiredXP.Value)*0.95, 0.95), 0, 0.7, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Linear, 0.1, true)
     
 end
 

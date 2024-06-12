@@ -50,29 +50,29 @@ local materials = {
     },
     M6 = {
         Name = "Exceptional Material",
-        Image = "rbxassetid://",
-        Value = {0,0},
+        Image = "rbxassetid://17760653250",
+        Value = {3501,14000},
         Rarity = "Exceptional",
         ID = "M6"
     },
     M7 = {
         Name = "Epic Material",
-        Image = "rbxassetid://",
-        Value = {0,0},
+        Image = "rbxassetid://17760653117",
+        Value = {14001,55000},
         Rarity = "Epic",
         ID = "M7"
     },
     M8 = {
         Name = "Heroic Material",
-        Image = "rbxassetid://",
-        Value = {0,0},
+        Image = "rbxassetid://17760653030",
+        Value = {55001,225000},
         Rarity = "Heroic",
         ID = "M8"
     },
     M9 = {
         Name = "Legendary Material",
-        Image = "rbxassetid://",
-        Value = {0,0},
+        Image = "rbxassetid://17760652861",
+        Value = {225001,900000},
         Rarity = "Legendary",
         ID = "M9"
     },

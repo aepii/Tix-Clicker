@@ -49,6 +49,8 @@ PurchaseRebirthUpgradeRemote.OnServerInvoke = (function(player, upgradeID)
             DataManager:SetValue(player, profile, {"Rebirth Tix"}, data["Rebirth Tix"] - cost)
             DataManager:UpdateLeaderstats(player, profile, "Rebirth Tix")
             UpdateClientShopInfoRemote:FireClient(player, "RebirthUpgrade")
+
+            return cost
         end
     end
 end)

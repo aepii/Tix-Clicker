@@ -23,6 +23,8 @@ local PurchaseUpgradeRemote = Networking.PurchaseUpgrade
 local UpdateClientInventoryRemote = Networking.UpdateClientInventory
 local UpdateClientMaterialsInventoryRemote = Networking.UpdateClientMaterialsInventory
 
+local BindableEquipTix = Networking.BindableEquipTix
+
 ---- Private Functions ----
 
 local function canPurchase(upgradeData, upgrade)
@@ -86,10 +88,11 @@ PurchaseUpgradeRemote.OnServerInvoke = (function(player, upgradeID)
                 
                 DataManager:SetValue(player, profile, {"Rocash"}, data.Rocash - cost)
                 DataManager:ArrayInsert(player, profile, {"Upgrades"}, upgradeID)
-                print(data.Upgrades)
                 DataManager:UpdateLeaderstats(player, profile, "Rocash")
-                print(player, upgrade, "SERVER")
                 UpdateClientInventoryRemote:FireClient(player, upgrade, "ADD")
+
+                BindableEquipTix:Fire(player, upgradeID)
+                DataManager:SetValue(player, profile, {"ToolEquipped"}, upgradeID)
                 return cost
             end
         end

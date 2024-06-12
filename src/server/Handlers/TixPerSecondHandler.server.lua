@@ -27,16 +27,16 @@ local function playerAdded(player)
 
     coroutine.resume(coroutine.create(function()
         while task.wait() and player:IsDescendantOf(Players) do
-            if player.TemporaryData.ActiveCaseOpening.Value == false then
-                local tixStorage = TemporaryData:CalculateTixStorage(player, data)
-                local tixPerSecond = TemporaryData:CalculateTixPerSecond(player, data)
-                if data.Tix < tixStorage and tixPerSecond > 0 then
-                    DataManager:SetValue(player, profile, {"Tix"}, math.min(data.Tix + tixPerSecond, tixStorage))
-                    DataManager:UpdateLeaderstats(player, profile, "Tix")
+            local tixStorage = TemporaryData:CalculateTixStorage(player, data)
+            local tixPerSecond = TemporaryData:CalculateTixPerSecond(player, data)
+            if data.Tix < tixStorage and tixPerSecond > 0 then
+                DataManager:SetValue(player, profile, {"Tix"}, math.min(data.Tix + tixPerSecond, tixStorage))
+                DataManager:UpdateLeaderstats(player, profile, "Tix")
+                if player.TemporaryData.ActiveCaseOpening.Value == false then
                     AnimateTixRemote:FireClient(player, tixPerSecond)
                 end
-                task.wait(1)
             end
+            task.wait(1)
 		end
     end))
 end

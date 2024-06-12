@@ -18,6 +18,7 @@ local leaderstats = Player:WaitForChild("leaderstats")
 local TixLeaderstat = leaderstats[TemporaryData:GetLeaderstatDisplayName("Tix")]
 local RocashLeaderstat = leaderstats[TemporaryData:GetLeaderstatDisplayName("Rocash")]
 local RebirthTixLeaderstat = leaderstats[TemporaryData:GetLeaderstatDisplayName("Rebirth Tix")]
+local ValueLeaderstat = leaderstats[TemporaryData:GetLeaderstatDisplayName("Value")]
 
 local TixStorage = ReplicatedTemporaryData.TixStorage
 local Tix = ReplicatedData.Tix
@@ -31,6 +32,7 @@ local Stats = UI.Stats
 local TixHolder = Stats["1"]
 local RocashHolder = Stats["2"]
 local RebirthTixHolder = Stats["3"]
+local ValueHolder = Stats["4"]
 
 ---- Private Functions ----
 
@@ -58,12 +60,19 @@ end
 
 RebirthTixLeaderstat.Changed:Connect(updateRebirthTixHolder)
 
+local function updateValueHolder()
+    ValueHolder.Amount.Text = ValueLeaderstat.Value
+end
+
+ValueLeaderstat.Changed:Connect(updateValueHolder)
+
 ---- Initialize ----
 
 local function init()
     updateTixHolder()
     updateRocashHolder()
     updateRebirthTixHolder()
+    updateValueHolder()
 end
 
 init()

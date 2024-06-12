@@ -24,7 +24,7 @@ local AnimateTixRemote = Networking.AnimateTix
 
 AnimateTixRemote.OnClientEvent:Connect(function(tixGained)
     coroutine.wrap(function()
-            TixUIAnim:Animate(Player, "TixDetail", tixGained, nil)
-            SoundService:PlayLocalSound(PopSound)
+        TixUIAnim:Animate(Player, "TixDetail", tixGained, nil)
+        SoundService:PlayLocalSound(PopSound)
     end)()
 end)

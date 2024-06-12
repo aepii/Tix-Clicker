@@ -71,6 +71,8 @@ OpenCaseRemote.OnServerInvoke = (function(player, caseID)
                 local GUID = HttpService:GenerateGUID(false)
                 local item = roll(caseID)
 
+                temporaryData.LastClickTime.Value = os.clock()
+
                 DataManager:SetValue(player, profile, {"Cases", caseID}, data["Cases"][caseID] - 1)
                 DataManager:SetValue(player, profile, {"Accessories", GUID}, item.ID)
                 
