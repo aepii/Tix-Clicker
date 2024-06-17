@@ -39,7 +39,7 @@ local function calculateRate(quantity, chanceToReceive, materialID)
 
     for i = 1, quantity do
         local chosen = math.random()
-        print(chanceToReceive, chosen)
+        print(chosen, chanceToReceive)
         if chosen < chanceToReceive then
             amount = amount + 1
         end
@@ -49,7 +49,6 @@ local function calculateRate(quantity, chanceToReceive, materialID)
 end
 
 ScrapAccessoryRemote.OnServerInvoke = (function(player, accessoryGUID)
-    print(player)
     local profile = ProfileCacher:GetProfile(player)
     local data = profile.Data
 
@@ -71,11 +70,8 @@ ScrapAccessoryRemote.OnServerInvoke = (function(player, accessoryGUID)
         UpdateClientAccessoriesInventoryRemote:FireClient(player, accessoryID, accessoryGUID, "DEL") 
 
         if amount > 0 then
-            print(amount, "AMOUNT")
             DataManager:SetValue(player, profile, {"Materials", materialID}, newMaterialValue)
             if data.Materials[materialID] then
-                print("UPDATE PLAEASEE")
-                print(data.Materials[materialID])
                 UpdateClientMaterialsInventoryRemote:FireClient(player, newMaterialValue, materialID, "UPDATE")
             end
         end

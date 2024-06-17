@@ -15,7 +15,7 @@ local UpdateCameraRemote = Networking.UpdateCamera
 
 local function onUpdate()
     if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-        camera.CFrame = CFrame.new(player.Character.HumanoidRootPart.Position) * CFrame.new(-2.5,2.5,30)
+        camera.CFrame = CFrame.new(player.Character.HumanoidRootPart.Position) * CFrame.new(-2.5,2.5,25)
     end
 end
 

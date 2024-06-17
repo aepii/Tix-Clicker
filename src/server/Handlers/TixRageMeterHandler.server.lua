@@ -22,12 +22,11 @@ local AnimateRage = Networking.AnimateRage
 ---- Private Functions ----
 
 local function rageMode(player, profile)
-    player.TemporaryData.CriticalChance.Value = 100
     AnimateRage:FireClient(player)
     while task.wait(0.1) and player:IsDescendantOf(Players) do
         player.TemporaryData.XP.Value -= player.TemporaryData.RequiredXP.Value / (player.TemporaryData.RageModeTime.Value * 10)
         if player.TemporaryData.XP.Value <= 0 then
-            player.TemporaryData.CriticalChance.Value = 1
+            player.TemporaryData.CriticalChance.Value = TemporaryData:CalculateCriticalChance(player, profile.data)
             player.TemporaryData.RageMode.Value = false
             task.wait(1)
             return
@@ -50,8 +49,8 @@ local function playerAdded(player)
                     rageMode(player, profile)
                 end
 
-                if elapsedTime > 15 and player.TemporaryData.XP.Value > 0 then
-                    player.TemporaryData.XP.Value = math.max(0, player.TemporaryData.XP.Value - ((elapsedTime + 20)^1.25 * .02))
+                if elapsedTime > 30 and player.TemporaryData.XP.Value > 0 then
+                    player.TemporaryData.XP.Value = math.max(0, player.TemporaryData.XP.Value - ((elapsedTime+15)^1.25 * .02))
                 end
             end
 		end

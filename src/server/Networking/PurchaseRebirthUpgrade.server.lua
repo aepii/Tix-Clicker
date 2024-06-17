@@ -1,6 +1,5 @@
 ---- Services ----
 
-local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
@@ -50,6 +49,7 @@ PurchaseRebirthUpgradeRemote.OnServerInvoke = (function(player, upgradeID)
             DataManager:UpdateLeaderstats(player, profile, "Rebirth Tix")
             UpdateClientShopInfoRemote:FireClient(player, "RebirthUpgrade")
 
+            TemporaryData:CalculateRebirthUpgrades(player, data)
             return cost
         end
     end

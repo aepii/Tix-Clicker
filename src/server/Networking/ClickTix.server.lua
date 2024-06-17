@@ -43,17 +43,18 @@ ClickTixRemote.OnServerInvoke = (function(player)
     local tixPerClick = TemporaryData:CalculateTixPerClick(player, data)
     
     local elapsedTime = os.clock() - lastClickTime.Value 
-
     local tixValue;
+
 
     if temporaryData.ActiveCaseOpening.Value == false then
         if elapsedTime >= (1/temporaryData.ClickRate.Value) then
+            lastClickTime.Value = os.clock()
             if data.Tix < tixStorage then
+                print("CLICK", elapsedTime)
                 
                 local crit = isCrit(temporaryData.CriticalChance.Value)
-                print(crit)
                 if crit then
-                    tixPerClick *= 2
+                    tixPerClick *= (TemporaryData:CalculateCriticalPower(player, data) / 100) + 1
                     tixValue = math.min(data.Tix + tixPerClick, tixStorage)
                 else
                     tixValue = math.min(data.Tix + tixPerClick, tixStorage)
@@ -68,9 +69,9 @@ ClickTixRemote.OnServerInvoke = (function(player)
                     temporaryData.XP.Value = math.min(temporaryData.XP.Value + 1, temporaryData.RequiredXP.Value)
                 end
                 
-                lastClickTime.Value = os.clock()
                 return tixPerClick, crit
             end
         end
     end
+    return
 end)

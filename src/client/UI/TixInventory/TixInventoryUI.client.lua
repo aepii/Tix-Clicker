@@ -54,13 +54,11 @@ end
 
 local function updateInventory(upgrade, method)
     if method == "INIT" then
-        print("HELLO ITTNIT TIX")
         for index, icon in InvHolder:GetChildren() do
             if icon:IsA("Frame") and icon ~= IconCopy then
                 icon:Destroy()
             end
         end
-        print("HELLO INIT TIX")
         initInventory()
     elseif method == "ADD" then
         local icon = IconCopy:Clone()
@@ -78,7 +76,6 @@ end
 
 function initInventory()
     for _, upgrade in ReplicatedData.Upgrades:GetChildren() do
-        print(upgrade, "INITIALIZEEEE")
         updateInventory(Upgrades[upgrade.Name], "ADD")
     end
 end

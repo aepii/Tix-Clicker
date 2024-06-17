@@ -12,6 +12,11 @@ local DataManager = require(ServerScriptService.Data.DataManager)
 local Cases = require(ReplicatedStorage.Data.Cases)
 local Accessories = require(ReplicatedStorage.Data.Accessories)
 
+---- Modules ----
+
+local Modules = ReplicatedStorage.Modules
+local TemporaryData = require(Modules.TemporaryData)
+
 ---- Networking ----
 
 local Networking = ReplicatedStorage.Networking
@@ -23,12 +28,20 @@ local UpdateClientShopInfoRemote = Networking.UpdateClientShopInfo
 
 ---- Private Functions ----
 
+function findRarityIndex(rarity, caseWeights)
+
+    for k, v in pairs(caseWeights) do
+        if v[1] == rarity then
+            return k
+        end
+    end
+    return nil
+end
+
 local function pickWinner(rarity, caseID)
     local matchingAccessories = {}
-    print(rarity,caseID)
     for _, accessory in Accessories do
-        if accessory.Rarity == rarity and table.find(accessory.Cases, caseID) then
-            print(_, accessory)
+        if accessory.Rarity == rarity and findRarityIndex(rarity, Cases[caseID].Weights) then
             table.insert(matchingAccessories, accessory)
         end
     end
@@ -88,10 +101,16 @@ OpenCaseRemote.OnServerInvoke = (function(player, caseID)
                 end
                 temporaryData.ActiveCaseOpening.Value = true
                 OpenCaseAnimRemote:FireClient(player, caseID, item)
-                task.wait(10)
-                DataManager:UpdateLeaderstats(player, profile, "Value")
-                temporaryData.ActiveCaseOpening.Value = false
             end
         end
     end
+end)
+
+OpenCaseAnimRemote.OnServerEvent:Connect(function(player)
+    local profile = ProfileCacher:GetProfile(player)
+    local temporaryData = player.TemporaryData
+
+
+    DataManager:UpdateLeaderstats(player, profile, "Value")
+    temporaryData.ActiveCaseOpening.Value = false
 end)

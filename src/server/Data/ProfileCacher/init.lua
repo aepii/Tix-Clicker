@@ -21,7 +21,7 @@ local DataManager = require(ServerScriptService.Data.DataManager)
 ---- Private Variables ----
 
 local GameProfileStore = ProfileService.GetProfileStore(
-	"PlayerData10",
+	"PlayerData23",
 	ProfileTemplate
 )
 
@@ -30,7 +30,6 @@ local PlayerProfiles = {} -- [player]
 ---- Private Functions ----
 
 local function playerAdded(player)
-	print(player)
 	local profile = GameProfileStore:LoadProfileAsync("Player_" .. player.UserId)
 	if profile ~= nil then
 		profile:AddUserId(player.UserId) -- GDPR compliance

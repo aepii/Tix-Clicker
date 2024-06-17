@@ -20,6 +20,7 @@ local ReplicatedTemporaryData = Player:WaitForChild("TemporaryData")
 local ReplicatedAccessories = ReplicatedData.Accessories
 local EquippedAccessories = ReplicatedData.EquippedAccessories
 local accessoriesLimit = ReplicatedTemporaryData.AccessoriesLimit
+local equippedAccessoriesLimit = ReplicatedTemporaryData.EquippedAccessoriesLimit
 
 ---- UI ----
 
@@ -31,7 +32,9 @@ local InvHolder = AccessoryInventory.InvFrame.Holder
 local EquipFrame = AccessoryInventory.EquipFrame
 local IconCopy = InvHolder.IconCopy
 
-local AccessoriesLimitText = AccessoryInventory.AccessoriesLimit
+local SearchBar = AccessoryInventory.SearchBar.TextBox
+local AccessoriesLimitFrame = AccessoryInventory.AccessoriesLimit
+local EquippedAccessoriesLimitFrame = AccessoryInventory.EquippedLimit
 
 local IconScript = script.Parent.Icon
 IconScript.Name = "IconScript"
@@ -55,6 +58,29 @@ local EquipAccessoryRemote = Networking.EquipAccessory
 local UpdateClientAccessoriesInventoryRemote = Networking.UpdateClientAccessoriesInventory
 
 ---- Private Functions ----
+
+local function search(text)
+    local text = string.lower(text)
+    local elements = InvHolder:GetChildren()
+
+    for _, element in elements do
+        if element:IsA("Frame") and element ~= IconCopy then
+            if string.find(string.lower(element.AccessoryName.Value), text) or string.find(string.lower(element.Rarity.Value), text) then
+                element.Visible = true
+            else
+                element.Visible = false
+            end
+        end
+    end
+
+end
+
+SearchBar:GetPropertyChangedSignal("Text"):Connect(function()
+	local text = SearchBar.Text
+	
+	search(text)
+end)
+
 
 local function equipAccessory(accessoryName)
     EquipAccessoryRemote:InvokeServer(accessoryName)
@@ -98,13 +124,14 @@ local function updateInventory(ID, GUID, method)
         icon.Name = TemporaryData:CalculateTag(Player, GUID)
         icon.ID.Value = ID
         icon.GUID.Value = GUID
+        icon.Rarity.Value = Accessories[ID].Rarity
+        icon.AccessoryName.Value = Accessories[ID].Name
         icon.IconImage.Image = "http://www.roblox.com/Thumbs/Asset.ashx?Width=256&Height=256&AssetID="..Accessories[ID].AssetID
         icon.UIGradient.Color = RarityColors:GetGradient(Accessories[ID].Rarity)
         icon.Parent = InvHolder
         if isEquipped(GUID) then
             icon.EquippedIcon.Visible = true
         else
-            print("NOT")
             icon.EquippedIcon.Visible = false
         end
         icon.IconScript.Enabled = true
@@ -121,7 +148,8 @@ local function updateInventory(ID, GUID, method)
             icon.EquippedIcon.Visible = false
         end
     end
-    AccessoriesLimitText.Text = #ReplicatedAccessories:GetChildren() .. "/" .. accessoriesLimit.Value
+    AccessoriesLimitFrame.Text.Text = #ReplicatedAccessories:GetChildren() .. "/" .. accessoriesLimit.Value
+    EquippedAccessoriesLimitFrame.Text.Text = #EquippedAccessories:GetChildren() .. "/" .. equippedAccessoriesLimit.Value
 end
 
 function initInventory()

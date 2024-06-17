@@ -28,7 +28,6 @@ local function playerAdded(player)
 
     coroutine.resume(coroutine.create(function()
         while task.wait() and player:IsDescendantOf(Players) do
-            local tixStorage = TemporaryData:CalculateTixStorage(player, data)
             local convertPerSecond = TemporaryData:CalculateConvertPerSecond(player, data)
             queuedTix.Value += convertPerSecond
 
@@ -63,7 +62,7 @@ local function playerAdded(player)
                     ExchangeTixRemote:FireClient(player, tixExchanged, rocashGained)
                 end
             end
-            task.wait(1)
+            task.wait(TemporaryData:CalculateSpeedTixConvert(player, data))
         end
     end))
 end

@@ -10,10 +10,10 @@ local Modules = ReplicatedStorage.Modules
 local TweenButton = require(Modules.TweenButton)
 local TemporaryData = require(Modules:WaitForChild("TemporaryData"))
 local SuffixHandler = require(Modules.SuffixHandler)
+local TixUIAnim = require(Modules.TixUIAnim)
 
 ---- Data ----
 
-local ReplicatedData = Player:WaitForChild("ReplicatedData")
 local ReplicatedTemporaryData = Player:WaitForChild("TemporaryData")
 local Value = ReplicatedTemporaryData.Value
 
@@ -37,6 +37,8 @@ local CurrentUI = UI.CurrentUI
 
 local Sounds = Player:WaitForChild("Sounds")
 local ClickSound = Sounds:WaitForChild("ClickSound")
+local PopSound = Sounds:WaitForChild("PopSound")
+local RebirthSound = Sounds:WaitForChild("RebirthSound")
 
 ---- Networking ----
 
@@ -46,7 +48,16 @@ local RebirthRemote = Networking.Rebirth
 ---- Private Functions ----
 
 local function rebirth()
-    RebirthRemote:InvokeServer()
+    local rebirthTixGain, valueLost = RebirthRemote:InvokeServer()
+    SoundService:PlayLocalSound(RebirthSound)
+    coroutine.wrap(function()
+        TixUIAnim:Animate(Player, "NegateValueDetail", valueLost, nil)
+        SoundService:PlayLocalSound(PopSound)
+    end)()
+    coroutine.wrap(function()
+        TixUIAnim:Animate(Player, "RebirthTixDetail", rebirthTixGain, nil)
+        SoundService:PlayLocalSound(PopSound)
+    end)()
 end
 
 local function updateRebirthMenu()
@@ -104,7 +115,6 @@ end
 local function rebirthMouseDown()
     playClickSound()
     TweenButton:Shrink(RebirthButton, REBIRTHBUTTON_ORIGINALSIZE)
-    print("STARTED", tick())
     rebirth()
 end
 

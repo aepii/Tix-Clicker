@@ -30,8 +30,10 @@ ProfileData.Data = {
 	["Cases"] = {
 	};
 
-	["Materials"] = {	
+	["Materials"] = {
 	};
+
+	["Zones"] = {"Z0", "Z1"};
 
 }
 
@@ -49,11 +51,11 @@ ProfileData.TemporaryData = {
 		Type = "Number"
 	};
 	["RequiredXP"] = {
-		Value = 500,
+		Value = 1000,
 		Type = "Number"
 	};
 	["RageModeTime"] = {
-		Value = 15,
+		Value = 10,
 		Type = "Number"
 	};
 	["RageMode"] = {
@@ -89,7 +91,7 @@ ProfileData.TemporaryData = {
 		Type = "Number"
 	};
 	["ClickRate"] = {
-		Value = 15,
+		Value = 20,
 		Type = "Number"
 	};
 	["EquippedAccessoriesLimit"] = {
@@ -116,12 +118,40 @@ ProfileData.TemporaryData = {
 		Value = 1,
 		Type = "Number"
 	};
+	["MaterialDropChance"] = {
+		Value = 50,
+		Type = "Number"
+	};
+	["MaterialMaxDrop"] = {
+		Value = 5,
+		Type = "Number"
+	};
+	["CaseTime"] = {
+		Value = 5,
+		Type = "Number"
+	};
+	["CriticalPower"] = {
+		Value = 100,
+		Type = "Number"
+	};
+	["SpeedTixConvert"] = {
+		Value = 1,
+		Type = "Number"
+	};
+	["MultPerSecond"] = {
+		Value = 0,
+		Type = "Number"
+	};
+	["RageTime"] = {
+		Value = 10,
+		Type = "Number"
+	};
 	["RebirthMaterialDropChance"] = {
-		Value = 25,
+		Value = 0,
 		Type = "Number"
 	};
 	["RebirthMaterialMaxDrop"] = {
-		Value = 5,
+		Value = 0,
 		Type = "Number"
 	};
 	["RebirthMultPerClick"] = {
@@ -129,6 +159,42 @@ ProfileData.TemporaryData = {
 		Type = "Number"
 	};
 	["RebirthMultStorage"] = {
+		Value = 0,
+		Type = "Number"
+	};
+	["RebirthAccessoriesLimit"] = {
+		Value = 0,
+		Type = "Number"
+	};
+	["RebirthEquippedAccessoriesLimit"] = {
+		Value = 0,
+		Type = "Number"
+	};
+	["RebirthCaseTime"] = {
+		Value = 0,
+		Type = "Number"
+	};
+	["RebirthCriticalChance"] = {
+		Value = 0,
+		Type = "Number"
+	};
+	["RebirthCriticalPower"] = {
+		Value = 0,
+		Type = "Number"
+	};
+	["RebirthSpeedTixConvert"] = {
+		Value = 0,
+		Type = "Number"
+	};
+	["RebirthMultPerSecond"] = {
+		Value = 0,
+		Type = "Number"
+	};
+	["RebirthRequiredXP"] = {
+		Value = 0,
+		Type = "Number"
+	};
+	["RebirthRageTime"] = {
 		Value = 0,
 		Type = "Number"
 	};

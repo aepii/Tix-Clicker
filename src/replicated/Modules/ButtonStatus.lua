@@ -1,10 +1,8 @@
-local Players = game:GetService("Players")
 local ButtonStatus = {}
 
 function ButtonStatus:TixInventory(player, currentUpgrade, equipButton)
     local upgradeEquipped = player.ReplicatedData.ToolEquipped
     local equipText, backgroundColor, shadowColor, strokeColor
-    print( upgradeEquipped.Value, currentUpgrade)
     if upgradeEquipped.Value == currentUpgrade then
         equipText = "Equipped"
         backgroundColor = Color3.fromRGB(82, 81, 81)
@@ -32,9 +30,9 @@ function ButtonStatus:AccessoryInventory(player, GUID, equipButton)
     if equippedAccessory then
         if equippedAccessory.Value == GUID then
             equipText = "Unequip"
-            backgroundColor = Color3.fromRGB(170, 85, 89)
-            shadowColor = Color3.fromRGB(102, 63, 64)
-            strokeColor = Color3.fromRGB(102, 63, 64)
+            backgroundColor = Color3.fromRGB(236, 44, 75)
+            shadowColor = Color3.fromRGB(73, 30, 30)
+            strokeColor = Color3.fromRGB(73, 30, 30)
         else
             equipText = "Unavailable"
             backgroundColor = Color3.fromRGB(82, 81, 81)
@@ -42,9 +40,8 @@ function ButtonStatus:AccessoryInventory(player, GUID, equipButton)
             strokeColor = Color3.fromRGB(36, 35, 35)
         end
     else
-        print(equippedAccessoriesLimit.Value, equippedAccessoriesCount)
         if equippedAccessoriesLimit.Value <= equippedAccessoriesCount then
-            equipText = "3/3 Equipped"
+            equipText = "Max Equipped"
             backgroundColor = Color3.fromRGB(82, 81, 81)
             shadowColor = Color3.fromRGB(36, 35, 35)
             strokeColor = Color3.fromRGB(36, 35, 35)
@@ -74,15 +71,15 @@ function ButtonStatus:ScrapInventory(player, GUID, scrapButton)
             strokeColor = Color3.fromRGB(36, 35, 35)
         else
             equipText = "Scrap"
-            backgroundColor = Color3.fromRGB(255, 192, 16)
-            shadowColor = Color3.fromRGB(234, 160, 19)
-            strokeColor = Color3.fromRGB(234, 160, 19)
+            backgroundColor = Color3.fromRGB(236, 44, 75)
+            shadowColor = Color3.fromRGB(73, 30, 30)
+            strokeColor = Color3.fromRGB(73, 30, 30)
         end
     else
         equipText = "Scrap"
-        backgroundColor = Color3.fromRGB(255, 192, 16)
-        shadowColor = Color3.fromRGB(234, 160, 19)
-        strokeColor = Color3.fromRGB(234, 160, 19)
+        backgroundColor = Color3.fromRGB(236, 44, 75)
+        shadowColor = Color3.fromRGB(73, 30, 30)
+        strokeColor = Color3.fromRGB(73, 30, 30)
     end
 
     scrapButton.ScrapText.Text = equipText

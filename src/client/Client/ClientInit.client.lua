@@ -51,8 +51,12 @@ CritSound.SoundId = "rbxassetid://3125624765"
 SpinSound.Volume = 0.25
 CritSound.Parent = Sounds
 
-
 local PowerUpSound = Instance.new("Sound")
 PowerUpSound.Name = "PowerUpSound"
 PowerUpSound.SoundId = "rbxassetid://9058751039"
 PowerUpSound.Parent = Sounds
+
+local RebirthSound = Instance.new("Sound")
+RebirthSound.Name = "RebirthSound"
+RebirthSound.SoundId = "rbxassetid://9125806414"
+RebirthSound.Parent = Sounds

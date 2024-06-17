@@ -21,15 +21,15 @@ local TemporaryProfileData = ProfileData.TemporaryData
 ---- Private ----
 
 local RarityTags = {
-    Basic = "A",
-    Common = "B",
-    Uncommon = "C",
-    Fine = "D",
-    Rare = "E",
-    Exceptional = "F",
-    Epic = "G",
-    Heroic = "H",
-    Legendary = "I"
+    Basic = "Z",
+    Common = "Y",
+    Uncommon = "X",
+    Fine = "W",
+    Rare = "V",
+    Exceptional = "U",
+    Epic = "T",
+    Heroic = "S",
+    Legendary = "R"
 }
 
 ---- Temporary Data ----
@@ -58,9 +58,17 @@ function TemporaryData:CalculateRebirthUpgrades(player, data)
     for upgrade, value in data.RebirthUpgrades do
         if RebirthUpgrades[upgrade] then
             local upgradeData = RebirthUpgrades[upgrade]
-            player.TemporaryData[upgradeData.RewardType].Value = upgradeData.Initial + (upgradeData.Reward * value)
+            player.TemporaryData[upgradeData.RewardType].Value = (upgradeData.Reward * value)
         end
     end
+    TemporaryData:CalculateAccessoriesLimit(player, data)
+    TemporaryData:CalculateEquippedAccessoriesLimit(player, data)
+    TemporaryData:CalculateMaterialMaxDrop(player, data)
+    TemporaryData:CalculateMaterialDropChance(player, data)
+    TemporaryData:CalculateCaseTime(player, data)
+    TemporaryData:CalculateSpeedTixConvert(player, data)
+    TemporaryData:CalculateCriticalChance(player, data)
+    TemporaryData:CalculateCriticalPower(player, data)
 end
 
 function TemporaryData:CalculateTixPerClick(player, data)
@@ -85,6 +93,60 @@ function TemporaryData:CalculateTixStorage(player, data)
     return tixStorage
 end
 
+function TemporaryData:CalculateAccessoriesLimit(player, data)
+    local accessoriesLimit = TemporaryProfileData.AccessoriesLimit.Value + player.TemporaryData.RebirthAccessoriesLimit.Value
+    player.TemporaryData.AccessoriesLimit.Value = accessoriesLimit
+    return accessoriesLimit
+end
+
+function TemporaryData:CalculateEquippedAccessoriesLimit(player, data)
+    local equippedAccessoriesLimit = TemporaryProfileData.EquippedAccessoriesLimit.Value + player.TemporaryData.RebirthEquippedAccessoriesLimit.Value
+    player.TemporaryData.EquippedAccessoriesLimit.Value = equippedAccessoriesLimit
+    return equippedAccessoriesLimit
+end
+
+function TemporaryData:CalculateMaterialMaxDrop(player, data)
+    local materialMaxDrop = TemporaryProfileData.MaterialMaxDrop.Value + player.TemporaryData.RebirthMaterialMaxDrop.Value
+    player.TemporaryData.MaterialMaxDrop.Value = materialMaxDrop
+    return materialMaxDrop
+end
+
+function TemporaryData:CalculateMaterialDropChance(player, data)
+    local materialDropChance = TemporaryProfileData.MaterialDropChance.Value + player.TemporaryData.RebirthMaterialDropChance.Value
+    player.TemporaryData.MaterialDropChance.Value = materialDropChance
+    return materialDropChance
+end
+
+function TemporaryData:CalculateCaseTime(player, data)
+    local caseTime = TemporaryProfileData.CaseTime.Value - player.TemporaryData.RebirthCaseTime.Value
+    player.TemporaryData.CaseTime.Value = caseTime
+    return caseTime
+end
+
+function TemporaryData:CalculateCriticalChance(player, data)
+    local criticalChance;
+    if player.TemporaryData.RageMode.Value == true then
+        criticalChance = 100
+    else
+        criticalChance = TemporaryProfileData.CriticalChance.Value + player.TemporaryData.RebirthCriticalChance.Value 
+    end
+
+    player.TemporaryData.CriticalChance.Value = criticalChance
+    return criticalChance
+end
+
+function TemporaryData:CalculateCriticalPower(player, data)
+    local criticalPower = TemporaryProfileData.CriticalPower.Value + player.TemporaryData.RebirthCriticalPower.Value
+    player.TemporaryData.CriticalPower.Value = criticalPower
+    return criticalPower
+end
+
+function TemporaryData:CalculateSpeedTixConvert(player, data)
+    local speedTixConvert = TemporaryProfileData.SpeedTixConvert.Value - player.TemporaryData.RebirthSpeedTixConvert.Value
+    player.TemporaryData.SpeedTixConvert.Value = speedTixConvert
+    return speedTixConvert
+end
+
 function TemporaryData:CalculateTixPerSecondCost(owned, upgrade, amount)
 	local cost = PerSecondUpgrades[upgrade].Cost
 	local modifier = PerSecondUpgrades[upgrade].Modifier
@@ -107,7 +169,7 @@ function TemporaryData:CalculateTixPerSecond(player, data)
             tixPerSecond += value * reward
         end
 	end
-    player.TemporaryData.TixPerSecond.Value = tixPerSecond
+    player.TemporaryData.TixPerSecond.Value = tixPerSecond * (1 + player.TemporaryData.RebirthMultPerSecond.Value / 100)
 	return tixPerSecond
 end
 	
@@ -148,6 +210,15 @@ function TemporaryData:Setup(player, data)
     TemporaryData:CalculateTixStorage(player, data)
 	TemporaryData:CalculateTixPerClick(player, data)
 	TemporaryData:CalculateTixPerSecond(player, data)
+    TemporaryData:CalculateConvertPerSecond(player, data)
+    TemporaryData:CalculateAccessoriesLimit(player, data)
+    TemporaryData:CalculateEquippedAccessoriesLimit(player, data)
+    TemporaryData:CalculateMaterialMaxDrop(player, data)
+    TemporaryData:CalculateMaterialDropChance(player, data)
+    TemporaryData:CalculateCaseTime(player, data)
+    TemporaryData:CalculateSpeedTixConvert(player, data)
+    TemporaryData:CalculateCriticalChance(player, data)
+    TemporaryData:CalculateCriticalPower(player, data)
 end
 
 function TemporaryData:CalculateMaterialInfo(player, itemValue)
@@ -157,9 +228,9 @@ function TemporaryData:CalculateMaterialInfo(player, itemValue)
             local materialID = material.ID
             local minVal = material.Value[1]
             local maxVal = material.Value[2]
-            local maxQuantity = player.TemporaryData.RebirthMaterialMaxDrop.Value
+            local maxQuantity =  player.TemporaryData.MaterialMaxDrop.Value
             local minQuantity = 1
-            local chanceToReceive = player.TemporaryData.RebirthMaterialDropChance.Value / 100
+            local chanceToReceive = player.TemporaryData.MaterialDropChance.Value / 100
             local quantity = math.floor(minQuantity + (itemValue - minVal) * ((maxQuantity - minQuantity) / (maxVal - minVal)))
 
             return quantity, chanceToReceive, materialID
@@ -182,14 +253,15 @@ function TemporaryData:CalculateTag(player, GUID)
             local accessory = Accessories[ID]
             local equippedAccessory = player.ReplicatedData.EquippedAccessories:FindFirstChild(ID)
             local rarity = accessory.Rarity
+            local value = accessory.Value
             if equippedAccessory then
                 if equippedAccessory.Value == GUID then
-                    return "@".. RarityTags[rarity] .. ID .. GUID
+                    return "@".. RarityTags[rarity] .. ID .. value .. GUID
                 else
-                    return RarityTags[rarity] .. ID .. GUID
+                    return RarityTags[rarity] .. ID .. value .. GUID
                 end
             else
-                return RarityTags[rarity] .. ID .. GUID
+                return RarityTags[rarity] .. ID .. value .. GUID
             end
         end
     end

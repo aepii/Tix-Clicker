@@ -19,7 +19,6 @@ local function physicalEquip(ID, humanoid)
         asset.Name = accessory.Name
         humanoid:AddAccessory(asset)
     elseif accessory and accessory.Type == "Face" then
-        print(accessory.AssetID)
         local asset = game:GetService("InsertService"):LoadAsset(accessory.AssetID).face.Texture
         humanoid.parent.Head.face.Texture = asset
     end
@@ -64,14 +63,12 @@ EquipAccessoryRemote.OnServerInvoke = function(player, GUID)
             end
 
             if equippedAccessories[ID] == GUID then
-                print("UNEQUIPP")
                 DataManager:SetValue(player, profile, {"EquippedAccessories", ID}, nil)
                 UpdateClientAccessoriesInventoryRemote:FireClient(player, ID, GUID, "UNEQUIP") 
                 physicalUnequip(ID, player.Character.Humanoid)
             elseif equippedAccessories[ID] then
                 return
             elseif count < player.TemporaryData.EquippedAccessoriesLimit.Value then
-                print("EQUIPP")
                 UpdateClientAccessoriesInventoryRemote:FireClient(player, ID, GUID, "EQUIP") 
                 DataManager:SetValue(player, profile, {"EquippedAccessories", ID}, GUID)
                 physicalEquip(ID, player.Character.Humanoid)

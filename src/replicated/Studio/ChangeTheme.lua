@@ -7,7 +7,6 @@ local function applyColorThemeToUI(ui)
 
     local affectedUI = StarterGui.UI:FindFirstChild(ui.Name)
 
-    print(affectedUI)
     for attribute, color in attributes do 
         local elements = game:GetService("CollectionService"):GetTagged(attribute)
         for _, element in elements do
@@ -16,7 +15,6 @@ local function applyColorThemeToUI(ui)
                     element.UIStroke.Color = color
                 end
                 element.BackgroundColor3 = color
-                print(element)
             end
         end
     end
@@ -24,7 +22,6 @@ end
 
 local function apply(UIS)
     for _, ui in UIS:GetChildren() do
-        print(_, ui)
         applyColorThemeToUI(ui)
     end
 end

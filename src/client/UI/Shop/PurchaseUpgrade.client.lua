@@ -15,6 +15,7 @@ local Shop = Workspace.ShopUpgrades
 local Modules = ReplicatedStorage.Modules
 local TweenButton = require(Modules.TweenButton)
 local ButtonStatus = require(Modules.ButtonStatus)
+local Materials = require(ReplicatedStorage.Data.Materials)
 local TixUIAnim = require(Modules.TixUIAnim)
 
 ---- UI ----
@@ -40,14 +41,28 @@ local PurchaseUpgradeRemote = Networking.PurchaseUpgrade
 ---- Private Functions ----
 
 local function purchaseUpgrade(upgradeName)
-    local response = PurchaseUpgradeRemote:InvokeServer(upgradeName)
+    local rocashCost, materialCost = PurchaseUpgradeRemote:InvokeServer(upgradeName)
     coroutine.wrap(function()
-        if response then
-            SoundService:PlayLocalSound(MoneySound)
-            TixUIAnim:Animate(Player, "NegateRocashDetail", response, nil)
-            SoundService:PlayLocalSound(PopSound)
+        if rocashCost then
+            coroutine.wrap(function()
+                SoundService:PlayLocalSound(MoneySound)
+                TixUIAnim:Animate(Player, "NegateRocashDetail", rocashCost, nil)
+                SoundService:PlayLocalSound(PopSound)
+            end)()
+            if materialCost then
+                for key, materialData in materialCost do
+                    coroutine.wrap(function()
+                        local materialID = materialData[1]
+                        local materialCostVal = materialData[2]
+                        TixUIAnim:Animate(Player, "NegateMaterialDetail", materialCostVal, Materials[materialID])
+                        SoundService:PlayLocalSound(PopSound)
+                    end)()
+                end
+            end
         else
-            SoundService:PlayLocalSound(ErrorSound)
+            coroutine.wrap(function()
+                SoundService:PlayLocalSound(ErrorSound)
+            end)()
         end
     end)()
 end

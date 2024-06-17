@@ -29,7 +29,8 @@ local tableMap = {
 	["Accessories"] = "string",
 	["Cases"] = "number",
 	["EquippedAccessories"] = "string",
-	["Materials"] = "number"
+	["Materials"] = "number",
+	["Zones"] = "boolean",
 }
 
 ---- Private Functions ----

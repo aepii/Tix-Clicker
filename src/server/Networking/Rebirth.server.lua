@@ -1,6 +1,6 @@
 ---- Services ----
 
-local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
@@ -52,6 +52,7 @@ local function setClientData(player, profile)
     DataManager:UpdateLeaderstats(player, profile, "Rebirth Tix")
 
     player.TemporaryData.XP.Value = 0
+    player.TemporaryData.RageMode.Value = false
     player.TemporaryData.QueuedTix.Value = 0
 
     UpdateClientAccessoriesInventoryRemote:FireClient(player, nil, nil, "INIT")
@@ -63,9 +64,12 @@ end
 local function resetPhysicalStates(player)
     BindableEquipTix:Fire(player, "U1")
     local character = player.Character or player.CharacterAdded:Wait()
+    local torso = player.Character:FindFirstChild("HumanoidRootPart")
 
     character.Humanoid:RemoveAccessories()
     character.Head.face.Texture = "rbxasset://textures/face.png"
+
+    torso.CFrame = Workspace.SpawnLocation.CFrame
 end
 
 RebirthRemote.OnServerInvoke = (function(player)
@@ -80,7 +84,8 @@ RebirthRemote.OnServerInvoke = (function(player)
             setData(player, profile, rebirthTixReward)
             setClientData(player, profile)
             resetPhysicalStates(player)
+
+            return rebirthTixReward, valueCost
         end
     end
-    print("FINISHED", tick())
 end)

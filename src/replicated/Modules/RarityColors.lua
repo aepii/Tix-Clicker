@@ -12,6 +12,14 @@ local RarityGradients = {
 
 local RarityModule = {}
 
+RarityModule.CaseColors = {
+    C1 = {Main = Color3.fromRGB(125, 84, 43), Background = Color3.fromRGB(50, 50, 50), Shadow = Color3.fromRGB(84, 56, 29)},
+    C2 = {Main = Color3.fromRGB(65, 63, 61), Background = Color3.fromRGB(50, 50, 50), Shadow = Color3.fromRGB(32, 32, 31)},
+    C3 = {Main = Color3.fromRGB(0, 174, 255), Background = Color3.fromRGB(50, 50, 50), Shadow = Color3.fromRGB(0, 115, 168)},
+    C4 = {Main = Color3.fromRGB(250, 211, 14), Background = Color3.fromRGB(50, 50, 50), Shadow = Color3.fromRGB(250, 183, 13)}, 
+    C5 = {Main = Color3.fromRGB(242, 14, 250), Background = Color3.fromRGB(50, 50, 50), Shadow = Color3.fromRGB(118, 71, 139)}, 
+}
+
 function RarityModule:GetGradient(rarity)
     return RarityGradients[rarity] or ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(200, 200, 200))
 end

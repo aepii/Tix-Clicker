@@ -86,6 +86,7 @@ local function updateScrapFrame()
     ValueFrame.ValueText.Text = "$"..SuffixHandler:Convert(accessory.Value)
     InvFrame.Holder[taggedName].Shadow.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     ScrapFrame.ItemName.Title.Text = accessory.Name
+    ScrapFrame.Icon.UIGradient.Color = RarityColors:GetGradient(accessory.Rarity)
     IconImage.Image = "http://www.roblox.com/Thumbs/Asset.ashx?Width=256&Height=256&AssetID="..accessory.AssetID
 
     ButtonStatus:ScrapInventory(Player, GUID.Value, ScrapButton)
@@ -112,11 +113,11 @@ local function iconMouseDown()
     TweenButton:Shrink(IconButtonImage, ICONIMAGE_ORIGINALSIZE)
     if UIVisible.Value == false or CurrentAccessory.Value ~= IconButton.Name then
         ScrapFrame:TweenPosition(UDim2.new(0,0,.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
-        InvFrame:TweenSizeAndPosition(UDim2.new(0.75,0,0.8,0), UDim2.new(0.575,0,0.56,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+        InvFrame:TweenSizeAndPosition(UDim2.new(0.75,0,0.8,0), UDim2.new(0.575,0,0.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
         UIVisible.Value = true
     else
         ScrapFrame:TweenPosition(UDim2.new(0,0,2,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
-        InvFrame:TweenSizeAndPosition(UDim2.new(0.9,0,0.8,0), UDim2.new(0.5,0,0.56,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+        InvFrame:TweenSizeAndPosition(UDim2.new(0.9,0,0.8,0), UDim2.new(0.5,0,0.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
         UIVisible.Value = false
     end
     updateScrapFrame()

@@ -72,6 +72,5 @@ end
 initMaterialsInventory()
 
 UpdateClientMaterialsInventoryRemote.OnClientEvent:Connect(function(amount, materialID, method)
-    print(amount, materialID, method)
     updateMaterialsInventory(amount, materialID, method)
 end)

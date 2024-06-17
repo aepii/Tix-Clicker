@@ -28,7 +28,6 @@ UserInputService.InputBegan:Connect(function(input,_gameProcessed)
     if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
         if _gameProcessed == false then
             local value, crit = ClickTixRemote:InvokeServer()
-            print(value, crit)
             if value then
                 if crit then
                     coroutine.wrap(function()

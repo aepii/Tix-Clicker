@@ -79,7 +79,7 @@ local function animateTool(player)
     local character = player.Character or player.CharacterAdded:Wait()
 	local humanoid = character.Humanoid
 	
-	local animationTrack = humanoid:LoadAnimation(character.Animate.toolnone.ToolNoneAnim) 
+	local animationTrack = humanoid.Animator:LoadAnimation(character.Animate.toolnone.ToolNoneAnim) 
 	animationTrack:Play()
 end
 

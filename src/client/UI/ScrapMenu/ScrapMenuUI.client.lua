@@ -33,8 +33,6 @@ local InvHolder = InvFrame.Holder
 local ScrapFrame = ScrapMenu.ScrapFrame
 local IconCopy = InvHolder.IconCopy
 
-local AccessoriesLimitText = ScrapMenu.AccessoriesLimit
-
 local IconScript = script.Parent.Icon
 IconScript.Name = "IconScript"
 IconScript.Parent = IconCopy
@@ -67,7 +65,7 @@ local function scrapAccessory(accessoryGUID)
     if amount then
         SoundService:PlayLocalSound(ScrapSound)
         ScrapFrame:TweenPosition(UDim2.new(0,0,2,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
-        InvFrame:TweenSizeAndPosition(UDim2.new(0.9,0,0.8,0), UDim2.new(0.5,0,0.56,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+        InvFrame:TweenSizeAndPosition(UDim2.new(0.9,0,0.8,0), UDim2.new(0.5,0,0.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
         UIVisibleScrap.Value = false
         if amount > 0 then
             TixUIAnim:Animate(Player, "MaterialDetail", amount, materialData)
@@ -106,11 +104,8 @@ local function updateInventory(ID, GUID, method)
         end
         initInventory()
     elseif method == "DEL" then
-        print("ATTEMPT DELTED")
         local icon = getIcon(GUID)
-        print(icon)
         if icon then
-            print("DELTED")
             icon:Destroy()
         end
     elseif method == "ADD" then
@@ -124,9 +119,10 @@ local function updateInventory(ID, GUID, method)
         icon.Parent = InvHolder
         if isEquipped(GUID) then
             icon.EquippedIcon.Visible = true
+            icon.Visible = false
         else
-            print("NOT")
             icon.EquippedIcon.Visible = false
+            icon.Visible = true
         end
         icon.IconScript.Enabled = true
     elseif method == "EQUIP" then
@@ -134,15 +130,16 @@ local function updateInventory(ID, GUID, method)
         if icon then
             icon.Name = TemporaryData:CalculateTag(Player, GUID)
             icon.EquippedIcon.Visible = true
+            icon.Visible = false
         end
     elseif method == "UNEQUIP" then  
         local icon = getIcon(GUID)
         if icon then
             icon.Name = TemporaryData:CalculateTag(Player, GUID)
             icon.EquippedIcon.Visible = false
+            icon.Visible = true
         end
     end
-    AccessoriesLimitText.Text = #ReplicatedAccessories:GetChildren() .. "/" .. accessoriesLimit.Value
 end
 
 function initInventory()

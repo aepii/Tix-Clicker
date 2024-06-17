@@ -14,13 +14,15 @@ local TeleportScript = script.Teleport
 
 function initialize()
     for _, portal in Portals:GetChildren() do
-        local TeleportClone = TeleportScript:Clone()
-        TeleportClone.Parent = portal.Portal.TouchPart
-        TeleportClone.Enabled = true
+        if portal:IsA("Model") then
+            local TeleportClone = TeleportScript:Clone()
+            TeleportClone.Parent = portal.Portal.TouchPart
+            TeleportClone.Enabled = true
+        end
     end
     for _, shop in Shops:GetChildren() do
         local TeleportClone = TeleportScript:Clone()
-        TeleportClone.Parent = shop.TeleportLeave
+        TeleportClone.Parent = shop.Shop.TeleportLeave
         TeleportClone.Enabled = true
     end
 end

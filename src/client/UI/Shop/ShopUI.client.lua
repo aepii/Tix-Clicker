@@ -80,7 +80,6 @@ end
 
 local function populateMaterialCost(itemCosts, materialsHolder)
     for count = 1, 3 do
-        print("HIDE", count)
         materialsHolder[count].Visible = false
     end
     if itemCosts == nil then
@@ -89,7 +88,6 @@ local function populateMaterialCost(itemCosts, materialsHolder)
     end
     materialsHolder.Parent.Visible = true
     local index = 1
-    print(itemCosts)
     for key, data in itemCosts do
 
         local materialID = data[1]
@@ -148,8 +146,15 @@ local function updateShopInfo(nearest, shopInfo)
             local levelValue = Player.ReplicatedData.RebirthUpgrades:FindFirstChild(nearest) and Player.ReplicatedData.RebirthUpgrades[nearest].Value or 0
             PurchaseButton.PriceFrame.PriceText.Text = SuffixHandler:Convert(TemporaryData:CalculateRebirthUpgradeCost(levelValue, nearest, 1))
             InfoFrame.LevelFrame.Level.Text = "Level " .. levelValue  .. "/" .. item.Limit
+            
+            local ampersandReplacement;
 
-            local ampersandReplacement = item.Initial + (levelValue * item.Reward)
+            if item.Type == "Increase" then
+                ampersandReplacement = item.Initial + (levelValue * item.Reward)
+            elseif item.Type == "Decrease" then
+                ampersandReplacement = item.Initial - (levelValue * item.Reward)
+            end
+
             local initialMessage = item.InitialMessage:gsub("&", ampersandReplacement)
 
             RewardsFrame.InitialText.Text = initialMessage
@@ -201,6 +206,5 @@ RunService.RenderStepped:Connect(function()
 end)
 
 UpdateClientShopInfoRemote.OnClientEvent:Connect(function(shopName)
-    print(shopName)
     updateShopInfo(CurrentUI.Value,getShopInfo(shopName))
 end)

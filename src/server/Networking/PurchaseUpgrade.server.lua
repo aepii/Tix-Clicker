@@ -1,14 +1,7 @@
 ---- Services ----
 
-local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
-
----- Modules ----
-
-local Modules = ReplicatedStorage.Modules
-local TemporaryData = require(Modules.TemporaryData)
-local SuffixHandler = require(Modules.SuffixHandler)
 
 ---- Data ----
 
@@ -28,11 +21,9 @@ local BindableEquipTix = Networking.BindableEquipTix
 ---- Private Functions ----
 
 local function canPurchase(upgradeData, upgrade)
-    print("CHECKING")
     local cost = upgrade.Cost["Rocash"]
 
     if upgradeData.Rocash < cost then
-        print("NOT ENOUGH ROCASH")
         return false
     end
 
@@ -40,20 +31,16 @@ local function canPurchase(upgradeData, upgrade)
         local materialCost = upgrade.Cost["Materials"]
 
         for key, materialData in materialCost do
-            print(key, materialData)
             local materialID = materialData[1]
-            local materialCost = materialData[2]
+            local materialCostVal = materialData[2]
             if not upgradeData.Materials[materialID] then
-                print("MAT DOESNT EVEN EXIST")
                 return false
             end
-            if upgradeData.Materials[materialID] < materialCost then
-                print("NOT ENOUGH MATS")
+            if upgradeData.Materials[materialID] < materialCostVal then
                 return false
             end
         end
     end
-    print("CAN AFFORD")
     return true
 end
 
@@ -61,21 +48,22 @@ PurchaseUpgradeRemote.OnServerInvoke = (function(player, upgradeID)
     local profile = ProfileCacher:GetProfile(player)
     local data = profile.Data
 
-    local replicatedData = player.ReplicatedData
     local temporaryData = player.TemporaryData
 
     local upgrade = Upgrades[upgradeID]
     local cost = upgrade.Cost["Rocash"]
 
+    local materialCost = nil;
+
     if temporaryData.ActiveCaseOpening.Value == false then 
         if not table.find(data["Upgrades"], upgradeID) then
             if canPurchase(data, upgrade) then
                 if upgrade.Cost["Materials"] then
-                    local materialCost = upgrade.Cost["Materials"] 
+                    materialCost = upgrade.Cost["Materials"] 
                     for key, materialData in materialCost do
                         local materialID = materialData[1]
-                        local materialCost = materialData[2]
-                        local newMaterialValue = (data.Materials[materialID] or 0) - materialCost
+                        local materialCostVal = materialData[2]
+                        local newMaterialValue = (data.Materials[materialID] or 0) - materialCostVal
                         DataManager:SetValue(player, profile, {"Materials", materialID}, newMaterialValue)
                         if newMaterialValue ~= 0 then
                             UpdateClientMaterialsInventoryRemote:FireClient(player, newMaterialValue, materialID, "UPDATE")
@@ -93,7 +81,7 @@ PurchaseUpgradeRemote.OnServerInvoke = (function(player, upgradeID)
 
                 BindableEquipTix:Fire(player, upgradeID)
                 DataManager:SetValue(player, profile, {"ToolEquipped"}, upgradeID)
-                return cost
+                return cost, materialCost
             end
         end
     end
