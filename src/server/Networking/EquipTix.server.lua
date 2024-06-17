@@ -77,9 +77,10 @@ end)
 
 local function animateTool(player)
     local character = player.Character or player.CharacterAdded:Wait()
-	local humanoid = character.Humanoid
-	
-	local animationTrack = humanoid.Animator:LoadAnimation(character.Animate.toolnone.ToolNoneAnim) 
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+	local animator = humanoid:FindFirstChildOfClass("Animator")
+
+	local animationTrack = animator:LoadAnimation(character.Animate.toolnone.ToolNoneAnim)
 	animationTrack:Play()
 end
 

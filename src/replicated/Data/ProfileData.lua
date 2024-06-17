@@ -202,20 +202,20 @@ ProfileData.TemporaryData = {
 
 ProfileData.leaderstats = {
 	[1] = {
-		ID = "Tix",
-		DisplayName = "🎟️ Tix"
+		ID = "Rebirth Tix",
+		DisplayName = "🌟 Rb Tix"
 	};
 	[2] = {
-		ID = "Rocash",
-		DisplayName = "💵 Rocash"
-	};
-	[3] = {
 		ID = "Value",
 		DisplayName = "📈 Value"
 	};
+	[3] = {
+		ID = "Tix",
+		DisplayName = "🎟️ Tix"
+	};
 	[4] = {
-		ID = "Rebirth Tix",
-		DisplayName = "🌟 Rb Tix"
+		ID = "Rocash",
+		DisplayName = "💵 Rocash"
 	};
 }
 

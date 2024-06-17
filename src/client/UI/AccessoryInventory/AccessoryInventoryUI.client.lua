@@ -30,6 +30,7 @@ local UI = PlayerGui:WaitForChild("UI")
 local AccessoryInventory = UI.AccessoryInventory
 local InvHolder = AccessoryInventory.InvFrame.Holder
 local EquipFrame = AccessoryInventory.EquipFrame
+local InvFrame = InvHolder.Parent
 local IconCopy = InvHolder.IconCopy
 
 local SearchBar = AccessoryInventory.SearchBar.TextBox
@@ -107,6 +108,9 @@ end
 
 local function updateInventory(ID, GUID, method)
     if method == "INIT" then
+        EquipFrame:TweenPosition(UDim2.new(0,0,2,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+        InvFrame:TweenSizeAndPosition(UDim2.new(0.9,0,0.8,0), UDim2.new(0.5,0,0.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+        UIVisible.Value = false
         for index, icon in InvHolder:GetChildren() do
             if icon:IsA("Frame") and icon ~= IconCopy then
                 icon:Destroy()
@@ -115,6 +119,10 @@ local function updateInventory(ID, GUID, method)
         initInventory()
     elseif method == "DEL" then
         local icon = getIcon(GUID)
+        if GUID == icon.GUID.Value then
+            EquipFrame:TweenPosition(UDim2.new(0,0,2,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+            InvFrame:TweenSizeAndPosition(UDim2.new(0.9,0,0.8,0), UDim2.new(0.5,0,0.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+        end
         if icon then
             icon:Destroy()
         end

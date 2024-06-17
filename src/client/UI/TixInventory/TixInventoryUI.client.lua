@@ -22,6 +22,7 @@ local UI = PlayerGui:WaitForChild("UI")
 
 local TixInventory = UI.TixInventory
 local InvHolder = TixInventory.InvFrame.Holder
+local InvFrame = InvHolder.Parent
 local EquipFrame = TixInventory.EquipFrame
 local IconCopy = InvHolder.IconCopy
 
@@ -54,6 +55,9 @@ end
 
 local function updateInventory(upgrade, method)
     if method == "INIT" then
+        EquipFrame:TweenPosition(UDim2.new(0,0,2,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+        InvFrame:TweenSizeAndPosition(UDim2.new(0.9,0,0.8,0), UDim2.new(0.5,0,0.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+        UIVisible.Value = false
         for index, icon in InvHolder:GetChildren() do
             if icon:IsA("Frame") and icon ~= IconCopy then
                 icon:Destroy()

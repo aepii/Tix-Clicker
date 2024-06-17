@@ -120,6 +120,7 @@ local function updateShopInfo(nearest, shopInfo)
             PurchaseButton.PriceFrame.PriceText.Text = SuffixHandler:Convert(item.Cost)
             InfoFrame.OwnedFrame.Owned.Text = "Owned " .. ownedValue
             populateCaseRarity(item.Weights, RewardsFrame)
+            ButtonStatus:PurchaseCase(Player, CurrentUI.Value, PurchaseButton)
         end
     elseif shopInfo.Name == "PerSecInfo" then
         item = PerSecondUpgrades[nearest]
@@ -129,6 +130,7 @@ local function updateShopInfo(nearest, shopInfo)
             InfoFrame.LevelFrame.Level.Text = "Level " .. levelValue  
             RewardsFrame["1"].RewardText.Text = "+".. SuffixHandler:Convert(item.Reward.AddPerSecond)
             RewardsFrame["2"].RewardText.Text = "-".. SuffixHandler:Convert(item.Reward.AddConvert)
+            ButtonStatus:PurchasePerSecUpgrade(Player, CurrentUI.Value, PurchaseButton)
         end
     elseif shopInfo.Name == "UpgradeInfo" then
         local MaterialsHolder = InfoFrame.MaterialsFrame.MaterialsHolder
@@ -138,7 +140,7 @@ local function updateShopInfo(nearest, shopInfo)
             RewardsFrame.MultPerClick.RewardText.Text = "x"..SuffixHandler:Convert(item.Reward["MultPerClick"])
             RewardsFrame.MultStorage.RewardText.Text = "x"..SuffixHandler:Convert(item.Reward["MultStorage"])
             populateMaterialCost(item.Cost["Materials"] or nil, MaterialsHolder)
-            ButtonStatus:Upgrade(Player, CurrentUI.Value, PurchaseButton)
+            ButtonStatus:PurchaseUpgrade(Player, CurrentUI.Value, PurchaseButton)
         end
     elseif shopInfo.Name == "RebirthInfo" then
         item = RebirthUpgrades[nearest]
@@ -159,6 +161,7 @@ local function updateShopInfo(nearest, shopInfo)
 
             RewardsFrame.InitialText.Text = initialMessage
             RewardsFrame.RewardText.Text = item.RewardMessage
+            ButtonStatus:PurchaseRebirthUpgrade(Player, CurrentUI.Value, PurchaseButton)
         end
     end
     if item then
@@ -172,10 +175,12 @@ local function getNearest()
     local nearest = nil
 
     for _, item in Shop:GetChildren() do
-        local itemDistance = (item.Position - Character.HumanoidRootPart.Position).Magnitude
-        if itemDistance < distance then
-            distance = itemDistance
-            nearest = item
+        if Character:FindFirstChild("HumanoidRootPart") then
+            local itemDistance = (item.Position - Character.HumanoidRootPart.Position).Magnitude
+            if itemDistance < distance then
+                distance = itemDistance
+                nearest = item
+            end
         end
     end
 

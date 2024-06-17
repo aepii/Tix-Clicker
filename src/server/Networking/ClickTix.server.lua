@@ -50,7 +50,6 @@ ClickTixRemote.OnServerInvoke = (function(player)
         if elapsedTime >= (1/temporaryData.ClickRate.Value) then
             lastClickTime.Value = os.clock()
             if data.Tix < tixStorage then
-                print("CLICK", elapsedTime)
                 
                 local crit = isCrit(temporaryData.CriticalChance.Value)
                 if crit then

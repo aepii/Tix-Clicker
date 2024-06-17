@@ -97,6 +97,9 @@ end
 
 local function updateInventory(ID, GUID, method)
     if method == "INIT" then
+        ScrapFrame:TweenPosition(UDim2.new(0,0,2,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+        InvFrame:TweenSizeAndPosition(UDim2.new(0.9,0,0.8,0), UDim2.new(0.5,0,0.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+        UIVisible.Value = false
         for index, icon in InvHolder:GetChildren() do
             if icon:IsA("Frame") and icon ~= IconCopy then
                 icon:Destroy()
@@ -127,6 +130,10 @@ local function updateInventory(ID, GUID, method)
         icon.IconScript.Enabled = true
     elseif method == "EQUIP" then
         local icon = getIcon(GUID)
+        if GUID == icon.GUID.Value then
+            ScrapFrame:TweenPosition(UDim2.new(0,0,2,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+            InvFrame:TweenSizeAndPosition(UDim2.new(0.9,0,0.8,0), UDim2.new(0.5,0,0.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+        end
         if icon then
             icon.Name = TemporaryData:CalculateTag(Player, GUID)
             icon.EquippedIcon.Visible = true

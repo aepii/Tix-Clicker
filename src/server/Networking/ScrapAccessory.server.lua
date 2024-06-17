@@ -39,7 +39,6 @@ local function calculateRate(quantity, chanceToReceive, materialID)
 
     for i = 1, quantity do
         local chosen = math.random()
-        print(chosen, chanceToReceive)
         if chosen < chanceToReceive then
             amount = amount + 1
         end

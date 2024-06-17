@@ -16,7 +16,7 @@ local ReplicatedZones = ReplicatedData.Zones
 
 ---- Variables ----
 
-local Portals = Workspace.Portals
+local Portals = Workspace:WaitForChild("Portals")
 
 local PlayerGui = Player:WaitForChild("PlayerGui")
 local PortalUI = PlayerGui:WaitForChild("PortalUI")
@@ -36,7 +36,7 @@ function initPortals()
             local PurchaseButton = Holder.PurchaseButton
             local ZoneName = Holder.ZoneName
             local CostText = PurchaseButton.Cost.IconImage.Amount
-            portalUI.Adornee = portal.Portal.TouchPart
+            portalUI.Adornee = portal:WaitForChild("Portal").TouchPart
             portalUI.Name = portalID
             portalUI.Parent = PlayerGui
             CostText.Text = Zones[portalID].Cost.RebirthTix

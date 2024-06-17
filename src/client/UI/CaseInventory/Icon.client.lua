@@ -8,6 +8,7 @@ local SoundService = game:GetService("SoundService")
 
 local Modules = ReplicatedStorage.Modules
 local TweenButton = require(Modules.TweenButton)
+local ButtonStatus = require(Modules.ButtonStatus)
 local Cases = require(ReplicatedStorage.Data.Cases)
 local RarityColors = require(Modules.RarityColors)
 
@@ -71,6 +72,8 @@ local function updateEquipFrame()
     IconImage.Image = case.Image
     local ownedValue = Player.ReplicatedData.Cases:FindFirstChild(caseID) and Player.ReplicatedData.Cases[caseID].Value or 0
     OwnedFrame.Owned.Text = "Owned " .. ownedValue  
+
+    ButtonStatus:CaseInventory(Player, caseID, OpenButton)
 end
 
 ---- Buttons ----

@@ -405,6 +405,8 @@ function TixUIAnim:Animate(player, detail, value, valueData)
 
         wait(0.5)
     elseif detail.Name == "MaterialDetail" then
+        local tweenPosition;
+
         detail.Amount.Text = "+" .. SuffixHandler:Convert(value)
         detail.Image = valueData.Image
         detail.Amount.UIGradient.Color = RarityColors:GetGradient(valueData.Rarity)
@@ -425,10 +427,17 @@ function TixUIAnim:Animate(player, detail, value, valueData)
         
         wait(0.75)
         
+        local statsDisplay = detail.Parent.Parent.MaterialsButton.MaterialsFrame.MaterialsHolder:FindFirstChild(valueData.ID)
+        if statsDisplay then
+            tweenPosition = UDim2.new(-.005, statsDisplay.AbsolutePosition.X, -.015, statsDisplay.AbsolutePosition.Y)
+        else
+            tweenPosition = UDim2.new(0.965, 0, 0.965, 0)
+        end
+
         TweenService:Create(detail.Amount, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {TextSize = 0}):Play()
         detail:TweenSizeAndPosition(
             UDim2.new(0, 0, 0, 0),
-            UDim2.new(0.965, 0, 0.965, 0),
+            tweenPosition,
             Enum.EasingDirection.Out,
             Enum.EasingStyle.Quint,
             1,
@@ -437,7 +446,6 @@ function TixUIAnim:Animate(player, detail, value, valueData)
         
         wait(0.5)
         
-        local statsDisplay = detail.Parent.Parent.MaterialsButton.MaterialsFrame.MaterialsHolder:FindFirstChild(valueData.ID)
         if statsDisplay then
             statsDisplay.IconImage:TweenSize(
                 UDim2.new(1.25, 0, 1.25, 0),
@@ -466,7 +474,6 @@ function TixUIAnim:Animate(player, detail, value, valueData)
         local randomY = math.random(400, 600) / 1000
 
         local statsDisplay = detail.Parent.Parent.MaterialsButton.MaterialsFrame.MaterialsHolder:FindFirstChild(valueData.ID)
-
         if statsDisplay then
             detail.Position = UDim2.new(-.005, statsDisplay.AbsolutePosition.X, -.015, statsDisplay.AbsolutePosition.Y)
         else

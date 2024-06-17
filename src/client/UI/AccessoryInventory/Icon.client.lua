@@ -31,7 +31,6 @@ local IconImage = EquipFrame.Icon.IconImage
 local RewardsFrame = EquipFrame.RewardsFrame
 local ValueFrame = EquipFrame.ValueFrame
 local EquipButton = EquipFrame.EquipButton
-local EquippedIcon = IconButton.EquippedIcon
 
 ---- UI Values ----
 

@@ -230,7 +230,6 @@ local function populateCase(caseID, winner)
     local finishTweenInfo = TweenInfo.new(
         0.5, Enum.EasingStyle.Elastic, Enum.EasingDirection.Out
     )
-
     local lastPlayedElement = 0
     RunService:BindToRenderStep("SpinSound", 100, function()
         local currentElement = math.ceil((ItemHolder.Position.X.Scale) / 0.25)
@@ -244,13 +243,12 @@ local function populateCase(caseID, winner)
     tween:Play()
 
     tween.Completed:Wait()
-    task.wait(0.5)
     local finishTween = TweenService:Create(ItemHolder, finishTweenInfo, {Position = UDim2.new(-20.125, 0, 0.5, 0)})
     SoundService:PlayLocalSound(ClickSound)
     finishTween:Play()
     finishTween.Completed:Wait()
-    task.wait(0.5)
-    CaseOpeningFrame:TweenPosition(UDim2.new(0.5, 0, 2, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.5, true)
+    task.wait(0.25)
+    CaseOpeningFrame:TweenPosition(UDim2.new(0.5, 0, 2, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.25, true)
 
     for index, icon in ItemHolder:GetChildren() do
         if icon:IsA("Frame") and icon ~= IconCopy then
