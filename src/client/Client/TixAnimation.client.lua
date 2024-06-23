@@ -9,10 +9,15 @@ local SoundService = game:GetService("SoundService")
 local Modules = ReplicatedStorage.Modules
 local TixUIAnim = require(Modules.TixUIAnim)
 
+---- UI ----
+
+local PlayerGui = Player.PlayerGui
+local UI = PlayerGui:WaitForChild("UI")
+local VFX = UI:WaitForChild("VFX")
+
 ---- Sound ----
 
 local Sounds = Player:WaitForChild("Sounds")
-local ClickSound = Sounds:WaitForChild("ClickSound")
 local PopSound = Sounds:WaitForChild("PopSound")
 
 ---- Networking ----
@@ -23,8 +28,10 @@ local AnimateTixRemote = Networking.AnimateTix
 ---- Private Functions ----
 
 AnimateTixRemote.OnClientEvent:Connect(function(tixGained)
-    coroutine.wrap(function()
-        TixUIAnim:Animate(Player, "TixDetail", tixGained, nil)
-        SoundService:PlayLocalSound(PopSound)
-    end)()
+    if VFX.OtherVFX.Value == true then
+        coroutine.wrap(function()
+            TixUIAnim:Animate(Player, "TixDetail", tixGained, nil)
+            SoundService:PlayLocalSound(PopSound)
+        end)()
+    end
 end)

@@ -10,6 +10,12 @@ local Modules = ReplicatedStorage.Modules
 local TweenButton = require(Modules.TweenButton)
 local TixUIAnim = require(Modules.TixUIAnim)
 
+---- UI ----
+
+local PlayerGui = Player.PlayerGui
+local UI = PlayerGui:WaitForChild("UI")
+local VFX = UI:WaitForChild("VFX")
+
 ---- Sound ----
 
 local Sounds = Player:WaitForChild("Sounds")
@@ -29,10 +35,12 @@ local function purchaseZone(portalID)
     local response = PurchaseZoneRemote:InvokeServer(portalID)
     coroutine.wrap(function()
         if response then
+            script.Parent:Destroy()   
             SoundService:PlayLocalSound(MoneySound)
-            TixUIAnim:Animate(Player, "NegateRebirthTixDetail", response, nil)
-            SoundService:PlayLocalSound(PopSound)
-            script.Parent:Destroy()
+            if VFX.OtherVFX.Value == true then
+                TixUIAnim:Animate(Player, "NegateRebirthTixDetail", response, nil)
+                SoundService:PlayLocalSound(PopSound)
+            end
         else
             SoundService:PlayLocalSound(ErrorSound)
         end

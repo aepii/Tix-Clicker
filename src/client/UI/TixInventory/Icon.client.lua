@@ -89,7 +89,7 @@ ToolEquipped.Changed:Connect(updateEquippedIcon)
 
 ---- Buttons ----
 
-local ICONIMAGE_ORIGINALSIZE = IconImage.Size
+local ICONIMAGE_ORIGINALSIZE = IconButton.IconImage.Size
 
 local function playClickSound()
     SoundService:PlayLocalSound(ClickSound)
@@ -107,12 +107,12 @@ local function iconMouseDown()
     playClickSound()
     TweenButton:Shrink(IconButtonImage, ICONIMAGE_ORIGINALSIZE)
     if UIVisible.Value == false or CurrentUpgrade.Value ~= IconButton.Name then
-        EquipFrame:TweenPosition(UDim2.new(0,0,.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+        EquipFrame:TweenPosition(UDim2.new(.05,0,.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
         InvFrame:TweenSizeAndPosition(UDim2.new(0.75,0,0.8,0), UDim2.new(0.575,0,0.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
         UIVisible.Value = true
     else
-        EquipFrame:TweenPosition(UDim2.new(0,0,2,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
-        InvFrame:TweenSizeAndPosition(UDim2.new(0.9,0,0.8,0), UDim2.new(0.5,0,0.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+        EquipFrame:TweenPosition(UDim2.new(.05,0,2,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+        InvFrame:TweenSizeAndPosition(UDim2.new(0.95,0,0.8,0), UDim2.new(0.5,0,0.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
         UIVisible.Value = false
     end
     updateEquipFrame()

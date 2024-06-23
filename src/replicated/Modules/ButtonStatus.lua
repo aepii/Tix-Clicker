@@ -289,4 +289,63 @@ function ButtonStatus:CaseInventory(player, caseID, purchaseButton)
     purchaseButton.OpenText.UIStroke.Color = strokeColor
 end
 
+function ButtonStatus:CollectibleCaseInventory(player, caseID, purchaseButton)
+    local cases = player.ReplicatedData.CollectibleCases
+    local openText, backgroundColor, shadowColor, strokeColor
+
+    if cases:FindFirstChild(caseID) then
+        openText = "Open"
+        backgroundColor = Color3.fromRGB(85, 170, 127)
+        shadowColor = Color3.fromRGB(34, 68, 50)
+        strokeColor = Color3.fromRGB(34, 68, 50)
+    else
+        openText = "Unavailable"
+        backgroundColor = Color3.fromRGB(82, 81, 81)
+        shadowColor = Color3.fromRGB(36, 35, 35)
+        strokeColor = Color3.fromRGB(36, 35, 35)
+    end
+    purchaseButton.OpenText.Text = openText
+    purchaseButton.BackgroundColor3 = backgroundColor
+    purchaseButton.Shadow.BackgroundColor3 = shadowColor
+    purchaseButton.OpenText.UIStroke.Color = strokeColor
+end
+
+function ButtonStatus:CollectibleAccessoryInventory(player, GUID, equipButton)
+    local ID = player.ReplicatedData.CollectibleAccessories[GUID].Value
+    local equippedAccessory = player.ReplicatedData.EquippedCollectibleAccessories:FindFirstChild(ID)
+    local equippedAccessoriesCount = #player.ReplicatedData.EquippedCollectibleAccessories:GetChildren()
+    local equippedAccessoriesLimit = player.TemporaryData.EquippedCollectibleAccessoriesLimit
+    local equipText, backgroundColor, shadowColor, strokeColor
+    if equippedAccessory then
+        if equippedAccessory.Value == GUID then
+            equipText = "Unequip"
+            backgroundColor = Color3.fromRGB(236, 44, 75)
+            shadowColor = Color3.fromRGB(73, 30, 30)
+            strokeColor = Color3.fromRGB(73, 30, 30)
+        else
+            equipText = "Unavailable"
+            backgroundColor = Color3.fromRGB(82, 81, 81)
+            shadowColor = Color3.fromRGB(36, 35, 35)
+            strokeColor = Color3.fromRGB(36, 35, 35)
+        end
+    else
+        if equippedAccessoriesLimit.Value <= equippedAccessoriesCount then
+            equipText = "Max Equipped"
+            backgroundColor = Color3.fromRGB(82, 81, 81)
+            shadowColor = Color3.fromRGB(36, 35, 35)
+            strokeColor = Color3.fromRGB(36, 35, 35)
+        else
+            equipText = "Equip"
+            backgroundColor = Color3.fromRGB(85, 170, 127)
+            shadowColor = Color3.fromRGB(34, 68, 50)
+            strokeColor = Color3.fromRGB(34, 68, 50)
+        end
+    end
+
+    equipButton.EquipText.Text = equipText
+    equipButton.BackgroundColor3 = backgroundColor
+    equipButton.Shadow.BackgroundColor3 = shadowColor
+    equipButton.EquipText.UIStroke.Color = strokeColor
+end
+
 return ButtonStatus

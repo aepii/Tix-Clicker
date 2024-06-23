@@ -21,7 +21,7 @@ local Update_Delay = 1
 local Billboard_Tag = "Billboard"
 local Screen_Gui_Tag = "UI"
 local Screen_Stroke_Tag = "ScreenStroke"
-local Default_Billboard_Distance = 10 -- Estimated distance if "Distance" attribute of BillboardGui is not set
+local Default_Billboard_Distance = 15 -- Estimated distance if "Distance" attribute of BillboardGui is not set
 
 
 
@@ -181,10 +181,12 @@ CollectionService:GetInstanceAddedSignal(Billboard_Tag):Connect(function(billboa
 				if not stroke.Parent then
 					BillboardStrokes[stroke] = nil
 				else
-					stroke.Thickness = originalThickness * distanceRatio * getScreenRatio() * 4
-					if not stroke.Parent:IsA("TextLabel") then
-						stroke.Parent.Size = UDim2.new(stroke.Parent.Size.X.Scale, stroke.Thickness, stroke.Parent.Size.Y.Scale, stroke.Thickness)
-						stroke.Enabled = false
+					if not CollectionService:HasTag(stroke, "Ignore") then
+						stroke.Thickness = originalThickness * distanceRatio * getScreenRatio() * 2
+						if not stroke.Parent:IsA("TextLabel") then
+							stroke.Parent.Size = UDim2.new(stroke.Parent.Size.X.Scale, stroke.Thickness, stroke.Parent.Size.Y.Scale, stroke.Thickness)
+							stroke.Enabled = false
+						end
 					end
 				end
 			end

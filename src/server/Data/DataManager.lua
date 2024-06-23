@@ -28,7 +28,10 @@ local tableMap = {
 	["RebirthUpgrades"] = "number",
 	["Accessories"] = "string",
 	["Cases"] = "number",
+	["CollectibleAccessories"] = "string",
+	["CollectibleCases"] = "number",
 	["EquippedAccessories"] = "string",
+	["EquippedCollectibleAccessories"] = "string",
 	["Materials"] = "number",
 	["Zones"] = "boolean",
 }

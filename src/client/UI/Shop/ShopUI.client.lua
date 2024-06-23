@@ -4,6 +4,7 @@ local Workspace = game:GetService("Workspace")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local CollectionService = game:GetService("CollectionService")
 
 ---- Shop ----
 
@@ -22,6 +23,8 @@ local Upgrades = require(ReplicatedStorage.Data.Upgrades)
 local PerSecondUpgrades = require(ReplicatedStorage.Data.PerSecondUpgrades)
 local RebirthUpgrades = require(ReplicatedStorage.Data.RebirthUpgrades)
 local Cases = require(ReplicatedStorage.Data.Cases)
+local CollectibleCases = require(ReplicatedStorage.Data.CollectibleCases)
+local CollectibleAccessories = require(ReplicatedStorage.Data.CollectibleAccessories)
 
 ---- Modules ----
 
@@ -39,9 +42,9 @@ local UpgradeInfo = InfoUI.UpgradeInfo
 local RebirthInfo = InfoUI.RebirthInfo
 local CaseInfo = InfoUI.CaseInfo
 
-local CurrentUI = InfoUI.CurrentUI
+local CC1Info = InfoUI.CC1Info
 
-local PurchaseValueButton = PerSecInfo.InfoFrame.PurchaseButton
+local CurrentUI = InfoUI.CurrentUI
 
 ---- Networking ----
 
@@ -51,7 +54,9 @@ local UpdateClientShopInfoRemote = Networking.UpdateClientShopInfo
 ---- Private Functions ----
 
 local function getShopInfo(nearest)
-    if string.sub(nearest, 1, 1) == "P" then
+    if string.sub(nearest, 1, 2) == "CC" then
+        return CC1Info
+    elseif string.sub(nearest, 1, 1) == "P" then
         return PerSecInfo
     elseif string.sub(nearest, 1, 1) == "C" then
         return CaseInfo
@@ -75,6 +80,30 @@ local function populateCaseRarity(weights, rewardsFrame)
     end
     for count = i+1, 5 do
         rewardsFrame[count].Visible = false
+    end
+end
+
+local function populateCaseItems(weights, rewardsFrame)
+
+    local InvFrame = rewardsFrame.InvFrame
+    local Holder = InvFrame.Holder
+    local IconCopy = Holder.IconCopy
+
+    for index, icon in Holder:GetChildren() do
+        if icon:IsA("Frame") and icon ~= IconCopy then
+            icon:Destroy()
+        end
+    end
+
+    for index, data in weights do
+        local icon = IconCopy:Clone()
+        icon.Name = data[1]
+        icon.ChanceFrame.ChanceText.Text = data[2] / 1000 .. "%"
+        icon.IconImage.Image = "http://www.roblox.com/Thumbs/Asset.ashx?Width=256&Height=256&AssetID=" .. CollectibleAccessories[data[1]].AssetID
+        icon.Visible = true
+        CollectionService:RemoveTag(icon.Shadow.UIStroke, "Ignore")
+        CollectionService:RemoveTag(icon.ChanceFrame.ChanceText.UIStroke, "Ignore")
+        icon.Parent = Holder
     end
 end
 
@@ -113,7 +142,18 @@ local function updateShopInfo(nearest, shopInfo)
     local RewardsFrame = InfoFrame.RewardsFrame
 
     local item;
-    if shopInfo.Name == "CaseInfo" then
+    if shopInfo.Name == "CC1Info" then
+        item = CollectibleCases[nearest]
+        if item then
+            local MaterialsHolder = InfoFrame.MaterialsFrame.MaterialsHolder
+            local ownedValue = Player.ReplicatedData.CollectibleCases:FindFirstChild(nearest) and Player.ReplicatedData.CollectibleCases[nearest].Value or 0
+            PurchaseButton.PriceFrame.PriceText.Text = SuffixHandler:Convert(item.Cost["RebirthTix"])
+            InfoFrame.OwnedFrame.Owned.Text = "Owned " .. ownedValue
+            populateCaseItems(item.Weights, RewardsFrame)
+            populateMaterialCost(item.Cost["Materials"] or nil, MaterialsHolder)
+            --ButtonStatus:PurchaseCase(Player, CurrentUI.Value, PurchaseButton)
+        end
+    elseif shopInfo.Name == "CaseInfo" then
         item = Cases[nearest]
         if item then
             local ownedValue = Player.ReplicatedData.Cases:FindFirstChild(nearest) and Player.ReplicatedData.Cases[nearest].Value or 0

@@ -11,6 +11,12 @@ local TweenButton = require(Modules.TweenButton)
 local TixUIAnim = require(Modules.TixUIAnim)
 local SuffixHandler = require(Modules.SuffixHandler)
 
+---- UI ----
+
+local PlayerGui = Player.PlayerGui
+local UI = PlayerGui:WaitForChild("UI")
+local VFX = UI:WaitForChild("VFX")
+
 ---- Sound ----
 
 local Sounds = Player:WaitForChild("Sounds")
@@ -26,12 +32,14 @@ local ExchangeTixRemote = Networking.ExchangeTix
 
 ExchangeTixRemote.OnClientEvent:Connect(function(tixExchanged, rocashGained)
     SoundService:PlayLocalSound(MoneySound)
-    coroutine.wrap(function()
-        SoundService:PlayLocalSound(PopSound)
-        TixUIAnim:Animate(Player, "NegateTixDetail", tixExchanged, nil)
-    end)()
-    coroutine.wrap(function()
-        TixUIAnim:Animate(Player, "RocashDetail", rocashGained, nil)
-        SoundService:PlayLocalSound(PopSound)
-    end)()
+    if VFX.ExchangeVFX.Value == true then
+        coroutine.wrap(function()
+            SoundService:PlayLocalSound(PopSound)
+            TixUIAnim:Animate(Player, "NegateTixDetail", tixExchanged, nil)
+        end)()
+        coroutine.wrap(function()
+            TixUIAnim:Animate(Player, "RocashDetail", rocashGained, nil)
+            SoundService:PlayLocalSound(PopSound)
+        end)()
+    end
 end)

@@ -99,6 +99,8 @@ OpenCaseRemote.OnServerInvoke = (function(player, caseID)
                     DataManager:SetValue(player, profile, {"Cases", caseID}, nil)
                     UpdateClientCaseInventoryRemote:FireClient(player, case, "DEL")
                 end
+                DataManager:SetValue(player, profile, {"Lifetime Value"}, (profile.Data["Lifetime Value"] or 0) + item.Value)
+                DataManager:SetValue(player, profile, {"Lifetime Cases"}, (profile.Data["Lifetime Cases"] or 0) + 1)
                 temporaryData.ActiveCaseOpening.Value = true
                 OpenCaseAnimRemote:FireClient(player, caseID, item)
             end
@@ -109,7 +111,6 @@ end)
 OpenCaseAnimRemote.OnServerEvent:Connect(function(player)
     local profile = ProfileCacher:GetProfile(player)
     local temporaryData = player.TemporaryData
-
 
     DataManager:UpdateLeaderstats(player, profile, "Value")
     temporaryData.ActiveCaseOpening.Value = false

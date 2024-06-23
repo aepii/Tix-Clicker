@@ -15,6 +15,12 @@ local TixUIAnim = require(Modules.TixUIAnim)
 local Networking = ReplicatedStorage.Networking
 local ClickTixRemote = Networking.ClickTix
 
+---- UI ----
+
+local PlayerGui = Player.PlayerGui
+local UI = PlayerGui:WaitForChild("UI")
+local VFX = UI:WaitForChild("VFX")
+
 ---- Sound ----
 
 local Sounds = Player:WaitForChild("Sounds")
@@ -33,14 +39,18 @@ UserInputService.InputBegan:Connect(function(input,_gameProcessed)
                     coroutine.wrap(function()
                         SoundService:PlayLocalSound(CritSound)
                         SoundService:PlayLocalSound(ClickSound)
-                        TixUIAnim:Animate(Player, "TixCritDetail", value, nil)
-                        SoundService:PlayLocalSound(PopSound)
+                        if VFX.TixClickVFX.Value == true then
+                            TixUIAnim:Animate(Player, "TixCritDetail", value, nil)
+                            SoundService:PlayLocalSound(PopSound)
+                        end
                     end)()
                 else
                     coroutine.wrap(function()
                         SoundService:PlayLocalSound(ClickSound)
-                        TixUIAnim:Animate(Player, "TixDetail", value, nil)
-                        SoundService:PlayLocalSound(PopSound)
+                        if VFX.TixClickVFX.Value == true then
+                            TixUIAnim:Animate(Player, "TixDetail", value, nil)
+                            SoundService:PlayLocalSound(PopSound)
+                        end
                     end)()
                 end
             end

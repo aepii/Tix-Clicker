@@ -10657,18 +10657,7 @@ local accessories = {
         Rarity = nil,
         ID = "A888"
     },
-    A889 = {
-        Name = "Tix Shaggy",
-        Type = "Accessory",
-        AssetID = 382881373,
-        Reward = {
-            AddPerClick = 0.5,
-            AddStorage = 0.5
-        },
-        Value = 2999999,
-        Rarity = nil,
-        ID = "A889"
-    },
+    --[[REPLACE]]
     A890 = {
         Name = "Telamon Hair",
         Type = "Accessory",
@@ -19261,18 +19250,7 @@ local accessories = {
         Rarity = nil,
         ID = "A1605"
     },
-    A1606 = {
-        Name = "Tickets Tie",
-        Type = "Accessory",
-        AssetID = 390972175,
-        Reward = {
-            AddPerClick = 0.5,
-            AddStorage = 0.5
-        },
-        Value = 579,
-        Rarity = nil,
-        ID = "A1606"
-    },
+    --[[REPLACE]]
     A1607 = {
         Name = "Bat Tie",
         Type = "Accessory",
@@ -66301,18 +66279,7 @@ local accessories = {
         Rarity = nil,
         ID = "A5525"
     },
-    A5526 = {
-        Name = "Tixvalk",
-        Type = "Accessory",
-        AssetID = 382881237,
-        Reward = {
-            AddPerClick = 0.5,
-            AddStorage = 0.5
-        },
-        Value = 980000,
-        Rarity = nil,
-        ID = "A5526"
-    },
+    --[[REPLACE]]
     A5527 = {
         Name = "Helm of the Great Tree",
         Type = "Accessory",
@@ -66625,18 +66592,7 @@ local accessories = {
         Rarity = nil,
         ID = "A5552"
     },
-    A5553 = {
-        Name = "Lord of the Tixeration",
-        Type = "Accessory",
-        AssetID = 382880833,
-        Reward = {
-            AddPerClick = 0.5,
-            AddStorage = 0.5
-        },
-        Value = 2777777,
-        Rarity = nil,
-        ID = "A5553"
-    },
+   --[[REPLACE]]
     A5554 = {
         Name = "): Purple Indy",
         Type = "Accessory",
@@ -66973,18 +66929,7 @@ local accessories = {
         Rarity = nil,
         ID = "A5581"
     },
-    A5582 = {
-        Name = "Dominus Pittacium",
-        Type = "Accessory",
-        AssetID = 335080779,
-        Reward = {
-            AddPerClick = 0.5,
-            AddStorage = 0.5
-        },
-        Value = 10000000,
-        Rarity = nil,
-        ID = "A5582"
-    },
+    --[[REPLACE]]
     A5583 = {
         Name = "Green Sparkle Time Fedora",
         Type = "Accessory",
@@ -67392,7 +67337,7 @@ local RarityRewards = {
 function DynamicAccessories:CalculateDynamicValue(ID)
     local accessory = accessories[ID]
     local RAP = accessory.Value
-
+    
     local rarity = nil
 
     for name, range in RAPRanges do

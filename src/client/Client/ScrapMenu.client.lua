@@ -18,6 +18,11 @@ local UIFrames = {
     TixInventory = UI.TixInventory,
     CaseInventory = UI.CaseInventory,
     AccessoryInventory = UI.AccessoryInventory,
+    ProfileMenu = UI.ProfileMenu,
+    SettingsMenu = UI.SettingsMenu,
+    --RewardsMenu = UI.RewardsMenu,
+    --QuestsMenu = UI.QuestsMenu,
+    --ShopMenu = UI.ShopMenu,
 }
 
 ---- Show Menu ----

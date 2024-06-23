@@ -12,6 +12,7 @@ local ProfileData = require(Data:WaitForChild("ProfileData"))
 local Upgrades = require(ReplicatedStorage.Data.Upgrades)
 local PerSecondUpgrades = require(ReplicatedStorage.Data.PerSecondUpgrades)
 local Accessories = require(ReplicatedStorage.Data.Accessories)
+local CollectibleAccessories = require(ReplicatedStorage.Data.CollectibleAccessories)
 local Materials = require(ReplicatedStorage.Data.Materials)
 local RebirthUpgrades = require(ReplicatedStorage.Data.RebirthUpgrades)
 
@@ -29,7 +30,8 @@ local RarityTags = {
     Exceptional = "U",
     Epic = "T",
     Heroic = "S",
-    Legendary = "R"
+    Legendary = "R",
+    Tixclusive = "Z"
 }
 
 ---- Temporary Data ----
@@ -48,11 +50,21 @@ function TemporaryData:CalculateAccessories(player, data)
         multPerClick += rewards.MultPerClick or 0
         multStorage += rewards.MultStorage or 0
     end
+    for ID, GUID in data.EquippedCollectibleAccessories do
+        local accessory = CollectibleAccessories[ID]
+        local rewards = accessory.Reward
+        
+        addPerClick += rewards.AddPerClick or 0
+        addStorage += rewards.AddStorage or 0
+        multPerClick += rewards.MultPerClick or 0
+        multStorage += rewards.MultStorage or 0
+    end
     player.TemporaryData.AddPerClick.Value = addPerClick
     player.TemporaryData.AddStorage.Value = addStorage
     player.TemporaryData.MultPerClick.Value = multPerClick
     player.TemporaryData.MultStorage.Value = multStorage
 end
+
 
 function TemporaryData:CalculateRebirthUpgrades(player, data)
     for upgrade, value in data.RebirthUpgrades do
@@ -224,7 +236,7 @@ end
 function TemporaryData:CalculateMaterialInfo(player, itemValue)
 
     for _, material in Materials do
-        if material.Value and itemValue >= material.Value[1] and itemValue <= material.Value[2] then
+        if material.Rarity and itemValue >= material.Value[1] and itemValue <= material.Value[2] then
             local materialID = material.ID
             local minVal = material.Value[1]
             local maxVal = material.Value[2]
@@ -238,12 +250,51 @@ function TemporaryData:CalculateMaterialInfo(player, itemValue)
     end
 end
 
-function TemporaryData:CalculateRebirthInfo(value)
-    local VALUE_TO_REBIRTH_TIX = 1000
-    local rebirthTixReward = math.floor(value / VALUE_TO_REBIRTH_TIX)
+function TemporaryData:CalculateMultipleMaterialInfo(player, multiSelected)
+
+    local materialID;
+    local totalQuantity = 0
+    local chanceToReceive = player.TemporaryData.MaterialDropChance.Value / 100
+
+    local items = multiSelected:GetChildren()
+    local itemSelectedID = items[1].Value
+    local itemSelectedValue = Accessories[itemSelectedID].Value
+
+    for _, material in Materials do
+        if material.Rarity and itemSelectedValue >= material.Value[1] and itemSelectedValue <= material.Value[2] then
+            materialID = material.ID
+            print(materialID)
+            break
+        end
+    end
+
+    for _, item in items do
+        local ID = item.Value
+        local itemValue = Accessories[ID].Value
+        
+        local minVal = Materials[materialID].Value[1]
+        local maxVal = Materials[materialID].Value[2]
+        local maxQuantity =  player.TemporaryData.MaterialMaxDrop.Value
+        local minQuantity = 1
+        local quantity = math.floor(minQuantity + (itemValue - minVal) * ((maxQuantity - minQuantity) / (maxVal - minVal)))
+
+        totalQuantity += quantity
+    end
+    
+    print(totalQuantity)
+    return totalQuantity, chanceToReceive, materialID
+
+end
+
+function TemporaryData:CalculateRebirthInfo(rocash, value)
+    local ROCASH_TO_REBIRTH_TIX = 1000
+    local VALUE_TO_REBIRTH_TIX = 500
+    local rocashCost = math.floor(rocash / ROCASH_TO_REBIRTH_TIX) * ROCASH_TO_REBIRTH_TIX
     local valueCost = math.floor(value / VALUE_TO_REBIRTH_TIX) * VALUE_TO_REBIRTH_TIX
 
-    return rebirthTixReward, valueCost, VALUE_TO_REBIRTH_TIX
+    local rebirthTixReward = math.min(math.floor(rocash / ROCASH_TO_REBIRTH_TIX), math.floor(value / VALUE_TO_REBIRTH_TIX))
+
+    return rebirthTixReward, rocashCost, ROCASH_TO_REBIRTH_TIX, valueCost, VALUE_TO_REBIRTH_TIX
 end
 
 function TemporaryData:CalculateTag(player, GUID)
@@ -265,6 +316,96 @@ function TemporaryData:CalculateTag(player, GUID)
             end
         end
     end
+end
+
+function TemporaryData:CalculateCollectibleTag(player, GUID)
+    for index, data in player.ReplicatedData.CollectibleAccessories:GetChildren() do
+        if data.Name == GUID then
+            local ID = data.Value
+            local accessory = CollectibleAccessories[ID]
+            local equippedAccessory = player.ReplicatedData.EquippedCollectibleAccessories:FindFirstChild(ID)
+            local rarity = accessory.Rarity
+            if equippedAccessory then
+                if equippedAccessory.Value == GUID then
+                    return "@".. RarityTags[rarity] .. ID .. "0" .. GUID
+                else
+                    return RarityTags[rarity] .. ID  .. "0" .. GUID
+                end
+            else
+                return RarityTags[rarity] .. ID  .. "0" .. GUID
+            end
+        end
+    end
+end
+
+
+function TemporaryData:GetBestAccessories(player)
+
+    local ReplicatedData = player.ReplicatedData
+    local TemporaryData = player.TemporaryData
+    local ReplicatedAccessories = ReplicatedData.Accessories
+
+    local EquippedAccessoriesLimit = TemporaryData.EquippedAccessoriesLimit
+
+    local validID = {}
+    local UnsortedAccessories = {}
+
+    for _, data in ReplicatedAccessories:GetChildren() do
+        local GUID = data.Name
+        local ID = data.Value
+        local accessory = Accessories[ID]
+
+        if not validID[ID] then
+            table.insert(UnsortedAccessories, {GUID = GUID, Value = accessory.Value})
+            validID[ID] = true
+        end
+    end
+
+    table.sort(UnsortedAccessories, function(a, b)
+        return a.Value > b.Value
+    end)
+
+    local bestAccessories = {}
+    for i = 1, math.min(#UnsortedAccessories, EquippedAccessoriesLimit.Value) do
+        table.insert(bestAccessories, UnsortedAccessories[i])
+    end
+
+    return bestAccessories
+end
+
+function TemporaryData:GetBestCollectibleAccessories(player)
+
+    local ReplicatedData = player.ReplicatedData
+    local TemporaryData = player.TemporaryData
+    local ReplicatedAccessories = ReplicatedData.CollectibleAccessories
+
+    local EquippedAccessoriesLimit = TemporaryData.EquippedCollectibleAccessoriesLimit
+
+    local validID = {}
+    local UnsortedAccessories = {}
+
+    for _, data in ReplicatedAccessories:GetChildren() do
+        local GUID = data.Name
+        local ID = data.Value
+        local accessory = CollectibleAccessories[ID]
+
+        if not validID[ID] then
+            local value = accessory.Reward["MultPerClick"] + accessory.Reward["MultStorage"]
+            table.insert(UnsortedAccessories, {GUID = GUID, Value = value})
+            validID[ID] = true
+        end
+    end
+
+    table.sort(UnsortedAccessories, function(a, b)
+        return a.Value > b.Value
+    end)
+
+    local bestAccessories = {}
+    for i = 1, math.min(#UnsortedAccessories, EquippedAccessoriesLimit.Value) do
+        table.insert(bestAccessories, UnsortedAccessories[i])
+    end
+
+    return bestAccessories
 end
 
 return TemporaryData

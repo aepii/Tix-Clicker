@@ -20,7 +20,11 @@ local TixUIAnim = require(Modules.TixUIAnim)
 
 ---- UI ----
 
-local InfoUI = Player.PlayerGui:WaitForChild("InfoUI")
+local PlayerGui = Player.PlayerGui
+local UI = PlayerGui:WaitForChild("UI")
+local VFX = UI:WaitForChild("VFX")
+
+local InfoUI = PlayerGui:WaitForChild("InfoUI")
 local UpgradeInfo = InfoUI.UpgradeInfo
 local InfoFrame = UpgradeInfo.InfoFrame
 local CurrentUI = InfoUI.CurrentUI
@@ -46,17 +50,21 @@ local function purchaseUpgrade(upgradeName)
         if rocashCost then
             coroutine.wrap(function()
                 SoundService:PlayLocalSound(MoneySound)
-                TixUIAnim:Animate(Player, "NegateRocashDetail", rocashCost, nil)
-                SoundService:PlayLocalSound(PopSound)
+                if VFX.OtherVFX.Value == true then
+                    TixUIAnim:Animate(Player, "NegateRocashDetail", rocashCost, nil)
+                    SoundService:PlayLocalSound(PopSound)
+                end
             end)()
             if materialCost then
-                for key, materialData in materialCost do
-                    coroutine.wrap(function()
-                        local materialID = materialData[1]
-                        local materialCostVal = materialData[2]
-                        TixUIAnim:Animate(Player, "NegateMaterialDetail", materialCostVal, Materials[materialID])
-                        SoundService:PlayLocalSound(PopSound)
-                    end)()
+                if VFX.OtherVFX.Value == true then
+                    for key, materialData in materialCost do
+                        coroutine.wrap(function()
+                            local materialID = materialData[1]
+                            local materialCostVal = materialData[2]
+                            TixUIAnim:Animate(Player, "NegateMaterialDetail", materialCostVal, Materials[materialID])
+                            SoundService:PlayLocalSound(PopSound)
+                        end)()
+                    end
                 end
             end
         else

@@ -31,6 +31,7 @@ local function playerAdded(player)
             local tixPerSecond = TemporaryData:CalculateTixPerSecond(player, data)
             if data.Tix < tixStorage and tixPerSecond > 0 then
                 DataManager:SetValue(player, profile, {"Tix"}, math.min(data.Tix + tixPerSecond, tixStorage))
+                DataManager:SetValue(player, profile, {"Lifetime Tix"}, (data["Lifetime Tix"] or 0) + tixPerSecond)
                 DataManager:UpdateLeaderstats(player, profile, "Tix")
                 if player.TemporaryData.ActiveCaseOpening.Value == false then
                     AnimateTixRemote:FireClient(player, tixPerSecond)

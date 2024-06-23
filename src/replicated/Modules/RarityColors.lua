@@ -4,10 +4,11 @@ local RarityGradients = {
     Uncommon = ColorSequence.new(Color3.fromRGB(111, 190, 151), Color3.fromRGB(63, 107, 85)),
     Fine = ColorSequence.new(Color3.fromRGB(253, 255, 136), Color3.fromRGB(224, 214, 124)),
     Rare = ColorSequence.new(Color3.fromRGB(255, 128, 0), Color3.fromRGB(243, 163, 131)),
-    Exceptional = ColorSequence.new(Color3.fromRGB(120, 245, 245), Color3.fromRGB(120, 223, 248)),
+    Exceptional = ColorSequence.new(Color3.fromRGB(48, 228, 250), Color3.fromRGB(52, 192, 198)),
     Epic = ColorSequence.new(Color3.fromRGB(128, 0, 255), Color3.fromRGB(131, 102, 160)),
     Heroic = ColorSequence.new(Color3.fromRGB(253, 121, 121), Color3.fromRGB(253, 83, 83)),
-    Legendary = ColorSequence.new(Color3.fromRGB(190, 145, 190), Color3.fromRGB(225, 238, 202))
+    Legendary = ColorSequence.new(Color3.fromRGB(190, 145, 190), Color3.fromRGB(225, 238, 202)),
+    Tixclusive = ColorSequence.new(Color3.fromRGB(250, 195, 55), Color3.fromRGB(250,222,62))
 }
 
 local RarityModule = {}
@@ -18,6 +19,14 @@ RarityModule.CaseColors = {
     C3 = {Main = Color3.fromRGB(0, 174, 255), Background = Color3.fromRGB(50, 50, 50), Shadow = Color3.fromRGB(0, 115, 168)},
     C4 = {Main = Color3.fromRGB(250, 211, 14), Background = Color3.fromRGB(50, 50, 50), Shadow = Color3.fromRGB(250, 183, 13)}, 
     C5 = {Main = Color3.fromRGB(242, 14, 250), Background = Color3.fromRGB(50, 50, 50), Shadow = Color3.fromRGB(118, 71, 139)}, 
+    CC1 = {Main = Color3.fromRGB(250,222,62), Background = Color3.fromRGB(50, 50, 50), Shadow = Color3.fromRGB(250, 194, 52)}, 
+}
+
+RarityModule.PortalColors = {
+    Z1 = {Main = Color3.fromRGB(125, 84, 43), Shadow = Color3.fromRGB(84, 56, 29)},
+    Z2 = {Main = Color3.fromRGB(0, 174, 255), Shadow = Color3.fromRGB(0, 115, 168)},
+    Z3 = {Main = Color3.fromRGB(250, 211, 14), Shadow = Color3.fromRGB(250, 183, 13)},
+    Z4 = {Main = Color3.fromRGB(242, 14, 250), Shadow = Color3.fromRGB(118, 71, 139)}
 }
 
 function RarityModule:GetGradient(rarity)

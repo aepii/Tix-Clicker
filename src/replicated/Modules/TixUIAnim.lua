@@ -27,6 +27,7 @@ function TixUIAnim:Animate(player, detail, value, valueData)
     detail.Size = UDim2.new(0, 0, 0, 0)
     
     if detail.Name == "TixDetail" then
+
         detail.Amount.Text = "+" .. SuffixHandler:Convert(value)
     
         local randomX = math.random(100, 900) / 1000
@@ -427,9 +428,9 @@ function TixUIAnim:Animate(player, detail, value, valueData)
         
         wait(0.75)
         
-        local statsDisplay = detail.Parent.Parent.MaterialsButton.MaterialsFrame.MaterialsHolder:FindFirstChild(valueData.ID)
+        local statsDisplay = detail.Parent.Parent.MaterialStats.MaterialsFrame.MaterialsHolder:FindFirstChild(valueData.ID)
         if statsDisplay then
-            tweenPosition = UDim2.new(-.005, statsDisplay.AbsolutePosition.X, -.015, statsDisplay.AbsolutePosition.Y)
+            tweenPosition = UDim2.new(0, statsDisplay.AbsolutePosition.X, 0, statsDisplay.AbsolutePosition.Y)
         else
             tweenPosition = UDim2.new(0.965, 0, 0.965, 0)
         end
@@ -473,9 +474,9 @@ function TixUIAnim:Animate(player, detail, value, valueData)
         local randomX = math.random(400, 600) / 1000
         local randomY = math.random(400, 600) / 1000
 
-        local statsDisplay = detail.Parent.Parent.MaterialsButton.MaterialsFrame.MaterialsHolder:FindFirstChild(valueData.ID)
+        local statsDisplay = detail.Parent.Parent.MaterialStats.MaterialsFrame.MaterialsHolder:FindFirstChild(valueData.ID)
         if statsDisplay then
-            detail.Position = UDim2.new(-.005, statsDisplay.AbsolutePosition.X, -.015, statsDisplay.AbsolutePosition.Y)
+            detail.Position = UDim2.new(0, statsDisplay.AbsolutePosition.X, 0, statsDisplay.AbsolutePosition.Y)
         else
             detail.Position = UDim2.new(0.965, 0, 0.965, 0)
         end

@@ -7,7 +7,6 @@ local SoundService = game:GetService("SoundService")
 ---- Modules ----
 
 local Modules = ReplicatedStorage.Modules
-local TemporaryData = require(Modules.TemporaryData)
 local TweenButton = require(Modules.TweenButton)
 local Upgrades = require(ReplicatedStorage.Data.Upgrades)
 
@@ -95,6 +94,11 @@ local UIFrames = {
     TixInventory = TixInventory,
     CaseInventory = CaseInventory,
     AccessoryInventory = AccessoryInventory,
+    ProfileMenu = UI.ProfileMenu,
+    SettingsMenu = UI.SettingsMenu,
+    --RewardsMenu = UI.RewardsMenu,
+    --QuestsMenu = UI.QuestsMenu,
+    --ShopMenu = UI.ShopMenu,
 }
 
 local function playClickSound()
@@ -102,6 +106,7 @@ local function playClickSound()
 end
 
 local function buttonBehavior(button, originalSize, inventory, uiValue)
+
     local function buttonHover()
         TweenButton:Grow(button, originalSize)
     end
@@ -145,6 +150,7 @@ end
 buttonBehavior(ToolButton, TOOLBUTTON_ORIGINALSIZE, TixInventory, "TixInventory")
 buttonBehavior(CaseButton, CASEBUTTON_ORIGINALSIZE, CaseInventory, "CaseInventory")
 buttonBehavior(AccessoryButton, ACCESSORYBUTTON_ORIGINALSIZE, AccessoryInventory, "AccessoryInventory")
+
 
 
 

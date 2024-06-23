@@ -5,13 +5,20 @@ ProfileData.Data = {
 	["Rocash"] = 0;
 	["Rebirth Tix"] = 0;
 
+	["Join Time"] = os.time();
 	["Lifetime Tix"] = 0;
 	["Lifetime Rocash"] = 0;
 	["Lifetime Rebirth Tix"] = 0;
+	["Lifetime Value"] = 0;
+	["Lifetime Cases"] = 0;
+	["Lifetime Scrapped"] = 0;
+	["Lifetime Materials"] = 0;
+	["Lifetime Robux Spent"] = 0;
+	["Lifetime Playtime"] = 0;
 
 	["ToolEquipped"] = "U1";
 	["EquippedAccessories"] = {};
-
+	["EquippedCollectibleAccessories"] = {};
 	["EquippedAmulet"] = "";
 
 	["AlphaTester"] = true;
@@ -27,7 +34,13 @@ ProfileData.Data = {
 	["Accessories"] = {
 	};
 
+	["CollectibleAccessories"] = {
+	};
+
 	["Cases"] = {
+	};
+
+	["CollectibleCases"] = {
 	};
 
 	["Materials"] = {
@@ -98,8 +111,12 @@ ProfileData.TemporaryData = {
 		Value = 3,
 		Type = "Number"
 	};
+	["EquippedCollectibleAccessoriesLimit"] = {
+		Value = 3,
+		Type = "Number"
+	};
 	["AccessoriesLimit"] = {
-		Value = 20,
+		Value = 100,
 		Type = "Number"
 	};
 	["AddPerClick"] = {

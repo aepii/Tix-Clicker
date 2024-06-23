@@ -18,7 +18,11 @@ local TixUIAnim = require(Modules.TixUIAnim)
 
 ---- UI ----
 
-local InfoUI = Player.PlayerGui:WaitForChild("InfoUI")
+local PlayerGui = Player.PlayerGui
+local UI = PlayerGui:WaitForChild("UI")
+local VFX = UI:WaitForChild("VFX")
+
+local InfoUI = PlayerGui:WaitForChild("InfoUI")
 local PerSecInfoInfo = InfoUI.PerSecInfo
 local InfoFrame = PerSecInfoInfo.InfoFrame
 local CurrentUI = InfoUI.CurrentUI
@@ -43,8 +47,10 @@ local function purchasePerSecondUpgrade(upgradeName)
     coroutine.wrap(function()
         if response then
             SoundService:PlayLocalSound(MoneySound)
-            TixUIAnim:Animate(Player, "NegateRocashDetail", response, nil)
-            SoundService:PlayLocalSound(PopSound)
+            if VFX.OtherVFX.Value == true then
+                TixUIAnim:Animate(Player, "NegateRocashDetail", response, nil)
+                SoundService:PlayLocalSound(PopSound)
+            end
         else
             SoundService:PlayLocalSound(ErrorSound)
         end

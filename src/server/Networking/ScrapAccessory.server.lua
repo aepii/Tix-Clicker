@@ -74,6 +74,9 @@ ScrapAccessoryRemote.OnServerInvoke = (function(player, accessoryGUID)
                 UpdateClientMaterialsInventoryRemote:FireClient(player, newMaterialValue, materialID, "UPDATE")
             end
         end
+
+        DataManager:SetValue(player, profile, {"Lifetime Scrapped"}, (profile.Data["Lifetime Scrapped"] or 0) + 1)
+        DataManager:SetValue(player, profile, {"Lifetime Materials"}, (profile.Data["Lifetime Materials"] or 0) + amount)
         return amount, Materials[materialID]
     end
 end)

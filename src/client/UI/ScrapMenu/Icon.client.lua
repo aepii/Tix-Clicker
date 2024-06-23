@@ -19,6 +19,7 @@ local TemporaryData = require(Modules.TemporaryData)
 
 local ReplicatedData = Player:WaitForChild("ReplicatedData")
 local ReplicatedAccessories = ReplicatedData.Accessories
+local EquippedAccessories = ReplicatedData.EquippedAccessories
 
 ---- UI ----
 
@@ -28,16 +29,21 @@ local InvHolder = IconButton.Parent
 local InvFrame = InvHolder.Parent
 local ScrapMenu = InvFrame.Parent
 local ScrapFrame = ScrapMenu.ScrapFrame
+local MultiScrapFrame = ScrapMenu.MultiScrapFrame
 local IconImage = ScrapFrame.Icon.IconImage
 local RewardsFrame = ScrapFrame.RewardsFrame
 local ValueFrame = ScrapFrame.ValueFrame
 local ScrapButton = ScrapFrame.ScrapButton
-local EquippedIcon = IconButton.EquippedIcon
+local SelectedIcon = IconButton.SelectedIcon
+local IconCopy = InvHolder.IconCopy
 
 ---- UI Values ----
 
 local UIVisible = ScrapFrame.UIVisible
 local CurrentAccessory = ScrapFrame.CurrentAccessory
+local CurrentRarity = MultiScrapFrame.CurrentRarity
+local MultiScrap = ScrapMenu.MultiScrap
+local MultiSelected = ScrapMenu.MultiSelected
 
 local GUID = IconButton.GUID
 
@@ -51,6 +57,57 @@ local ClickSound = Sounds:WaitForChild("ClickSound")
 local Networking = ReplicatedStorage.Networking
 
 ---- Private Functions ----
+
+local function isEquipped(GUID)
+    local ID = ReplicatedAccessories[GUID].Value
+    local equippedAccessory = EquippedAccessories:FindFirstChild(ID)
+    if equippedAccessory and equippedAccessory.Value == GUID then
+        return true
+    else
+       return false
+    end
+end
+
+local function multiScrapSearch(text)
+    local text = string.lower(text)
+    local elements = InvHolder:GetChildren()
+
+    for _, element in elements do
+        if element:IsA("Frame") and element ~= IconCopy then
+            if isEquipped(element.GUID.Value) then
+                element.Visible = false
+            else
+                if string.lower(element.Rarity.Value) == text or text == "" then
+                    element.Visible = true
+                else
+                    element.Visible = false
+                end
+            end
+        end
+    end
+end
+
+local function search(text)
+    local text = string.lower(text)
+    local elements = InvHolder:GetChildren()
+
+    if MultiScrap.Value == false then
+        for _, element in elements do
+            if element:IsA("Frame") and element ~= IconCopy then
+                if isEquipped(element.GUID.Value) then
+                    element.Visible = false
+                else
+                    if string.find(string.lower(element.AccessoryName.Value), text) or string.find(string.lower(element.Rarity.Value), text)  then
+                        element.Visible = true
+                    else
+                        element.Visible = false
+                    end
+                end
+            end
+        end
+    end
+
+end
 
 local function updateScrapFrame()
     local ID = Player.ReplicatedData.Accessories[GUID.Value].Value
@@ -79,7 +136,6 @@ local function updateScrapFrame()
             rewardFrame.ChanceText.Text = string.format("%.1f", chanceToReceive*100).."%/drop"
             rewardFrame.RewardIcon.Image = Materials[materialID].Image
             rewardFrame.Visible = true
-            rewardFrame.Parent = ScrapFrame.RewardsFrame
         end
     end
 
@@ -92,9 +148,50 @@ local function updateScrapFrame()
     ButtonStatus:ScrapInventory(Player, GUID.Value, ScrapButton)
 end
 
+
+local function updateMultiScrapFrame()
+    local ID = Player.ReplicatedData.Accessories[GUID.Value].Value
+    local accessory = Accessories[ID]
+    
+    if CurrentRarity.Value == "" then
+        CurrentRarity.Value = accessory.Rarity
+    end
+
+    local selected = MultiSelected:FindFirstChild(GUID.Value)
+
+    if selected then
+        SelectedIcon.Visible = false
+        selected:Destroy()
+    else
+        SelectedIcon.Visible = true
+        local instance = Instance.new("StringValue")
+        instance.Name = GUID.Value
+        instance.Value = ID
+        instance.Parent = MultiSelected
+    end
+
+    if #MultiSelected:GetChildren() == 0 then
+        CurrentRarity.Value = ""
+        MultiScrapFrame.Message.Visible = true
+        MultiScrapFrame.RewardsFrame.Visible = false
+    else
+        local gradient = RarityColors:GetGradient(CurrentRarity.Value)
+        local quantity, chanceToReceive, materialID = TemporaryData:CalculateMultipleMaterialInfo(Player, MultiSelected)
+        local prefix = "x"
+        MultiScrapFrame.RewardsFrame[1].RewardText.UIGradient.Color = gradient
+        MultiScrapFrame.RewardsFrame[1].RewardText.Text = prefix  .. "0-" .. quantity
+        MultiScrapFrame.RewardsFrame[1].ChanceText.Text = string.format("%.1f", chanceToReceive*100).."%/drop"
+        MultiScrapFrame.RewardsFrame[1].RewardIcon.Image = Materials[materialID].Image
+        MultiScrapFrame.RewardsFrame.Visible = true
+        MultiScrapFrame.Message.Visible = false
+       
+    end
+    multiScrapSearch(CurrentRarity.Value)
+end
+
 ---- Buttons ----
 
-local ICONIMAGE_ORIGINALSIZE = IconImage.Size
+local ICONIMAGE_ORIGINALSIZE = IconButton.IconImage.Size
 
 local function playClickSound()
     SoundService:PlayLocalSound(ClickSound)
@@ -111,16 +208,20 @@ end
 local function iconMouseDown()
     playClickSound()
     TweenButton:Shrink(IconButtonImage, ICONIMAGE_ORIGINALSIZE)
-    if UIVisible.Value == false or CurrentAccessory.Value ~= IconButton.Name then
-        ScrapFrame:TweenPosition(UDim2.new(0,0,.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
-        InvFrame:TweenSizeAndPosition(UDim2.new(0.75,0,0.8,0), UDim2.new(0.575,0,0.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
-        UIVisible.Value = true
+    if MultiScrap.Value == false then
+        if UIVisible.Value == false or CurrentAccessory.Value ~= IconButton.Name then
+            ScrapFrame:TweenPosition(UDim2.new(.05,0,.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+            InvFrame:TweenSizeAndPosition(UDim2.new(0.75,0,0.8,0), UDim2.new(0.575,0,0.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+            UIVisible.Value = true
+        else
+            ScrapFrame:TweenPosition(UDim2.new(.05,0,2,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+            InvFrame:TweenSizeAndPosition(UDim2.new(0.95,0,0.8,0), UDim2.new(0.5,0,0.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+            UIVisible.Value = false
+        end
+        updateScrapFrame()
     else
-        ScrapFrame:TweenPosition(UDim2.new(0,0,2,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
-        InvFrame:TweenSizeAndPosition(UDim2.new(0.9,0,0.8,0), UDim2.new(0.5,0,0.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
-        UIVisible.Value = false
+        updateMultiScrapFrame()
     end
-    updateScrapFrame()
 end
 
 local function iconMouseUp()

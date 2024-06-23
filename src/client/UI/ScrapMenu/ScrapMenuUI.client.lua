@@ -17,21 +17,24 @@ local TixUIAnim = require(Modules.TixUIAnim)
 ---- Data ----
 
 local ReplicatedData = Player:WaitForChild("ReplicatedData")
-local ReplicatedTemporaryData = Player:WaitForChild("TemporaryData")
 local ReplicatedAccessories = ReplicatedData.Accessories
 local EquippedAccessories = ReplicatedData.EquippedAccessories
-local accessoriesLimit = ReplicatedTemporaryData.AccessoriesLimit
 
 ---- UI ----
 
 local PlayerGui = Player.PlayerGui
 local UI = PlayerGui:WaitForChild("UI")
+local VFX = UI:WaitForChild("VFX")
 
 local ScrapMenu = UI.ScrapMenu
 local InvFrame = ScrapMenu.InvFrame
 local InvHolder = InvFrame.Holder
 local ScrapFrame = ScrapMenu.ScrapFrame
+local MultiScrapFrame = ScrapMenu.MultiScrapFrame
 local IconCopy = InvHolder.IconCopy
+local SearchBar = ScrapMenu.SearchBar.TextBox
+local MultiScrapButton = ScrapMenu.MultiScrapButton
+
 
 local IconScript = script.Parent.Icon
 IconScript.Name = "IconScript"
@@ -43,6 +46,9 @@ local CurrentAccessory = ScrapFrame.CurrentAccessory
 local UIVisible = UI.UIVisible
 local UIVisibleScrap = ScrapFrame.UIVisible
 local CurrentUI = UI.CurrentUI
+local CurrentRarity = MultiScrapFrame.CurrentRarity
+local MultiScrap = ScrapMenu.MultiScrap
+local MultiSelected = ScrapMenu.MultiSelected
 
 ---- Sound ----
 
@@ -60,30 +66,105 @@ local UpdateClientAccessoriesInventoryRemote = Networking.UpdateClientAccessorie
 
 ---- Private Functions ----
 
+local function isEquipped(GUID)
+    local ID = ReplicatedAccessories:FindFirstChild(GUID)
+    if not ID then
+        return false
+    end
+    local equippedAccessory = EquippedAccessories:FindFirstChild(ID.Value)
+    if equippedAccessory and equippedAccessory.Value == GUID then
+        return true
+    else
+       return false
+    end
+end
+
+local function search(text)
+    local text = string.lower(text)
+    local elements = InvHolder:GetChildren()
+
+    if MultiScrap.Value == false then
+        for _, element in elements do
+            if element:IsA("Frame") and element ~= IconCopy then
+                if isEquipped(element.GUID.Value) then
+                    element.Visible = false
+                else
+                    if string.find(string.lower(element.AccessoryName.Value), text) or string.find(string.lower(element.Rarity.Value), text)  then
+                        element.Visible = true
+                    else
+                        element.Visible = false
+                    end
+                end
+            end
+        end
+    end
+
+end
+
+SearchBar:GetPropertyChangedSignal("Text"):Connect(function()
+	local text = SearchBar.Text
+	search(text)
+end)
+
+
 local function scrapAccessory(accessoryGUID)
     local amount, materialData = ScrapAccessoryRemote:InvokeServer(accessoryGUID)
     if amount then
         SoundService:PlayLocalSound(ScrapSound)
-        ScrapFrame:TweenPosition(UDim2.new(0,0,2,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
-        InvFrame:TweenSizeAndPosition(UDim2.new(0.9,0,0.8,0), UDim2.new(0.5,0,0.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+        ScrapFrame:TweenPosition(UDim2.new(.05,0,2,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+        InvFrame:TweenSizeAndPosition(UDim2.new(0.95,0,0.8,0), UDim2.new(0.5,0,0.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
         UIVisibleScrap.Value = false
-        if amount > 0 then
-            TixUIAnim:Animate(Player, "MaterialDetail", amount, materialData)
-            SoundService:PlayLocalSound(PopSound)
+        if VFX.ScrapVFX.Value == true then
+            if amount > 0 then
+                TixUIAnim:Animate(Player, "MaterialDetail", amount, materialData)
+                SoundService:PlayLocalSound(PopSound)
+            end
         end
     else
         SoundService:PlayLocalSound(ErrorSound)
     end
 end
 
-local function isEquipped(GUID)
-    local ID = ReplicatedAccessories[GUID].Value
-    local equippedAccessory = EquippedAccessories:FindFirstChild(ID)
-    if equippedAccessory and equippedAccessory.Value == GUID then
-        return true
-    else
-       return false
+local function resetMultiScrapFrame()
+    MultiScrap.Value = false
+    SearchBar.PlaceholderText = "Search"
+    MultiScrapButton.ScrapText.Text = "Multi Scrap"
+    for index, icon in InvHolder:GetChildren() do
+        if icon:IsA("Frame") and icon ~= IconCopy then
+            icon.SelectedIcon.Visible = false
+        end
     end
+    CurrentRarity.Value = ""
+    MultiScrapFrame.Message.Visible = true
+    MultiScrapFrame.RewardsFrame.Visible = false
+    MultiScrapFrame:TweenPosition(UDim2.new(.05,0,2,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+    InvFrame:TweenSizeAndPosition(UDim2.new(0.95,0,0.8,0), UDim2.new(0.5,0,0.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+    for _, item in MultiSelected:GetChildren() do
+        item:Destroy()
+    end
+    search("")
+end
+
+local function multiScrapAccessory()
+    for _, item in MultiSelected:GetChildren() do
+        local accessoryGUID = item.Name
+        local amount, materialData = ScrapAccessoryRemote:InvokeServer(accessoryGUID)
+        if VFX.Value == true then
+            if amount then
+                coroutine.wrap(function()
+                    SoundService:PlayLocalSound(ScrapSound)
+                    if amount > 0 then
+                        TixUIAnim:Animate(Player, "MaterialDetail", amount, materialData)
+                        SoundService:PlayLocalSound(PopSound)
+                    end
+                end)()
+            else
+                SoundService:PlayLocalSound(ErrorSound)
+            end
+        end
+    end
+    
+    resetMultiScrapFrame()
 end
 
 local function getIcon(GUID)
@@ -97,8 +178,8 @@ end
 
 local function updateInventory(ID, GUID, method)
     if method == "INIT" then
-        ScrapFrame:TweenPosition(UDim2.new(0,0,2,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
-        InvFrame:TweenSizeAndPosition(UDim2.new(0.9,0,0.8,0), UDim2.new(0.5,0,0.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+        ScrapFrame:TweenPosition(UDim2.new(.05,0,2,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+        InvFrame:TweenSizeAndPosition(UDim2.new(0.95,0,0.8,0), UDim2.new(0.5,0,0.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
         UIVisible.Value = false
         for index, icon in InvHolder:GetChildren() do
             if icon:IsA("Frame") and icon ~= IconCopy then
@@ -117,36 +198,47 @@ local function updateInventory(ID, GUID, method)
         icon.Name = TemporaryData:CalculateTag(Player, GUID)
         icon.ID.Value = ID
         icon.GUID.Value = GUID
+        icon.Rarity.Value = Accessories[ID].Rarity
+        icon.AccessoryName.Value = Accessories[ID].Name
         icon.IconImage.Image = "http://www.roblox.com/Thumbs/Asset.ashx?Width=256&Height=256&AssetID="..Accessories[ID].AssetID
         icon.UIGradient.Color = RarityColors:GetGradient(Accessories[ID].Rarity)
         icon.Parent = InvHolder
         if isEquipped(GUID) then
-            icon.EquippedIcon.Visible = true
             icon.Visible = false
         else
-            icon.EquippedIcon.Visible = false
             icon.Visible = true
         end
         icon.IconScript.Enabled = true
     elseif method == "EQUIP" then
         local icon = getIcon(GUID)
         if GUID == icon.GUID.Value then
-            ScrapFrame:TweenPosition(UDim2.new(0,0,2,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
-            InvFrame:TweenSizeAndPosition(UDim2.new(0.9,0,0.8,0), UDim2.new(0.5,0,0.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+            CurrentAccessory.Value = ""
+            if icon then
+                icon.Shadow.BackgroundColor3 = Color3.fromRGB(234, 160, 19)
+            end
+            ScrapFrame:TweenPosition(UDim2.new(.05,0,2,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+            InvFrame:TweenSizeAndPosition(UDim2.new(0.95,0,0.8,0), UDim2.new(0.5,0,0.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
         end
         if icon then
             icon.Name = TemporaryData:CalculateTag(Player, GUID)
-            icon.EquippedIcon.Visible = true
             icon.Visible = false
         end
     elseif method == "UNEQUIP" then  
         local icon = getIcon(GUID)
+        if GUID == icon.GUID.Value then
+            CurrentAccessory.Value = ""
+            if icon then
+                icon.Shadow.BackgroundColor3 = Color3.fromRGB(234, 160, 19)
+            end
+            ScrapFrame:TweenPosition(UDim2.new(.05,0,2,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+            InvFrame:TweenSizeAndPosition(UDim2.new(0.95,0,0.8,0), UDim2.new(0.5,0,0.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+        end
         if icon then
             icon.Name = TemporaryData:CalculateTag(Player, GUID)
-            icon.EquippedIcon.Visible = false
             icon.Visible = true
         end
     end
+    resetMultiScrapFrame()
 end
 
 function initInventory()
@@ -165,9 +257,12 @@ end)
 
 local ExitButton = ScrapMenu.ExitButton
 local ScrapButton = ScrapFrame.ScrapButton
+local ConfirmMultiScrapButton = MultiScrapFrame.ScrapButton
 
 local EXITBUTTON_ORIGINALSIZE = ExitButton.Size
 local SCRAPBUTTON_ORIGINALSIZE = ScrapButton.Size
+local MULTISCRAPBUTTON_ORIGINALSIZE = MultiScrapButton.Size
+local CONFIRMMULTISCRAPBUTTON_ORIGINALSIZE = ConfirmMultiScrapButton.Size
 
 local function playClickSound()
     SoundService:PlayLocalSound(ClickSound)
@@ -206,12 +301,62 @@ local function scrapMouseDown()
     TweenButton:Shrink(ScrapButton, SCRAPBUTTON_ORIGINALSIZE)
     local currentIcon = InvHolder:FindFirstChild(CurrentAccessory.Value)
     if currentIcon then
-        scrapAccessory(currentIcon.GUID.Value, ScrapFrame, UIVisibleScrap)
+        scrapAccessory(currentIcon.GUID.Value)
     end
 end
 
 local function scrapMouseUp()
     TweenButton:Reset(ScrapButton, SCRAPBUTTON_ORIGINALSIZE)
+end
+
+local function multiScrapHover()
+    TweenButton:Grow(MultiScrapButton, MULTISCRAPBUTTON_ORIGINALSIZE)
+end
+
+local function multiScrapLeave()
+    TweenButton:Reset(MultiScrapButton, MULTISCRAPBUTTON_ORIGINALSIZE)
+end
+
+local function multiScrapMouseDown()
+    playClickSound()
+    TweenButton:Shrink(MultiScrapButton, MULTISCRAPBUTTON_ORIGINALSIZE)
+    if InvFrame.Holder:FindFirstChild(CurrentAccessory.Value) then
+        InvFrame.Holder[CurrentAccessory.Value].Shadow.BackgroundColor3 = Color3.fromRGB(234, 160, 19)
+        CurrentAccessory.Value = ""
+    end
+    ScrapFrame:TweenPosition(UDim2.new(.05,0,2,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+    if MultiScrap.Value == false then 
+        SearchBar.PlaceholderText = "Unavailable"
+        MultiScrap.Value = true
+        MultiScrapButton.ScrapText.Text = "Cancel"
+        MultiScrapFrame:TweenPosition(UDim2.new(.05,0,.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+        InvFrame:TweenSizeAndPosition(UDim2.new(0.75,0,0.8,0), UDim2.new(0.575,0,0.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+    else
+        resetMultiScrapFrame()
+    end
+    search("")
+end
+
+local function multiScrapMouseUp()
+    TweenButton:Reset(MultiScrapButton, MULTISCRAPBUTTON_ORIGINALSIZE)
+end
+
+local function confirmMultiScrapHover()
+    TweenButton:Grow(ConfirmMultiScrapButton, CONFIRMMULTISCRAPBUTTON_ORIGINALSIZE)
+end
+
+local function confirmMultiScrapLeave()
+    TweenButton:Reset(ConfirmMultiScrapButton, CONFIRMMULTISCRAPBUTTON_ORIGINALSIZE)
+end
+
+local function confirmMultiScrapMouseDown()
+    playClickSound()
+    TweenButton:Shrink(ConfirmMultiScrapButton, CONFIRMMULTISCRAPBUTTON_ORIGINALSIZE)
+    multiScrapAccessory()
+end
+
+local function confirmMultiScrapMouseUp()
+    TweenButton:Reset(ConfirmMultiScrapButton, CONFIRMMULTISCRAPBUTTON_ORIGINALSIZE)
 end
 
 ExitButton.ClickDetector.MouseEnter:Connect(exitHover)
@@ -223,3 +368,13 @@ ScrapButton.ClickDetector.MouseEnter:Connect(scrapHover)
 ScrapButton.ClickDetector.MouseLeave:Connect(scrapLeave)
 ScrapButton.ClickDetector.MouseButton1Down:Connect(scrapMouseDown)
 ScrapButton.ClickDetector.MouseButton1Up:Connect(scrapMouseUp)
+
+ConfirmMultiScrapButton.ClickDetector.MouseEnter:Connect(confirmMultiScrapHover)
+ConfirmMultiScrapButton.ClickDetector.MouseLeave:Connect(confirmMultiScrapLeave)
+ConfirmMultiScrapButton.ClickDetector.MouseButton1Down:Connect(confirmMultiScrapMouseDown)
+ConfirmMultiScrapButton.ClickDetector.MouseButton1Up:Connect(confirmMultiScrapMouseUp)
+
+MultiScrapButton.ClickDetector.MouseEnter:Connect(multiScrapHover)
+MultiScrapButton.ClickDetector.MouseLeave:Connect(multiScrapLeave)
+MultiScrapButton.ClickDetector.MouseButton1Down:Connect(multiScrapMouseDown)
+MultiScrapButton.ClickDetector.MouseButton1Up:Connect(multiScrapMouseUp)

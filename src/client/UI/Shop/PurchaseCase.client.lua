@@ -6,20 +6,19 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local SoundService = game:GetService("SoundService")
 local Player = Players.LocalPlayer
 
----- Shop ----
-
-local Shop = Workspace.ShopUpgrades
-
 ---- Modules ----
 
 local Modules = ReplicatedStorage.Modules
 local TweenButton = require(Modules.TweenButton)
-local ButtonStatus = require(Modules.ButtonStatus)
 local TixUIAnim = require(Modules.TixUIAnim)
 
 ---- UI ----
 
-local InfoUI = Player.PlayerGui:WaitForChild("InfoUI")
+local PlayerGui = Player.PlayerGui
+local UI = PlayerGui:WaitForChild("UI")
+local VFX = UI:WaitForChild("VFX")
+
+local InfoUI = PlayerGui:WaitForChild("InfoUI")
 local UpgradeInfo = InfoUI.CaseInfo
 local InfoFrame = UpgradeInfo.InfoFrame
 local CurrentUI = InfoUI.CurrentUI
@@ -44,8 +43,10 @@ local function purchaseCase(caseName)
     coroutine.wrap(function()
         if response then
             SoundService:PlayLocalSound(MoneySound)
-            TixUIAnim:Animate(Player, "NegateRocashDetail", response, nil)
-            SoundService:PlayLocalSound(PopSound)
+            if VFX.OtherVFX.Value == true then
+                TixUIAnim:Animate(Player, "NegateRocashDetail", response, nil)
+                SoundService:PlayLocalSound(PopSound)
+            end
         else
             SoundService:PlayLocalSound(ErrorSound)
         end

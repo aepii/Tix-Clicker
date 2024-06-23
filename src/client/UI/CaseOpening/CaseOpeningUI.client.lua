@@ -24,6 +24,7 @@ local CaseTime = TemporaryData.CaseTime
 local PlayerGui = Player.PlayerGui
 local OpenUI = PlayerGui:WaitForChild("CaseOpenUI")
 local UI = PlayerGui:WaitForChild("UI")
+local VFX = UI:WaitForChild("VFX")
 
 local CaseWinningFrame = OpenUI.CaseWinningFrame
 local CaseOpeningFrame = OpenUI.CaseOpeningFrame
@@ -35,7 +36,6 @@ local IconCopy = ItemHolder.IconCopy
 local Sounds = Player:WaitForChild("Sounds")
 local ClickSound = Sounds:WaitForChild("ClickSound")
 local RewardSound = Sounds:WaitForChild("RewardSound")
-local SpinSound = Sounds:WaitForChild("SpinSound")
 local PopSound = Sounds:WaitForChild("PopSound")
 
 ---- Networking ----
@@ -185,10 +185,12 @@ local function showWinner(winner)
     task.wait(0.25)
     CaseWinningFrame.Visible = false
     UI.Enabled = true
-    coroutine.wrap(function()
-        TixUIAnim:Animate(Player, "ValueDetail", winner.Value, nil)
-        SoundService:PlayLocalSound(PopSound)
-    end)()
+    if VFX.OtherVFX.Value == true then
+        coroutine.wrap(function()
+            TixUIAnim:Animate(Player, "ValueDetail", winner.Value, nil)
+            SoundService:PlayLocalSound(PopSound)
+        end)()
+    end
 
     OpenCaseAnimRemote:FireServer()
 end
@@ -244,11 +246,12 @@ local function populateCase(caseID, winner)
 
     tween.Completed:Wait()
     local finishTween = TweenService:Create(ItemHolder, finishTweenInfo, {Position = UDim2.new(-20.125, 0, 0.5, 0)})
+    task.wait(0.25)
     SoundService:PlayLocalSound(ClickSound)
     finishTween:Play()
     finishTween.Completed:Wait()
-    task.wait(0.25)
-    CaseOpeningFrame:TweenPosition(UDim2.new(0.5, 0, 2, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.25, true)
+    task.wait(0.1)
+    CaseOpeningFrame:TweenPosition(UDim2.new(0.5, 0, 2, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
 
     for index, icon in ItemHolder:GetChildren() do
         if icon:IsA("Frame") and icon ~= IconCopy then

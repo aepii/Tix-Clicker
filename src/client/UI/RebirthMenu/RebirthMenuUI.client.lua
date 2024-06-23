@@ -14,16 +14,20 @@ local TixUIAnim = require(Modules.TixUIAnim)
 
 ---- Data ----
 
+local ReplicatedData = Player:WaitForChild("ReplicatedData")
 local ReplicatedTemporaryData = Player:WaitForChild("TemporaryData")
+local Rocash = ReplicatedData.Rocash
 local Value = ReplicatedTemporaryData.Value
 
 ---- UI ----
 
 local PlayerGui = Player.PlayerGui
 local UI = PlayerGui:WaitForChild("UI")
+local VFX = UI:WaitForChild("VFX")
 
 local RebirthMenu = UI.RebirthMenu
 local InfoFrame = RebirthMenu.InfoFrame
+local RocashInfo = RebirthMenu.RocashInfo
 local ValueInfo = RebirthMenu.ValueInfo
 
 local RebirthButton = InfoFrame.RebirthButton
@@ -48,21 +52,26 @@ local RebirthRemote = Networking.Rebirth
 ---- Private Functions ----
 
 local function rebirth()
-    local rebirthTixGain, valueLost = RebirthRemote:InvokeServer()
-    SoundService:PlayLocalSound(RebirthSound)
-    coroutine.wrap(function()
-        TixUIAnim:Animate(Player, "NegateValueDetail", valueLost, nil)
-        SoundService:PlayLocalSound(PopSound)
-    end)()
-    coroutine.wrap(function()
-        TixUIAnim:Animate(Player, "RebirthTixDetail", rebirthTixGain, nil)
-        SoundService:PlayLocalSound(PopSound)
-    end)()
+    local rebirthTixGain, rocashLost = RebirthRemote:InvokeServer()
+    if rebirthTixGain then
+        SoundService:PlayLocalSound(RebirthSound)
+        if VFX.OtherVFX.Value == true then
+            coroutine.wrap(function()
+                TixUIAnim:Animate(Player, "NegateRocashDetail", rocashLost, nil)
+                SoundService:PlayLocalSound(PopSound)
+            end)()
+            coroutine.wrap(function()
+                TixUIAnim:Animate(Player, "RebirthTixDetail", rebirthTixGain, nil)
+                SoundService:PlayLocalSound(PopSound)
+            end)()
+        end
+    end
 end
 
 local function updateRebirthMenu()
-    local rebirthTixReward, valueCost, VALUE_TO_REBIRTH_TIX = TemporaryData:CalculateRebirthInfo(Value.Value)
+    local rebirthTixReward, rocashCost, ROCASH_TO_REBIRTH_TIX, valueCost, VALUE_TO_REBIRTH_TIX = TemporaryData:CalculateRebirthInfo(Rocash.Value, Value.Value)
     RebirthButton.Reward.IconImage.Amount.Text = SuffixHandler:Convert(rebirthTixReward)
+    RocashInfo.IconImage.Amount.Text = SuffixHandler:Convert(Rocash.Value) .. "/" .. SuffixHandler:Convert(ROCASH_TO_REBIRTH_TIX)
     ValueInfo.IconImage.Amount.Text = SuffixHandler:Convert(Value.Value) .. "/" .. SuffixHandler:Convert(VALUE_TO_REBIRTH_TIX)
 end
 
@@ -71,6 +80,7 @@ local function initRebirthMenu()
 end
 
 initRebirthMenu()
+Rocash.Changed:Connect(updateRebirthMenu)
 Value.Changed:Connect(updateRebirthMenu)
 
 ---- Buttons ----

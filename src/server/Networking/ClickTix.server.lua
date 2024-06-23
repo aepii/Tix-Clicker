@@ -60,14 +60,14 @@ ClickTixRemote.OnServerInvoke = (function(player)
                 end
 
                 DataManager:SetValue(player, profile, {"Tix"}, tixValue)
-                DataManager:SetValue(player, profile, {"Lifetime Tix"}, tixValue)
+                DataManager:SetValue(player, profile, {"Lifetime Tix"}, (data["Lifetime Tix"] or 0) + tixPerClick)
 
                 DataManager:UpdateLeaderstats(player, profile, "Tix")
                 
                 if player.TemporaryData.RageMode.Value == false then
                     temporaryData.XP.Value = math.min(temporaryData.XP.Value + 1, temporaryData.RequiredXP.Value)
                 end
-                
+
                 return tixPerClick, crit
             end
         end
