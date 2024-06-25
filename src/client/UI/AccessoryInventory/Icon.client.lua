@@ -39,10 +39,6 @@ local GUID = IconButton.GUID
 local Sounds = Player:WaitForChild("Sounds")
 local ClickSound = Sounds:WaitForChild("ClickSound")
 
----- Networking ----
-
-local Networking = ReplicatedStorage.Networking
-
 ---- Private Functions ----
 
 local function updateEquipFrame()
@@ -63,7 +59,17 @@ local function updateEquipFrame()
 
     for _, rewardFrame in RewardsFrame:GetChildren() do
         if rewardFrame:IsA("Frame") then
-            local reward = accessory.Reward[rewardFrame.Name]
+            local reward;
+
+            if string.sub(ID, 1, 2) == "CA" then
+                local bestAccessory = TemporaryData:GetBestAccessory(Player)
+                local bestRewards = bestAccessory.Reward
+
+                reward = bestRewards[rewardFrame.Name] * accessory.Reward["Best"]
+            else
+                reward = accessory.Reward[rewardFrame.Name]
+            end
+
             if reward then
                 local prefix = string.find(rewardFrame.Name, "Add") and "+" or "x"
                 rewardFrame.RewardText.Text = prefix .. SuffixHandler:Convert(reward)

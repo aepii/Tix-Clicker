@@ -1,7 +1,6 @@
 ---- Services ----
 
 local Players = game:GetService("Players")
-local Workspace = game:GetService("Workspace")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local SoundService = game:GetService("SoundService")
 local Player = Players.LocalPlayer
@@ -11,6 +10,8 @@ local Player = Players.LocalPlayer
 local Modules = ReplicatedStorage.Modules
 local TweenButton = require(Modules.TweenButton)
 local TixUIAnim = require(Modules.TixUIAnim)
+local Cases = require(ReplicatedStorage.Data.Cases)
+local Materials = require(ReplicatedStorage.Data.Materials)
 
 ---- UI ----
 
@@ -38,15 +39,40 @@ local PurchaseCaseRemote = Networking.PurchaseCase
 
 ---- Private Functions ----
 
-local function purchaseCase(caseName)
-    local response = PurchaseCaseRemote:InvokeServer(caseName)
+local function purchaseCase(caseID)
+    local costs = PurchaseCaseRemote:InvokeServer(caseID)
     coroutine.wrap(function()
-        if response then
+        if costs then
             SoundService:PlayLocalSound(MoneySound)
             if VFX.OtherVFX.Value == true then
-                TixUIAnim:Animate(Player, "NegateRocashDetail", response, nil)
-                SoundService:PlayLocalSound(PopSound)
-            end
+                local case = Cases[caseID]
+
+                coroutine.wrap(function()
+                if costs["Rocash"] then
+                        TixUIAnim:Animate(Player, "NegateRocashDetail", case.Cost["Rocash"], nil)
+                        SoundService:PlayLocalSound(PopSound)
+                    end
+                end)()
+
+                coroutine.wrap(function()
+                    if costs["RebirthTix"] then
+                        TixUIAnim:Animate(Player, "NegateRebirthTixDetail", case.Cost["RebirthTix"], nil)
+                        SoundService:PlayLocalSound(PopSound)
+                    end
+                end)()
+
+                if costs["Materials"] then
+                    for key, materialData in case.Cost["Materials"] do
+                        coroutine.wrap(function()
+                            local materialID = materialData[1]
+                            local materialCostVal = materialData[2]
+                            TixUIAnim:Animate(Player, "NegateMaterialDetail", materialCostVal, Materials[materialID])
+                            SoundService:PlayLocalSound(PopSound)
+                        end)()
+                    end
+                end
+
+            end 
         else
             SoundService:PlayLocalSound(ErrorSound)
         end

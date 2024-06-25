@@ -7,7 +7,9 @@ local Player = Players.LocalPlayer
 
 ---- Modules ----
 
+local Modules = ReplicatedStorage.Modules
 local Zones = require(ReplicatedStorage.Data.Zones)
+local SuffixHandler = require(Modules.SuffixHandler)
 
 ---- Data ----
 
@@ -39,7 +41,7 @@ function initPortals()
             portalUI.Adornee = portal:WaitForChild("Portal").TouchPart
             portalUI.Name = portalID
             portalUI.Parent = PlayerGui
-            CostText.Text = Zones[portalID].Cost.RebirthTix
+            CostText.Text = SuffixHandler:Convert(Zones[portalID].Cost.RebirthTix)
             ZoneName.Text = Zones[portalID].Name
             portalUI.PortalScript.Enabled = true
         end

@@ -8,11 +8,11 @@ local SoundService = game:GetService("SoundService")
 
 local Modules = ReplicatedStorage.Modules
 local TweenButton = require(Modules.TweenButton)
-local ButtonStatus = require(Modules.ButtonStatus)
 local Accessories = require(ReplicatedStorage.Data.Accessories)
 local RarityColors = require(Modules.RarityColors)
 local TemporaryData = require(Modules.TemporaryData)
 local TixUIAnim = require(Modules.TixUIAnim)
+local SuffixHandler = require(Modules.SuffixHandler)
 
 ---- Data ----
 
@@ -34,7 +34,6 @@ local MultiScrapFrame = ScrapMenu.MultiScrapFrame
 local IconCopy = InvHolder.IconCopy
 local SearchBar = ScrapMenu.SearchBar.TextBox
 local MultiScrapButton = ScrapMenu.MultiScrapButton
-
 
 local IconScript = script.Parent.Icon
 IconScript.Name = "IconScript"
@@ -149,7 +148,7 @@ local function multiScrapAccessory()
     for _, item in MultiSelected:GetChildren() do
         local accessoryGUID = item.Name
         local amount, materialData = ScrapAccessoryRemote:InvokeServer(accessoryGUID)
-        if VFX.Value == true then
+        if VFX.ScrapVFX.Value == true then
             if amount then
                 coroutine.wrap(function()
                     SoundService:PlayLocalSound(ScrapSound)
@@ -177,6 +176,9 @@ local function getIcon(GUID)
 end
 
 local function updateInventory(ID, GUID, method)
+    if string.sub(ID, 1, 2) == "CA" then
+        return
+    end
     if method == "INIT" then
         ScrapFrame:TweenPosition(UDim2.new(.05,0,2,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
         InvFrame:TweenSizeAndPosition(UDim2.new(0.95,0,0.8,0), UDim2.new(0.5,0,0.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
@@ -200,6 +202,7 @@ local function updateInventory(ID, GUID, method)
         icon.GUID.Value = GUID
         icon.Rarity.Value = Accessories[ID].Rarity
         icon.AccessoryName.Value = Accessories[ID].Name
+        icon.ValueFrame.ValueText.Text = "$"..SuffixHandler:Convert(Accessories[ID].Value)
         icon.IconImage.Image = "http://www.roblox.com/Thumbs/Asset.ashx?Width=256&Height=256&AssetID="..Accessories[ID].AssetID
         icon.UIGradient.Color = RarityColors:GetGradient(Accessories[ID].Rarity)
         icon.Parent = InvHolder

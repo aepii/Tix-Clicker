@@ -7,9 +7,7 @@ local SoundService = game:GetService("SoundService")
 ---- Modules ----
 
 local Modules = ReplicatedStorage.Modules
-local TweenButton = require(Modules.TweenButton)
 local TixUIAnim = require(Modules.TixUIAnim)
-local SuffixHandler = require(Modules.SuffixHandler)
 
 ---- UI ----
 

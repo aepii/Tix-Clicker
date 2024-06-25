@@ -19,7 +19,11 @@ local IconButtonImage = IconButton.IconImage
 local InvHolder = IconButton.Parent
 local InvFrame = InvHolder.Parent
 local CaseInventory = InvFrame.Parent
+
 local OpenFrame = CaseInventory.OpenFrame
+local CustomOpenFrame = CaseInventory.CustomOpenFrame
+
+
 local IconImage = OpenFrame.Icon.IconImage
 local RewardsFrame = OpenFrame.RewardsFrame
 local OpenButton = OpenFrame.OpenButton
@@ -28,7 +32,7 @@ local OwnedFrame = OpenFrame.OwnedFrame
 ---- UI Values ----
 
 local UIVisible = OpenFrame.UIVisible
-local CurrentCase = OpenFrame.CurrentCase
+local CurrentCase = CaseInventory.CurrentCase
 
 ---- Sound ----
 
@@ -97,6 +101,7 @@ local function iconMouseDown()
     TweenButton:Shrink(IconButtonImage, ICONIMAGE_ORIGINALSIZE)
     if UIVisible.Value == false or CurrentCase.Value ~= IconButton.Name then
         OpenFrame:TweenPosition(UDim2.new(.05,0,.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+        CustomOpenFrame:TweenPosition(UDim2.new(.05,0,2,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
         InvFrame:TweenSizeAndPosition(UDim2.new(0.75,0,0.8,0), UDim2.new(0.575,0,0.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
         UIVisible.Value = true
     else

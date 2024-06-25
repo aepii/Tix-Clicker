@@ -23,8 +23,7 @@ local Upgrades = require(ReplicatedStorage.Data.Upgrades)
 local PerSecondUpgrades = require(ReplicatedStorage.Data.PerSecondUpgrades)
 local RebirthUpgrades = require(ReplicatedStorage.Data.RebirthUpgrades)
 local Cases = require(ReplicatedStorage.Data.Cases)
-local CollectibleCases = require(ReplicatedStorage.Data.CollectibleCases)
-local CollectibleAccessories = require(ReplicatedStorage.Data.CollectibleAccessories)
+local Accessories = require(ReplicatedStorage.Data.Accessories)
 
 ---- Modules ----
 
@@ -41,8 +40,7 @@ local PerSecInfo = InfoUI.PerSecInfo
 local UpgradeInfo = InfoUI.UpgradeInfo
 local RebirthInfo = InfoUI.RebirthInfo
 local CaseInfo = InfoUI.CaseInfo
-
-local CC1Info = InfoUI.CC1Info
+local CustomCaseInfo = InfoUI.CustomCaseInfo
 
 local CurrentUI = InfoUI.CurrentUI
 
@@ -55,7 +53,7 @@ local UpdateClientShopInfoRemote = Networking.UpdateClientShopInfo
 
 local function getShopInfo(nearest)
     if string.sub(nearest, 1, 2) == "CC" then
-        return CC1Info
+        return CustomCaseInfo
     elseif string.sub(nearest, 1, 1) == "P" then
         return PerSecInfo
     elseif string.sub(nearest, 1, 1) == "C" then
@@ -99,7 +97,7 @@ local function populateCaseItems(weights, rewardsFrame)
         local icon = IconCopy:Clone()
         icon.Name = data[1]
         icon.ChanceFrame.ChanceText.Text = data[2] / 1000 .. "%"
-        icon.IconImage.Image = "http://www.roblox.com/Thumbs/Asset.ashx?Width=256&Height=256&AssetID=" .. CollectibleAccessories[data[1]].AssetID
+        icon.IconImage.Image = "http://www.roblox.com/Thumbs/Asset.ashx?Width=256&Height=256&AssetID=" .. Accessories[data[1]].AssetID
         icon.Visible = true
         CollectionService:RemoveTag(icon.Shadow.UIStroke, "Ignore")
         CollectionService:RemoveTag(icon.ChanceFrame.ChanceText.UIStroke, "Ignore")
@@ -142,22 +140,24 @@ local function updateShopInfo(nearest, shopInfo)
     local RewardsFrame = InfoFrame.RewardsFrame
 
     local item;
-    if shopInfo.Name == "CC1Info" then
-        item = CollectibleCases[nearest]
+
+    print(item, nearest, shopInfo.Name)
+    if shopInfo.Name == "CustomCaseInfo" then
+        item = Cases[nearest]
         if item then
             local MaterialsHolder = InfoFrame.MaterialsFrame.MaterialsHolder
-            local ownedValue = Player.ReplicatedData.CollectibleCases:FindFirstChild(nearest) and Player.ReplicatedData.CollectibleCases[nearest].Value or 0
+            local ownedValue = Player.ReplicatedData.Cases:FindFirstChild(nearest) and Player.ReplicatedData.Cases[nearest].Value or 0
             PurchaseButton.PriceFrame.PriceText.Text = SuffixHandler:Convert(item.Cost["RebirthTix"])
             InfoFrame.OwnedFrame.Owned.Text = "Owned " .. ownedValue
             populateCaseItems(item.Weights, RewardsFrame)
             populateMaterialCost(item.Cost["Materials"] or nil, MaterialsHolder)
-            --ButtonStatus:PurchaseCase(Player, CurrentUI.Value, PurchaseButton)
+            ButtonStatus:PurchaseCase(Player, CurrentUI.Value, PurchaseButton)
         end
     elseif shopInfo.Name == "CaseInfo" then
         item = Cases[nearest]
         if item then
             local ownedValue = Player.ReplicatedData.Cases:FindFirstChild(nearest) and Player.ReplicatedData.Cases[nearest].Value or 0
-            PurchaseButton.PriceFrame.PriceText.Text = SuffixHandler:Convert(item.Cost)
+            PurchaseButton.PriceFrame.PriceText.Text = SuffixHandler:Convert(item.Cost["Rocash"])
             InfoFrame.OwnedFrame.Owned.Text = "Owned " .. ownedValue
             populateCaseRarity(item.Weights, RewardsFrame)
             ButtonStatus:PurchaseCase(Player, CurrentUI.Value, PurchaseButton)
@@ -195,8 +195,11 @@ local function updateShopInfo(nearest, shopInfo)
                 ampersandReplacement = item.Initial + (levelValue * item.Reward)
             elseif item.Type == "Decrease" then
                 ampersandReplacement = item.Initial - (levelValue * item.Reward)
+            elseif item.Type == "Multiply" then
+                ampersandReplacement = (((item.Initial + item.Reward)/100) ^ levelValue)
             end
 
+            local ampersandReplacement = SuffixHandler:Convert(ampersandReplacement)
             local initialMessage = item.InitialMessage:gsub("&", ampersandReplacement)
 
             RewardsFrame.InitialText.Text = initialMessage

@@ -5,16 +5,14 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local SoundService = game:GetService("SoundService")
 local CollectionService = game:GetService("CollectionService")
 
----- Data ----
-
-local CollectibleAccessories = require(ReplicatedStorage.Data.CollectibleAccessories)
-
 ---- Modules ----
 
 local Modules = ReplicatedStorage.Modules
 local TweenButton = require(Modules.TweenButton)
 local ButtonStatus = require(Modules.ButtonStatus)
-local CollectibleCases = require(ReplicatedStorage.Data.CollectibleCases)
+local Cases = require(ReplicatedStorage.Data.Cases)
+local Accessories = require(ReplicatedStorage.Data.Accessories)
+local RarityColors = require(Modules.RarityColors)
 
 ---- UI ----
 
@@ -23,16 +21,20 @@ local IconButtonImage = IconButton.IconImage
 local InvHolder = IconButton.Parent
 local InvFrame = InvHolder.Parent
 local CaseInventory = InvFrame.Parent
-local OpenFrame = CaseInventory.CollectibleOpenFrame
-local IconImage = OpenFrame.Icon.IconImage
-local RewardsFrame = OpenFrame.RewardsFrame
-local OpenButton = OpenFrame.OpenButton
-local OwnedFrame = OpenFrame.OwnedFrame
+
+local CustomOpenFrame = CaseInventory.CustomOpenFrame
+local OpenFrame = CaseInventory.OpenFrame
+
+
+local IconImage = CustomOpenFrame.Icon.IconImage
+local RewardsFrame = CustomOpenFrame.RewardsFrame
+local OpenButton = CustomOpenFrame.OpenButton
+local OwnedFrame = CustomOpenFrame.OwnedFrame
 
 ---- UI Values ----
 
-local UIVisible = OpenFrame.UIVisible
-local CurrentCase = OpenFrame.CurrentCase
+local UIVisible = CustomOpenFrame.UIVisible
+local CurrentCase = CaseInventory.CurrentCase
 
 ---- Sound ----
 
@@ -57,16 +59,17 @@ local function populateCaseItems(weights, rewardsFrame)
         local icon = IconCopy:Clone()
         icon.Name = data[1]
         icon.ChanceFrame.ChanceText.Text = data[2] / 1000 .. "%"
-        icon.IconImage.Image = "http://www.roblox.com/Thumbs/Asset.ashx?Width=256&Height=256&AssetID=" .. CollectibleAccessories[data[1]].AssetID
+        icon.IconImage.Image = "http://www.roblox.com/Thumbs/Asset.ashx?Width=256&Height=256&AssetID=" .. Accessories[data[1]].AssetID
         icon.Visible = true
         CollectionService:RemoveTag(icon.Shadow.UIStroke, "Ignore")
         CollectionService:RemoveTag(icon.ChanceFrame.ChanceText.UIStroke, "Ignore")
         icon.Parent = Holder
     end
 end
+
 local function updateEquipFrame()
     local caseID = script.Parent.Name
-    local case = CollectibleCases[caseID]
+    local case = Cases[caseID]
     
     if InvFrame.Holder:FindFirstChild(CurrentCase.Value) then
         InvFrame.Holder[CurrentCase.Value].Shadow.BackgroundColor3 = Color3.fromRGB(0, 83, 125)
@@ -79,12 +82,12 @@ local function updateEquipFrame()
     CurrentCase.Value = caseID
     populateCaseItems(case.Weights, RewardsFrame)
     InvFrame.Holder[caseID].Shadow.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    OpenFrame.ItemName.Title.Text = case.Name
+    CustomOpenFrame.ItemName.Title.Text = case.Name
     IconImage.Image = case.Image
-    local ownedValue = Player.ReplicatedData.CollectibleCases:FindFirstChild(caseID) and Player.ReplicatedData.CollectibleCases[caseID].Value or 0
+    local ownedValue = Player.ReplicatedData.Cases:FindFirstChild(caseID) and Player.ReplicatedData.Cases[caseID].Value or 0
     OwnedFrame.Owned.Text = "Owned " .. ownedValue  
 
-    ButtonStatus:CollectibleCaseInventory(Player, caseID, OpenButton)
+    ButtonStatus:CaseInventory(Player, caseID, OpenButton)
 end
 
 ---- Buttons ----
@@ -107,11 +110,12 @@ local function iconMouseDown()
     playClickSound()
     TweenButton:Shrink(IconButtonImage, ICONIMAGE_ORIGINALSIZE)
     if UIVisible.Value == false or CurrentCase.Value ~= IconButton.Name then
-        OpenFrame:TweenPosition(UDim2.new(.05,0,.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+        CustomOpenFrame:TweenPosition(UDim2.new(.05,0,.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+        OpenFrame:TweenPosition(UDim2.new(.05,0,2,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
         InvFrame:TweenSizeAndPosition(UDim2.new(0.75,0,0.8,0), UDim2.new(0.575,0,0.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
         UIVisible.Value = true
     else
-        OpenFrame:TweenPosition(UDim2.new(.05,0,2,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+        CustomOpenFrame:TweenPosition(UDim2.new(.05,0,2,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
         InvFrame:TweenSizeAndPosition(UDim2.new(0.95,0,0.8,0), UDim2.new(0.5,0,0.5,0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
         UIVisible.Value = false
     end

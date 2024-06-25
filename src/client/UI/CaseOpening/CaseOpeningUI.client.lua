@@ -13,6 +13,7 @@ local Cases = require(ReplicatedStorage.Data.Cases)
 local Accessories = require(ReplicatedStorage.Data.Accessories)
 local RarityColors = require(Modules.RarityColors)
 local TixUIAnim = require(Modules.TixUIAnim)
+local SuffixHandler = require(Modules.SuffixHandler)
 
 ---- Data ----
 
@@ -123,7 +124,11 @@ local function pickItem(caseID)
     for _, entry in weights do
         currentWeight = currentWeight + entry[2]
         if currentWeight >= randomNumber then
-            return pickItemHelper(entry[1], caseID)
+            if string.sub(caseID, 1, 2) == "CC" then
+                return Accessories[entry[1]]
+            else
+                return pickItemHelper(entry[1], caseID)
+            end
         end
     end
 end
@@ -222,7 +227,7 @@ local function populateCase(caseID, winner)
         icon.Name = item.Name
         icon.IconImage.Image = "http://www.roblox.com/Thumbs/Asset.ashx?Width=256&Height=256&AssetID="..item.AssetID
         icon.UIGradient.Color = RarityColors:GetGradient(item.Rarity)
-        icon.ValueText.Text = "$"..item.Value
+        icon.ValueText.Text = "$"..SuffixHandler:Convert(item.Value)
         icon.Parent = ItemHolder
     end
     local tweenInfo = TweenInfo.new(

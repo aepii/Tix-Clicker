@@ -1,7 +1,7 @@
 local cases = {
     C1 = {
         Name = "Noob Case",
-        Cost = 5,
+        Cost = {Rocash = 5},
         Weights = {
             [1] = {"Basic", 82},
             [2] = {"Common", 15},
@@ -13,7 +13,7 @@ local cases = {
 
     C2 = {
         Name = "Beginner Case",
-        Cost = 50,
+        Cost = {Rocash = 50},
         Weights = {
             [1] = {"Common", 62.5},
             [2] = {"Uncommon", 32.5},
@@ -25,7 +25,7 @@ local cases = {
 
     C3 = {
         Name = "Apprentice Case",
-        Cost = 500,
+        Cost = {Rocash = 500},
         Weights = {
             [1] = {"Uncommon", 50},
             [2] = {"Fine", 45.5},
@@ -37,7 +37,7 @@ local cases = {
 
     C4 = {
         Name = "Intermediate Case",
-        Cost = 7500,
+        Cost = {Rocash = 7500},
         Weights = {
             [1] = {"Fine", 8},
             [2] = {"Rare", 52.5},
@@ -50,7 +50,7 @@ local cases = {
 
     C5 = {
         Name = "Advanced Case",
-        Cost = 200000,
+        Cost = {Rocash = 200000},
         Weights = {
             [1] = {"Epic", 55},
             [2] = {"Heroic", 37.5},
@@ -58,7 +58,55 @@ local cases = {
         },
         Image = "rbxassetid://17875804979",
         ID = "C5"
-    }
+    },
+
+    C6 = {
+        Name = "Expert Case",
+        Cost = {Rocash = 6000000},
+        Weights = {
+            [1] = {"Legendary", 50.5},
+            [2] = {"Mythical", 29.5},
+            [3] = {"Divine", 20},
+        },
+        Image = "rbxassetid://18190909902",
+        ID = "C6"
+    },
+
+    CC1 = {
+        Name = "Tixapalooza Case",
+        Cost = {RebirthTix = 1, Materials = {[10] = {"M1", 25}, {"M2", 15}, {"M3", 10}}};
+        Weights = {
+            [1] = {"CA1", 20000},
+            [2] = {"CA2", 15000},
+            [3] = {"CA3", 10000},
+            [4] = {"CA4", 10000},
+            [5] = {"CA5", 7500},
+            [6] = {"CA6", 7500},
+            [7] = {"CA7", 5000},
+            [8] = {"CA8", 4000},
+            [9] = {"CA9", 3500},
+            [10] = {"CA10", 3225},
+            [11] = {"CA11", 3000},
+            [12] = {"CA12", 2500},
+            [13] = {"CA13", 2500},
+            [14] = {"CA14", 2000},
+            [15] = {"CA15", 1500},
+            [16] = {"CA16", 1000},
+            [17] = {"CA17", 750},
+            [18] = {"CA18", 500},
+            [19] = {"CA19", 200},
+            [20] = {"CA20", 125},
+            [21] = {"CA21", 75},
+            [22] = {"CA22", 60},
+            [23] = {"CA23", 30},
+            [24] = {"CA24", 20},
+            [25] = {"CA25", 10},
+            [26] = {"CA26", 4},
+            [27] = {"CA27", 1},
+        },
+        Image = "rbxassetid://18124244883",
+        ID = "CC1"
+    },
 }
 
 return cases 

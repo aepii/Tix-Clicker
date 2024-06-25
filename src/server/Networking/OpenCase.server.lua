@@ -63,7 +63,11 @@ local function roll(caseID)
     for _, entry in weights do
         currentWeight = currentWeight + entry[2]
         if currentWeight >= randomNumber then
-            return pickWinner(entry[1], caseID)
+            if string.sub(caseID, 1, 2) == "CC" then
+                return Accessories[entry[1]]
+            else
+                return pickWinner(entry[1], caseID)
+            end
         end
     end
 end
@@ -99,6 +103,7 @@ OpenCaseRemote.OnServerInvoke = (function(player, caseID)
                     DataManager:SetValue(player, profile, {"Cases", caseID}, nil)
                     UpdateClientCaseInventoryRemote:FireClient(player, case, "DEL")
                 end
+                
                 DataManager:SetValue(player, profile, {"Lifetime Value"}, (profile.Data["Lifetime Value"] or 0) + item.Value)
                 DataManager:SetValue(player, profile, {"Lifetime Cases"}, (profile.Data["Lifetime Cases"] or 0) + 1)
                 temporaryData.ActiveCaseOpening.Value = true

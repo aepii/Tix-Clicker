@@ -67253,7 +67253,359 @@ local accessories = {
         Value = 1000000000,
         Rarity = nil,
         ID = "A5609"
-    }
+    },
+    -- COLLECTIBLE
+    CA1 = {
+        Name = "Tix Baseball Cap",
+        Type = "Accessory",
+        AssetID = 390972597,
+        Reward = {
+            AddPerClick = 0,
+            AddStorage = 0,
+            Best = 0.8
+        },
+        Value = 0,
+        Rarity = "Tixclusive",
+        ID = "CA1"
+    },
+    CA2 = {
+        Name = "Tix Visor",
+        Type = "Accessory",
+        AssetID = 390972428,
+        Reward = {
+            AddPerClick = 0,
+            AddStorage = 0,
+            Best = 0.9
+        },
+        Value = 0,
+        Rarity = "Tixclusive",
+        ID = "CA2"
+    },
+    CA3 = {
+        Name = "Tickets Tie",
+        Type = "Accessory",
+        AssetID = 390972175,
+        Reward = {
+            AddPerClick = 0,
+            AddStorage = 0,
+            Best = 1
+        },
+        Value = 0,
+        Rarity = "Tixclusive",
+        ID = "CA3"
+    },
+    CA4 = {
+        Name = "Ticket Beanie",
+        Type = "Accessory",
+        AssetID = 390971171,
+        Reward = {
+            AddPerClick = 0,
+            AddStorage = 0,
+            Best = 1
+        },
+        Value = 0,
+        Rarity = "Tixclusive",
+        ID = "CA4"
+    },
+    CA5 = {
+        Name = "Paper Tix Hat",
+        Type = "Accessory",
+        AssetID = 390970950,
+        Reward = {
+            AddPerClick = 0,
+            AddStorage = 0,
+            Best = 1.1
+        },
+        Value = 0,
+        Rarity = "Tixclusive",
+        ID = "CA5"
+    },
+    CA6 = {
+        Name = "Ticket Scarf",
+        Type = "Accessory",
+        AssetID = 390970803,
+        Reward = {
+            AddPerClick = 0,
+            AddStorage = 0,
+            Best = 1.1
+        },
+        Value = 0,
+        Rarity = "Tixclusive",
+        ID = "CA6"
+    },
+    CA7 = {
+        Name = "Tail o' Tix",
+        Type = "Accessory",
+        AssetID = 390970497,
+        Reward = {
+            AddPerClick = 0,
+            AddStorage = 0,
+            Best = 1.15
+        },
+        Value = 0,
+        Rarity = "Tixclusive",
+        ID = "CA7"
+    },
+    CA8 = {
+        Name = "Sparkle Tix Boe Tie",
+        Type = "Accessory",
+        AssetID = 390970263,
+        Reward = {
+            AddPerClick = 0,
+            AddStorage = 0,
+            Best = 1.2
+        },
+        Value = 0,
+        Rarity = "Tixclusive",
+        ID = "CA8"
+    },
+    CA9 = {
+        Name = "Tixswag Shutter Shades",
+        Type = "Accessory",
+        AssetID = 385896840,
+        Reward = {
+            AddPerClick = 0,
+            AddStorage = 0,
+            Best = 1.25
+        },
+        Value = 0,
+        Rarity = "Tixclusive",
+        ID = "CA9"
+    },
+    CA10 = {
+        Name = "Helm of the TIx Warrior",
+        Type = "Accessory",
+        AssetID = 385895944,
+        Reward = {
+            AddPerClick = 0,
+            AddStorage = 0,
+            Best = 1.25
+        },
+        Value = 0,
+        Rarity = "Tixclusive",
+        ID = "CA10"
+    },
+    CA11 = {
+        Name = "Tickets Headphones",
+        Type = "Accessory",
+        AssetID = 385893076,
+        Reward = {
+            AddPerClick = 0,
+            AddStorage = 0,
+            Best = 1.25
+        },
+        Value = 0,
+        Rarity = "Tixclusive",
+        ID = "CA11"
+    },
+    CA12 = {
+        Name = "Tix Wanderer",
+        Type = "Accessory",
+        AssetID = 385892523,
+        Reward = {
+            AddPerClick = 0,
+            AddStorage = 0,
+            Best = 1.25
+        },
+        Value = 0,
+        Rarity = "Tixclusive",
+        ID = "CA12"
+    },
+    CA13 = {
+        Name = "Tix Vision Goggles",
+        Type = "Accessory",
+        AssetID = 385892357,
+        Reward = {
+            AddPerClick = 0,
+            AddStorage = 0,
+            Best = 1.25
+        },
+        Value = 0,
+        Rarity = "Tixclusive",
+        ID = "CA13"
+    },
+    CA14 = {
+        Name = "Tix Fedora",
+        Type = "Accessory",
+        AssetID = 385892209,
+        Reward = {
+            AddPerClick = 0,
+            AddStorage = 0,
+            Best = 1.3
+        },
+        Value = 0,
+        Rarity = "Tixclusive",
+        ID = "CA14"
+    },
+    CA15 = {
+        Name = "Crown of Tix",
+        Type = "Accessory",
+        AssetID = 385892087,
+        Reward = {
+            AddPerClick = 0,
+            AddStorage = 0,
+            Best = 1.3
+        },
+        Value = 0,
+        Rarity = "Tixclusive",
+        ID = "CA15"
+    },
+    CA16 = {
+        Name = "Dual Tixsplosion",
+        Type = "Accessory",
+        AssetID = 385891566,
+        Reward = {
+            AddPerClick = 0,
+            AddStorage = 0,
+            Best = 1.35
+        },
+        Value = 0,
+        Rarity = "Tixclusive",
+        ID = "CA16"
+    },
+    CA17 = {
+        Name = "Tix Vision",
+        Type = "Face",
+        AssetID = 385889916,
+        Reward = {
+            AddPerClick = 0,
+            AddStorage = 0,
+            Best = 1.35
+        },
+        Value = 0,
+        Rarity = "Tixclusive",
+        ID = "CA17"
+    },
+    CA18 = {
+        Name = "Ticket Banded Top Hat",
+        Type = "Accessory",
+        AssetID = 382881972,
+        Reward = {
+            AddPerClick = 0,
+            AddStorage = 0,
+            Best = 1.35
+        },
+        Value = 0,
+        Rarity = "Tixclusive",
+        ID = "CA18"
+    },
+    CA19 = {
+        Name = "Tixswag Monocle",
+        Type = "Accessory",
+        AssetID = 382881784,
+        Reward = {
+            AddPerClick = 0,
+            AddStorage = 0,
+            Best = 1.4
+        },
+        Value = 0,
+        Rarity = "Tixclusive",
+        ID = "CA19"
+    },
+    CA20 = {
+        Name = "Tix Bling",
+        Type = "Accessory",
+        AssetID = 382881521,
+        Reward = {
+            AddPerClick = 0,
+            AddStorage = 0,
+            Best = 1.4
+        },
+        Value = 0,
+        Rarity = "Tixclusive",
+        ID = "CA20"
+    },
+    CA21 = {
+        Name = "Tix Shaggy",
+        Type = "Accessory",
+        AssetID = 382881373,
+        Reward = {
+            AddPerClick = 0,
+            AddStorage = 0,
+            Best = 1.45
+        },
+        Value = 0,
+        Rarity = "Tixclusive",
+        ID = "CA21"
+    },
+    CA22 = {
+        Name = "Tixvalk",
+        Type = "Accessory",
+        AssetID = 382881237,
+        Reward = {
+            AddPerClick = 0,
+            AddStorage = 0,
+            Best = 1.45
+        },
+        Value = 0,
+        Rarity = "Tixclusive",
+        ID = "CA22"
+    },
+    CA23 = {
+        Name = "Tix Wings",
+        Type = "Accessory",
+        AssetID = 382881117,
+        Reward = {
+            AddPerClick = 0,
+            AddStorage = 0,
+            Best = 1.5
+        },
+        Value = 0,
+        Rarity = "Tixclusive",
+        ID = "CA23"
+    },
+    CA24 = {
+        Name = "Eccentric Ticket Fan",
+        Type = "Accessory",
+        AssetID = 382880989,
+        Reward = {
+            AddPerClick = 0,
+            AddStorage = 0,
+            Best = 1.55
+        },
+        Value = 0,
+        Rarity = "Tixclusive",
+        ID = "CA24"
+    },
+    CA25 = {
+        Name = "Lord of the Tixeration",
+        Type = "Accessory",
+        AssetID = 382880833,
+        Reward = {
+            AddPerClick = 0,
+            AddStorage = 0,
+            Best = 1.6
+        },
+        Value = 0,
+        Rarity = "Tixclusive",
+        ID = "CA25"
+    },
+    CA26 = {
+        Name = "Tix Domino",
+        Type = "Accessory",
+        AssetID = 383071536,
+        Reward = {
+            AddPerClick = 0,
+            AddStorage = 0,
+            Best = 1.7
+        },
+        Value = 0,
+        Rarity = "Tixclusive",
+        ID = "CA26"
+    },
+    CA27 = {
+        Name = "Dominus Pittacium",
+        Type = "Accessory",
+        AssetID = 335080779,
+        Reward = {
+            AddPerClick = 0,
+            AddStorage = 0,
+            Best = 1.75
+        },
+        Value = 0,
+        Rarity = "Tixclusive",
+        ID = "CA27"
+    },
     
 }
 local RAPRanges = {
@@ -67263,9 +67615,11 @@ local RAPRanges = {
     Fine = {Lower = 151, Upper = 300},
     Rare = {Lower = 301, Upper = 750},
     Exceptional = {Lower = 751, Upper = 2000},
-    Epic = {Lower = 2001, Upper = 6000},
-    Heroic = {Lower = 6001, Upper = 18000},
-    Legendary = {Lower = 18001, Upper = 55000}
+    Epic = {Lower = 2001, Upper = 4000},
+    Heroic = {Lower = 4001, Upper = 8000},
+    Legendary = {Lower = 8001, Upper = 16000},
+    Mythical = {Lower = 16001, Upper = 32000},
+    Divine = {Lower = 32001, Upper = 64000}
 }
 
 --[[
@@ -67279,7 +67633,8 @@ local RAPRanges = {
     Epic :          14,001-55,000        | 2001-6000
     Heroic :        55,001-225,000       | 6001-18,000
     Legendary :     225,001-900,000      | 18,001-55,000
- 
+    Mythical :      900,001-4,000,000    | 18,001-55,000
+    Divine :        4,000,000-900,000      | 18,001-55,000
 
 ]]
 
@@ -67292,7 +67647,9 @@ local RarityRanges = {
     Exceptional = {Lower = 3501, Upper = 14000},
     Epic = {Lower = 14001, Upper = 55000},
     Heroic = {Lower = 55001, Upper = 225000},
-    Legendary = {Lower = 225001, Upper = 900000}
+    Legendary = {Lower = 225001, Upper = 900000},
+    Mythical = {Lower = 900001, Upper = 4000000},
+    Divine = {Lower = 4000001, Upper = 18000000}
 }
 
 local RarityRewards = {
@@ -67332,10 +67689,19 @@ local RarityRewards = {
         LowerAddPerClick = 60, UpperAddPerClick = 90,
         LowerAddStorage = 5120, UpperAddStorage = 10240
     },
+    Mythical = {
+        LowerAddPerClick = 90, UpperAddPerClick = 133,
+        LowerAddStorage = 10240, UpperAddStorage = 20480
+    },
+    Divine = {
+        LowerAddPerClick = 133, UpperAddPerClick = 192,
+        LowerAddStorage = 20480, UpperAddStorage = 40960
+    },
 }
 
 function DynamicAccessories:CalculateDynamicValue(ID)
     local accessory = accessories[ID]
+
     local RAP = accessory.Value
     
     local rarity = nil
@@ -67363,6 +67729,7 @@ end
 function DynamicAccessories:CalculateDynamicRewards(ID)
 
     local accessory = accessories[ID]
+
     local value = accessory.Value
     local rarity = accessory.Rarity
 
@@ -67385,6 +67752,9 @@ end
 
 function DynamicAccessories:Init()
     for index, data in accessories do
+        if data.Rarity ~= nil then
+            continue
+        end
         data.Value, data.Rarity = DynamicAccessories:CalculateDynamicValue(index)
         data.Reward = DynamicAccessories:CalculateDynamicRewards(index)
     end
@@ -67421,3 +67791,4 @@ DynamicAccessories:Init()
 ]]
 
 return accessories
+

@@ -16,10 +16,12 @@ local ProfileCacher = require(ServerScriptService.Data.ProfileCacher)
 ---- Function ----
 
 local Displays = {
-    Z1 = "👶 Noob",
-    Z2 = "😃 Apprentice",
-    Z3 = "😎 Intermediate",
-    Z4 = "🤩 Advanced",
+    Z1 = "🐣 Noob",
+    Z2 = "✏️ Apprentice",
+    Z3 = "⭐ Intermediate",
+    Z4 = "🦾 Advanced",
+    Z5 = "🎯 Expert",
+    Z6 = "🎓 Master",
 }
 
 local function getDisplayTag(data)

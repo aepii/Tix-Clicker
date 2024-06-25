@@ -23,8 +23,6 @@ local UpdateClientCaseInventoryRemote = Networking.UpdateClientCaseInventory
 local UpdateClientInventoryRemote = Networking.UpdateClientInventory
 
 local BindableEquipTix = Networking.BindableEquipTix
-local EquipCollectibleAccessoryBindableRemote = Networking.EquipCollectibleAccessoryBindable
-
 
 ---- Private Functions ----
 

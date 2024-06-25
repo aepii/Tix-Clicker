@@ -18,7 +18,6 @@ ProfileData.Data = {
 
 	["ToolEquipped"] = "U1";
 	["EquippedAccessories"] = {};
-	["EquippedCollectibleAccessories"] = {};
 	["EquippedAmulet"] = "";
 
 	["AlphaTester"] = true;
@@ -34,20 +33,13 @@ ProfileData.Data = {
 	["Accessories"] = {
 	};
 
-	["CollectibleAccessories"] = {
-	};
-
 	["Cases"] = {
-	};
-
-	["CollectibleCases"] = {
 	};
 
 	["Materials"] = {
 	};
 
 	["Zones"] = {"Z0", "Z1"};
-
 }
 
 ProfileData.TemporaryData = {
@@ -111,12 +103,8 @@ ProfileData.TemporaryData = {
 		Value = 3,
 		Type = "Number"
 	};
-	["EquippedCollectibleAccessoriesLimit"] = {
-		Value = 3,
-		Type = "Number"
-	};
 	["AccessoriesLimit"] = {
-		Value = 100,
+		Value = 50,
 		Type = "Number"
 	};
 	["AddPerClick"] = {
@@ -128,11 +116,11 @@ ProfileData.TemporaryData = {
 		Type = "Number"
 	};
 	["MultPerClick"] = {
-		Value = 1,
+		Value = 0,
 		Type = "Number"
 	};
 	["MultStorage"] = {
-		Value = 1,
+		Value = 0,
 		Type = "Number"
 	};
 	["MaterialDropChance"] = {
@@ -172,11 +160,11 @@ ProfileData.TemporaryData = {
 		Type = "Number"
 	};
 	["RebirthMultPerClick"] = {
-		Value = 0,
+		Value = 1,
 		Type = "Number"
 	};
 	["RebirthMultStorage"] = {
-		Value = 0,
+		Value = 1,
 		Type = "Number"
 	};
 	["RebirthAccessoriesLimit"] = {

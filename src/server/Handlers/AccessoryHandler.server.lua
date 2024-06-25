@@ -12,7 +12,6 @@ local ProfileCacher = require(ServerScriptService.Data.ProfileCacher)
 
 local Networking = ReplicatedStorage.Networking
 local EquipAccessoryBindableRemote = Networking.EquipAccessoryBindable
-local EquipCollectibleAccessoryBindableRemote = Networking.EquipCollectibleAccessoryBindable
 
 local function playerAdded(player)
     local data = ProfileCacher:GetProfile(player).Data
@@ -23,10 +22,6 @@ local function playerAdded(player)
 
     for ID, GUID in data.EquippedAccessories do
         EquipAccessoryBindableRemote:Fire(ID, player.Character.Humanoid)
-    end
-
-    for ID, GUID in data.EquippedCollectibleAccessories do
-        EquipCollectibleAccessoryBindableRemote:Fire(ID, player.Character.Humanoid)
     end
     
 end

@@ -28,10 +28,7 @@ local tableMap = {
 	["RebirthUpgrades"] = "number",
 	["Accessories"] = "string",
 	["Cases"] = "number",
-	["CollectibleAccessories"] = "string",
-	["CollectibleCases"] = "number",
 	["EquippedAccessories"] = "string",
-	["EquippedCollectibleAccessories"] = "string",
 	["Materials"] = "number",
 	["Zones"] = "boolean",
 }
@@ -120,8 +117,8 @@ end
 local DataManager = {}
 
 function DataManager:InitializeReplicatedData(player, profile)
-	createTemporaryData(player, profile)
 	createReplicatedData(player, profile)
+	createTemporaryData(player, profile)
     createLeaderstats(player, profile)
 end
 

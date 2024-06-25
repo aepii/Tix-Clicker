@@ -1,17 +1,3 @@
---[[
-    RARITY:         VALUE                | ROBLOX RAP
-    Basic :         0-10                 | FREE
-    Common :        11-50                | 1-70
-    Uncommon :      51-250               | 71-150
-    Fine :          250-900              | 151-300
-    Rare :          901-3,500            | 301-750
-    Exceptional     3,501-14,000         | 751-2000
-    Epic :          14,001-55,000        | 2001-6000
-    Heroic :        55,001-225,000       | 6001-18,000
-    Legendary :     225,001-900,000      | 18,001-55,000
- 
-]]
-
 local materials = {
     M1 = {
         Name = "Basic Material",
@@ -76,13 +62,20 @@ local materials = {
         Rarity = "Legendary",
         ID = "M9"
     },
-    --[[M10 = {
+    M10 = {
         Name = "Mythical Material",
-        Image = "rbxassetid://",
-        Value = {0,0},
+        Image = "rbxassetid://18184786492",
+        Value = {900001,4000000},
         Rarity = "Mythical",
         ID = "M10"
-    }]]--
+    },
+    M11 = {
+        Name = "Divine Material",
+        Image = "rbxassetid://18189498082",
+        Value = {4000001,18000000},
+        Rarity = "Divine",
+        ID = "M11"
+    }
 }
 
 return materials
