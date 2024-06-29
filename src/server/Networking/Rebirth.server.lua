@@ -18,11 +18,9 @@ local TemporaryData = require(Modules.TemporaryData)
 
 local Networking = ReplicatedStorage.Networking
 local RebirthRemote = Networking.Rebirth
-
-local UpdateClientCaseInventoryRemote = Networking.UpdateClientCaseInventory
 local UpdateClientInventoryRemote = Networking.UpdateClientInventory
-
 local BindableEquipTix = Networking.BindableEquipTix
+local AnimateCircleRemote = Networking.AnimateCircle
 
 ---- Private Functions ----
 
@@ -50,15 +48,15 @@ local function setClientData(player, profile)
     player.TemporaryData.RageMode.Value = false
     player.TemporaryData.QueuedTix.Value = 0
 
-    UpdateClientCaseInventoryRemote:FireClient(player, nil, "INIT")
     UpdateClientInventoryRemote:FireClient(player, nil, "INIT")
 end
 
 local function resetPhysicalStates(player, profile)
     BindableEquipTix:Fire(player, "U1")
     local character = player.Character or player.CharacterAdded:Wait()
-    local torso = player.Character:FindFirstChild("HumanoidRootPart")
-
+    local torso = character:FindFirstChild("HumanoidRootPart")
+    AnimateCircleRemote:FireClient(player)
+    task.wait(1)
     torso.CFrame = Workspace.SpawnLocation.CFrame
 end
 

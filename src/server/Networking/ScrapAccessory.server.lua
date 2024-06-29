@@ -1,6 +1,5 @@
 ---- Services ----
 
-local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
@@ -8,6 +7,7 @@ local ServerScriptService = game:GetService("ServerScriptService")
 
 local ProfileCacher = require(ServerScriptService.Data.ProfileCacher)
 local DataManager = require(ServerScriptService.Data.DataManager)
+local GlobalData = require(ServerScriptService.Data.GlobalData)
 local Materials = require(ReplicatedStorage.Data.Materials)
 local Accessories = require(ReplicatedStorage.Data.Accessories)
 
@@ -64,6 +64,8 @@ ScrapAccessoryRemote.OnServerInvoke = (function(player, accessoryGUID)
         end
 
         DataManager:SetValue(player, profile, {"Accessories", accessoryGUID}, nil)
+        GlobalData:QueueAccessoryCountUpdate(accessoryID, -1)
+
         DataManager:UpdateLeaderstats(player, profile, "Value")
 
         UpdateClientAccessoriesInventoryRemote:FireClient(player, accessoryID, accessoryGUID, "DEL") 

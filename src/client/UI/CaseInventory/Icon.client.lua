@@ -11,6 +11,7 @@ local TweenButton = require(Modules.TweenButton)
 local ButtonStatus = require(Modules.ButtonStatus)
 local Cases = require(ReplicatedStorage.Data.Cases)
 local RarityColors = require(Modules.RarityColors)
+local TemporaryData = require(Modules.TemporaryData)
 
 ---- UI ----
 
@@ -41,11 +42,15 @@ local ClickSound = Sounds:WaitForChild("ClickSound")
 
 ---- Private Functions ----
 
-local function populateCaseRarity(weights, rewardsFrame)
+local function populateCaseRarity(caseID, rewardsFrame)
+    local totalWeight = TemporaryData:GetTotalWeight(Player, caseID)
+    local weights = Cases[caseID].Weights
     local i;
     for index, data in weights do
+        local weight = TemporaryData:ApplyLuck(Player, data[2], index, #weights)
         local gradient = RarityColors:GetGradient(data[1])
-        rewardsFrame[index].ChanceText.Text = data[2] .. "%"
+        print(data[1], TemporaryData:WeightedPercent(weight, totalWeight))
+        rewardsFrame[index].ChanceText.Text = TemporaryData:WeightedPercent(weight, totalWeight) .. "%"
         rewardsFrame[index].RarityText.Text = data[1]
         rewardsFrame[index].Visible = true
         rewardsFrame[index].RarityText.UIGradient.Color = gradient
@@ -70,7 +75,7 @@ local function updateEquipFrame()
     end
 
     CurrentCase.Value = caseID
-    populateCaseRarity(case.Weights, RewardsFrame)
+    populateCaseRarity(case.ID, RewardsFrame)
     InvFrame.Holder[caseID].Shadow.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     OpenFrame.ItemName.Title.Text = case.Name
     IconImage.Image = case.Image

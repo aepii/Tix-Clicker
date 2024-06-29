@@ -1,6 +1,5 @@
 ---- Services ----
 
-local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
@@ -23,7 +22,11 @@ local UpdateClientShopInfoRemote = Networking.UpdateClientShopInfo
 
 ---- Private Functions ----
 
-PurchasePerSecondUpgradeRemote.OnServerInvoke = (function(player, upgradeID)
+PurchasePerSecondUpgradeRemote.OnServerInvoke = (function(player, upgradeID, amount)
+    if amount <= 0 then
+        return
+    end
+
     local cost;
     local profile = ProfileCacher:GetProfile(player)
     local data = profile.Data
@@ -31,17 +34,13 @@ PurchasePerSecondUpgradeRemote.OnServerInvoke = (function(player, upgradeID)
     local temporaryData = player.TemporaryData
 
     local perSecondUpgrade = PerSecondUpgrades[upgradeID]
-    local upgradeData = data.PerSecondUpgrades[upgradeID]
+    local upgradeData = data.PerSecondUpgrades[upgradeID] or 0
 
-    if upgradeData then
-        cost = TemporaryData:CalculateTixPerSecondCost(upgradeData, upgradeID, 1)
-    else
-        cost = perSecondUpgrade.Cost
-    end
-
+    cost = TemporaryData:CalculateTixPerSecondCost(upgradeData, upgradeID, amount)
+ 
     if temporaryData.ActiveCaseOpening.Value == false then
         if data.Rocash >= cost then
-            DataManager:SetValue(player, profile, {"PerSecondUpgrades", upgradeID}, (upgradeData or 0) + 1)
+            DataManager:SetValue(player, profile, {"PerSecondUpgrades", upgradeID}, (upgradeData or 0) + amount)
             DataManager:SetValue(player, profile, {"Rocash"}, data.Rocash - cost)
             DataManager:UpdateLeaderstats(player, profile, "Rocash")
             UpdateClientShopInfoRemote:FireClient(player, "PerSecondUpgrade")

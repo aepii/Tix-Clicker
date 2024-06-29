@@ -14,11 +14,16 @@ local Cases = require(ReplicatedStorage.Data.Cases)
 ---- Data ----
 
 local ReplicatedData = Player:WaitForChild("ReplicatedData")
+local TemporaryData = Player:WaitForChild("TemporaryData")
+local ActiveCaseOpening = TemporaryData:WaitForChild("ActiveCaseOpening")
+local AccessoriesLimit = TemporaryData:WaitForChild("AccessoriesLimit")
 
 ---- UI ----
 
 local PlayerGui = Player.PlayerGui
 local UI = PlayerGui:WaitForChild("UI")
+
+local CaseOpenUI = PlayerGui:WaitForChild("CaseOpenUI")
 
 local CaseInventory = UI.CaseInventory
 local InvFrame = CaseInventory.InvFrame
@@ -38,11 +43,17 @@ local CustomIconScript = script.Parent.CustomIcon
 CustomIconScript.Parent = CustomIconCopy
 CustomIconScript.Enabled = true
 
+local AutoOpenButton = CaseInventory.AutoOpenButton
+local CancelAutoOpenButton = CaseOpenUI.CancelAutoOpenButton
+
 ---- UI Values ----
 
 local CurrentCase = CaseInventory.CurrentCase
+local AutoOpen = CaseInventory.AutoOpen
 local UIVisible = UI.UIVisible
 local CurrentUI = UI.CurrentUI
+
+local Amount = CaseInventory.Amount
 
 ---- Sound ----
 
@@ -59,7 +70,24 @@ local UpdateClientAccessoriesInventoryRemote = Networking.UpdateClientAccessorie
 ---- Private Functions ----
 
 local function openCase(caseID)
-    OpenCaseRemote:InvokeServer(caseID)
+    local caseData = ReplicatedData.Cases:FindFirstChild(caseID)
+    local availableCases = caseData and caseData.Value or 0
+    local amount = math.min(availableCases, Amount.Value, AccessoriesLimit.Value - #ReplicatedData.Accessories:GetChildren())
+
+    if AutoOpen.Value == false then
+        OpenCaseRemote:InvokeServer(caseID, amount)
+    else
+        while AutoOpen.Value == true and #ReplicatedData.Accessories:GetChildren() + amount <= AccessoriesLimit.Value do
+            task.wait()
+            if ActiveCaseOpening.Value == false then
+                OpenCaseRemote:InvokeServer(caseID, amount)
+            end
+            amount = math.min(availableCases, Amount.Value, AccessoriesLimit.Value - #ReplicatedData.Accessories:GetChildren())
+        end
+        AutoOpenButton.AutoText.Text = "Auto Open"
+        CancelAutoOpenButton.Visible = false
+        AutoOpen.Value = false
+    end
 end
 
 local function getIcon(caseID)
@@ -70,7 +98,6 @@ local function getIcon(caseID)
     end
     return false
 end
-
 
 local function updateInventory(case, method)
     if method == "INIT" then
@@ -102,7 +129,7 @@ local function updateInventory(case, method)
         end
     elseif method == "UPDATE" then
         local icon = getIcon(case.ID)
-        icon.OwnedFrame.OwnedText.Text = "x"..Player.ReplicatedData.Cases:FindFirstChild(case.ID)
+        icon.OwnedFrame.OwnedText.Text = "x"..(Player.ReplicatedData.Cases:FindFirstChild(case.ID) and Player.ReplicatedData.Cases[case.ID].Value or 0)
         if CurrentCase.Value == case.ID then
             local ownedValue = Player.ReplicatedData.Cases:FindFirstChild(case.ID) and Player.ReplicatedData.Cases[case.ID].Value or 0
             OpenFrame.OwnedFrame.Owned.Text = "Owned " .. ownedValue  
@@ -138,11 +165,10 @@ local ExitButton = CaseInventory.ExitButton
 local OpenButton = OpenFrame.OpenButton
 local CustomOpenButton = CustomOpenFrame.OpenButton
 
-
 local EXITBUTTON_ORIGINALSIZE = ExitButton.Size
 local OPENBUTTON_ORIGINALSIZE = OpenButton.Size
 local CUSTOMOPENBUTTON_ORIGINALSIZE = CustomOpenButton.Size
-
+local AUTOOPENBUTTON_ORIGINALSIZE = AutoOpenButton.Size
 
 local function playClickSound()
     SoundService:PlayLocalSound(ClickSound)
@@ -205,7 +231,7 @@ local function customOpenMouseDown()
     local currentIcon = InvHolder:FindFirstChild(CurrentCase.Value)
     if currentIcon then
         openCase(CurrentCase.Value)
-       CurrentCase.Value = currentIcon.Name
+        CurrentCase.Value = currentIcon.Name
     end
 end
 
@@ -213,6 +239,31 @@ local function customOpenMouseUp()
     TweenButton:Reset(CustomOpenButton, CUSTOMOPENBUTTON_ORIGINALSIZE)
 end
 
+local function autoOpenHover()
+    TweenButton:Grow(AutoOpenButton, AUTOOPENBUTTON_ORIGINALSIZE)
+end
+
+local function autoOpenLeave()
+    TweenButton:Reset(AutoOpenButton, AUTOOPENBUTTON_ORIGINALSIZE)
+end
+
+local function autoOpenMouseDown()
+    playClickSound()
+    TweenButton:Shrink(AutoOpenButton, AUTOOPENBUTTON_ORIGINALSIZE)
+    if AutoOpen.Value == false then
+        AutoOpenButton.AutoText.Text = "Cancel"
+        CancelAutoOpenButton.Visible = true
+        AutoOpen.Value = true
+    else
+        AutoOpenButton.AutoText.Text = "Auto Open"
+        CancelAutoOpenButton.Visible = false
+        AutoOpen.Value = false
+    end
+end
+
+local function autoOpenMouseUp()
+    TweenButton:Reset(AutoOpenButton, AUTOOPENBUTTON_ORIGINALSIZE)
+end
 
 UpdateClientAccessoriesInventoryRemote.OnClientEvent:Connect(function(ID, GUID, method)
     ButtonStatus:CaseInventory(Player, CurrentCase.Value, OpenButton)
@@ -232,3 +283,8 @@ CustomOpenButton.ClickDetector.MouseEnter:Connect(customOpenHover)
 CustomOpenButton.ClickDetector.MouseLeave:Connect(customOpenLeave)
 CustomOpenButton.ClickDetector.MouseButton1Down:Connect(customOpenMouseDown)
 CustomOpenButton.ClickDetector.MouseButton1Up:Connect(customOpenMouseUp)
+
+AutoOpenButton.ClickDetector.MouseEnter:Connect(autoOpenHover)
+AutoOpenButton.ClickDetector.MouseLeave:Connect(autoOpenLeave)
+AutoOpenButton.ClickDetector.MouseButton1Down:Connect(autoOpenMouseDown)
+AutoOpenButton.ClickDetector.MouseButton1Up:Connect(autoOpenMouseUp)

@@ -29,7 +29,6 @@ end
 
 local function updateCamera()
     UpdateCameraRemote.OnClientEvent:Connect(function(method)
-
         if method == "Lock" then
 		    camera.CameraSubject = player.Character.HumanoidRootPart
             camera.CameraType = Enum.CameraType.Attach

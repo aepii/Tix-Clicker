@@ -67262,7 +67262,7 @@ local accessories = {
         Reward = {
             AddPerClick = 0,
             AddStorage = 0,
-            Best = 0.8
+            Best = 0.7
         },
         Value = 0,
         Rarity = "Tixclusive",
@@ -67275,7 +67275,7 @@ local accessories = {
         Reward = {
             AddPerClick = 0,
             AddStorage = 0,
-            Best = 0.9
+            Best = 0.7
         },
         Value = 0,
         Rarity = "Tixclusive",
@@ -67288,7 +67288,7 @@ local accessories = {
         Reward = {
             AddPerClick = 0,
             AddStorage = 0,
-            Best = 1
+            Best = .75
         },
         Value = 0,
         Rarity = "Tixclusive",
@@ -67301,7 +67301,7 @@ local accessories = {
         Reward = {
             AddPerClick = 0,
             AddStorage = 0,
-            Best = 1
+            Best = .75
         },
         Value = 0,
         Rarity = "Tixclusive",
@@ -67314,7 +67314,7 @@ local accessories = {
         Reward = {
             AddPerClick = 0,
             AddStorage = 0,
-            Best = 1.1
+            Best = .8
         },
         Value = 0,
         Rarity = "Tixclusive",
@@ -67327,7 +67327,7 @@ local accessories = {
         Reward = {
             AddPerClick = 0,
             AddStorage = 0,
-            Best = 1.1
+            Best = .8
         },
         Value = 0,
         Rarity = "Tixclusive",
@@ -67340,7 +67340,7 @@ local accessories = {
         Reward = {
             AddPerClick = 0,
             AddStorage = 0,
-            Best = 1.15
+            Best = .85
         },
         Value = 0,
         Rarity = "Tixclusive",
@@ -67353,7 +67353,7 @@ local accessories = {
         Reward = {
             AddPerClick = 0,
             AddStorage = 0,
-            Best = 1.2
+            Best = .9
         },
         Value = 0,
         Rarity = "Tixclusive",
@@ -67366,7 +67366,7 @@ local accessories = {
         Reward = {
             AddPerClick = 0,
             AddStorage = 0,
-            Best = 1.25
+            Best = .95
         },
         Value = 0,
         Rarity = "Tixclusive",
@@ -67379,7 +67379,7 @@ local accessories = {
         Reward = {
             AddPerClick = 0,
             AddStorage = 0,
-            Best = 1.25
+            Best = .95
         },
         Value = 0,
         Rarity = "Tixclusive",
@@ -67392,7 +67392,7 @@ local accessories = {
         Reward = {
             AddPerClick = 0,
             AddStorage = 0,
-            Best = 1.25
+            Best = .95
         },
         Value = 0,
         Rarity = "Tixclusive",
@@ -67405,7 +67405,7 @@ local accessories = {
         Reward = {
             AddPerClick = 0,
             AddStorage = 0,
-            Best = 1.25
+            Best = 1
         },
         Value = 0,
         Rarity = "Tixclusive",
@@ -67418,7 +67418,7 @@ local accessories = {
         Reward = {
             AddPerClick = 0,
             AddStorage = 0,
-            Best = 1.25
+            Best = 1
         },
         Value = 0,
         Rarity = "Tixclusive",
@@ -67431,7 +67431,7 @@ local accessories = {
         Reward = {
             AddPerClick = 0,
             AddStorage = 0,
-            Best = 1.3
+            Best = 1.05
         },
         Value = 0,
         Rarity = "Tixclusive",
@@ -67444,7 +67444,7 @@ local accessories = {
         Reward = {
             AddPerClick = 0,
             AddStorage = 0,
-            Best = 1.3
+            Best = 1.05
         },
         Value = 0,
         Rarity = "Tixclusive",
@@ -67457,7 +67457,7 @@ local accessories = {
         Reward = {
             AddPerClick = 0,
             AddStorage = 0,
-            Best = 1.35
+            Best = 1.1
         },
         Value = 0,
         Rarity = "Tixclusive",
@@ -67470,7 +67470,7 @@ local accessories = {
         Reward = {
             AddPerClick = 0,
             AddStorage = 0,
-            Best = 1.35
+            Best = 1.1
         },
         Value = 0,
         Rarity = "Tixclusive",
@@ -67483,7 +67483,7 @@ local accessories = {
         Reward = {
             AddPerClick = 0,
             AddStorage = 0,
-            Best = 1.35
+            Best = 1.15
         },
         Value = 0,
         Rarity = "Tixclusive",
@@ -67496,7 +67496,7 @@ local accessories = {
         Reward = {
             AddPerClick = 0,
             AddStorage = 0,
-            Best = 1.4
+            Best = 1.2
         },
         Value = 0,
         Rarity = "Tixclusive",
@@ -67509,7 +67509,7 @@ local accessories = {
         Reward = {
             AddPerClick = 0,
             AddStorage = 0,
-            Best = 1.4
+            Best = 1.2
         },
         Value = 0,
         Rarity = "Tixclusive",
@@ -67522,7 +67522,7 @@ local accessories = {
         Reward = {
             AddPerClick = 0,
             AddStorage = 0,
-            Best = 1.45
+            Best = 1.25
         },
         Value = 0,
         Rarity = "Tixclusive",
@@ -67535,7 +67535,7 @@ local accessories = {
         Reward = {
             AddPerClick = 0,
             AddStorage = 0,
-            Best = 1.45
+            Best = 1.25
         },
         Value = 0,
         Rarity = "Tixclusive",
@@ -67548,7 +67548,7 @@ local accessories = {
         Reward = {
             AddPerClick = 0,
             AddStorage = 0,
-            Best = 1.5
+            Best = 1.3
         },
         Value = 0,
         Rarity = "Tixclusive",
@@ -67561,7 +67561,7 @@ local accessories = {
         Reward = {
             AddPerClick = 0,
             AddStorage = 0,
-            Best = 1.55
+            Best = 1.35
         },
         Value = 0,
         Rarity = "Tixclusive",
@@ -67574,7 +67574,7 @@ local accessories = {
         Reward = {
             AddPerClick = 0,
             AddStorage = 0,
-            Best = 1.6
+            Best = 1.4
         },
         Value = 0,
         Rarity = "Tixclusive",
@@ -67587,7 +67587,7 @@ local accessories = {
         Reward = {
             AddPerClick = 0,
             AddStorage = 0,
-            Best = 1.7
+            Best = 1.75
         },
         Value = 0,
         Rarity = "Tixclusive",
@@ -67600,7 +67600,7 @@ local accessories = {
         Reward = {
             AddPerClick = 0,
             AddStorage = 0,
-            Best = 1.75
+            Best = 2
         },
         Value = 0,
         Rarity = "Tixclusive",

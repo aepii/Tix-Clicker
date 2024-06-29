@@ -55,6 +55,8 @@ local ClickSound = Sounds:WaitForChild("ClickSound")
 ---- Networking ----
 
 local Networking = ReplicatedStorage.Networking
+local BindableSelectAllAccessoriesRemote = Networking.BindableSelectAllAccessories
+
 
 ---- Private Functions ----
 
@@ -188,6 +190,21 @@ local function updateMultiScrapFrame()
     end
     multiScrapSearch(CurrentRarity.Value)
 end
+
+BindableSelectAllAccessoriesRemote.Event:Connect(function(rarity, method)
+    if rarity == script.Parent.Rarity.Value then
+        if method == "Select" then
+            if not MultiSelected:FindFirstChild(script.Parent.GUID.Value) then
+                updateMultiScrapFrame()
+            end
+        else
+            print(method)
+            if MultiSelected:FindFirstChild(script.Parent.GUID.Value) then
+                updateMultiScrapFrame()
+            end
+        end
+    end
+end)
 
 ---- Buttons ----
 

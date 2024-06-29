@@ -40,12 +40,12 @@ local function canPurchase(player, upgrade)
     return true
 end
     
-local function canPurchaseCase(player, case)
+local function canPurchaseCase(player, case, amount)
     
     local ReplicatedData = player:WaitForChild("ReplicatedData")
 
     if case.Cost["RebirthTix"] then
-        local cost = case.Cost["RebirthTix"]
+        local cost = case.Cost["RebirthTix"] * amount
         if ReplicatedData["Rebirth Tix"].Value < cost then
             print("NOT ENOUGH REBIRTH TIX")
             return false
@@ -53,7 +53,7 @@ local function canPurchaseCase(player, case)
     end
 
     if case.Cost["Rocash"] then
-        local cost = case.Cost["Rocash"]
+        local cost = case.Cost["Rocash"] * amount
         if ReplicatedData["Rocash"].Value < cost then
             print("NOT ENOUGH ROCASH")
             return false
@@ -65,7 +65,7 @@ local function canPurchaseCase(player, case)
 
         for key, materialData in cost do
             local materialID = materialData[1]
-            local materialCostVal = materialData[2]
+            local materialCostVal = materialData[2] * amount
             if not ReplicatedData.Materials:FindFirstChild(materialID) then
                 return false
             end
@@ -79,7 +79,7 @@ local function canPurchaseCase(player, case)
 end
 
 
-local function canPurchasePerSec(player, perSecUpgrade)
+local function canPurchasePerSec(player, perSecUpgrade, amount)
     
     local ReplicatedData = player:WaitForChild("ReplicatedData")
     local perSecUpgrades = ReplicatedData:WaitForChild("PerSecondUpgrades")
@@ -88,7 +88,8 @@ local function canPurchasePerSec(player, perSecUpgrade)
     local cost;
 
     if upgradeData then
-        cost = TemporaryData:CalculateTixPerSecondCost(levelValue, perSecUpgrade.ID, 1)
+        print(amount)
+        cost = TemporaryData:CalculateTixPerSecondCost(levelValue, perSecUpgrade.ID, amount)
     else
         cost = perSecUpgrade.Cost
     end
@@ -111,6 +112,7 @@ local function canPurchaseRebirth(player, rebirthUpgrade)
     if upgradeData then
         cost = TemporaryData:CalculateRebirthUpgradeCost(levelValue, rebirthUpgrade.ID, 1)
     else
+        print(cost)
         cost = rebirthUpgrade.Cost
     end
 
@@ -127,19 +129,22 @@ local ButtonStatus = {}
 
 function ButtonStatus:TixInventory(player, currentUpgrade, equipButton)
     local upgradeEquipped = player.ReplicatedData.ToolEquipped
-    local equipText, backgroundColor, shadowColor, strokeColor
+    local equipText, backgroundColor, shadowColor, strokeColor, gradientColor
     if upgradeEquipped.Value == currentUpgrade then
         equipText = "Equipped"
+        gradientColor = ColorSequence.new(Color3.fromRGB(255,255,255),Color3.fromRGB(100,100,100))
         backgroundColor = Color3.fromRGB(82, 81, 81)
-        shadowColor = Color3.fromRGB(36, 35, 35)
-        strokeColor = Color3.fromRGB(36, 35, 35)
+        shadowColor = Color3.fromRGB(36, 36, 36)
+        strokeColor = Color3.fromRGB(36, 36, 36)
     else
         equipText = "Equip"
+        gradientColor = ColorSequence.new(Color3.fromRGB(255,255,255),Color3.fromRGB(15,255,83))
         backgroundColor = Color3.fromRGB(85, 170, 127)
         shadowColor = Color3.fromRGB(34, 68, 50)
         strokeColor = Color3.fromRGB(34, 68, 50)
     end
 
+    equipButton.UIGradient.Color = gradientColor
     equipButton.EquipText.Text = equipText
     equipButton.BackgroundColor3 = backgroundColor
     equipButton.Shadow.BackgroundColor3 = shadowColor
@@ -151,33 +156,38 @@ function ButtonStatus:AccessoryInventory(player, GUID, equipButton)
     local equippedAccessory = player.ReplicatedData.EquippedAccessories:FindFirstChild(ID)
     local equippedAccessoriesCount = #player.ReplicatedData.EquippedAccessories:GetChildren()
     local equippedAccessoriesLimit = player.TemporaryData.EquippedAccessoriesLimit
-    local equipText, backgroundColor, shadowColor, strokeColor
+    local equipText, backgroundColor, shadowColor, strokeColor, gradientColor
     if equippedAccessory then
         if equippedAccessory.Value == GUID then
             equipText = "Unequip"
+            gradientColor = ColorSequence.new(Color3.fromRGB(255,255,255),Color3.fromRGB(255,0,0))
             backgroundColor = Color3.fromRGB(236, 44, 75)
             shadowColor = Color3.fromRGB(73, 30, 30)
             strokeColor = Color3.fromRGB(73, 30, 30)
         else
             equipText = "Unavailable"
+            gradientColor = ColorSequence.new(Color3.fromRGB(255,255,255),Color3.fromRGB(100,100,100))
             backgroundColor = Color3.fromRGB(82, 81, 81)
-            shadowColor = Color3.fromRGB(36, 35, 35)
-            strokeColor = Color3.fromRGB(36, 35, 35)
+            shadowColor = Color3.fromRGB(36, 36, 36)
+            strokeColor = Color3.fromRGB(36, 36, 36)
         end
     else
         if equippedAccessoriesLimit.Value <= equippedAccessoriesCount then
             equipText = "Max Equipped"
+            gradientColor = ColorSequence.new(Color3.fromRGB(255,255,255),Color3.fromRGB(100,100,100))
             backgroundColor = Color3.fromRGB(82, 81, 81)
-            shadowColor = Color3.fromRGB(36, 35, 35)
-            strokeColor = Color3.fromRGB(36, 35, 35)
+            shadowColor = Color3.fromRGB(36, 36, 36)
+            strokeColor = Color3.fromRGB(36, 36, 36)
         else
             equipText = "Equip"
+            gradientColor = ColorSequence.new(Color3.fromRGB(255,255,255),Color3.fromRGB(15,255,83))
             backgroundColor = Color3.fromRGB(85, 170, 127)
             shadowColor = Color3.fromRGB(34, 68, 50)
             strokeColor = Color3.fromRGB(34, 68, 50)
         end
     end
 
+    equipButton.UIGradient.Color = gradientColor
     equipButton.EquipText.Text = equipText
     equipButton.BackgroundColor3 = backgroundColor
     equipButton.Shadow.BackgroundColor3 = shadowColor
@@ -187,26 +197,30 @@ end
 function ButtonStatus:ScrapInventory(player, GUID, scrapButton)
     local ID = player.ReplicatedData.Accessories[GUID].Value
     local equippedAccessory = player.ReplicatedData.EquippedAccessories:FindFirstChild(ID)
-    local equipText, backgroundColor, shadowColor, strokeColor
+    local equipText, backgroundColor, shadowColor, strokeColor, gradientColor
     if equippedAccessory then
         if equippedAccessory.Value == GUID then
             equipText = "Unavailable"
+            gradientColor = ColorSequence.new(Color3.fromRGB(255,255,255),Color3.fromRGB(100,100,100))
             backgroundColor = Color3.fromRGB(82, 81, 81)
-            shadowColor = Color3.fromRGB(36, 35, 35)
-            strokeColor = Color3.fromRGB(36, 35, 35)
+            shadowColor = Color3.fromRGB(36, 36, 36)
+            strokeColor = Color3.fromRGB(36, 36, 36)
         else
             equipText = "Scrap"
+            gradientColor = ColorSequence.new(Color3.fromRGB(255,255,255),Color3.fromRGB(255,0,0))
             backgroundColor = Color3.fromRGB(236, 44, 75)
             shadowColor = Color3.fromRGB(73, 30, 30)
             strokeColor = Color3.fromRGB(73, 30, 30)
         end
     else
         equipText = "Scrap"
+        gradientColor = ColorSequence.new(Color3.fromRGB(255,255,255),Color3.fromRGB(255,0,0))
         backgroundColor = Color3.fromRGB(236, 44, 75)
         shadowColor = Color3.fromRGB(73, 30, 30)
         strokeColor = Color3.fromRGB(73, 30, 30)
     end
 
+    scrapButton.UIGradient.Color = gradientColor
     scrapButton.ScrapText.Text = equipText
     scrapButton.BackgroundColor3 = backgroundColor
     scrapButton.Shadow.BackgroundColor3 = shadowColor
@@ -217,66 +231,77 @@ end
 function ButtonStatus:PurchaseUpgrade(player, currentUpgrade, purchaseButton)
 
     local upgradeEquipped = player.ReplicatedData.Upgrades
-    local priceFrame, backgroundColor, shadowColor, strokeColor
+    local priceFrame, backgroundColor, shadowColor, strokeColor, gradientColor
 
     if upgradeEquipped:FindFirstChild(currentUpgrade) then
         priceFrame = "Owned"
+        gradientColor = ColorSequence.new(Color3.fromRGB(255,255,255),Color3.fromRGB(100,100,100))
         backgroundColor = Color3.fromRGB(82, 81, 81)
-        shadowColor = Color3.fromRGB(36, 35, 35)
-        strokeColor = Color3.fromRGB(36, 35, 35)
+        shadowColor = Color3.fromRGB(36, 36, 36)
+        strokeColor = Color3.fromRGB(36, 36, 36)
         purchaseButton.PriceFrame.PriceText.Text = priceFrame
         purchaseButton.PriceFrame.CurrencyIcon.Visible = false
     else
         if canPurchase(player, Upgrades[currentUpgrade]) then
             backgroundColor = Color3.fromRGB(85, 170, 127)
+            gradientColor = ColorSequence.new(Color3.fromRGB(255,255,255),Color3.fromRGB(15,255,83))
             shadowColor = Color3.fromRGB(34, 68, 50)
             strokeColor = Color3.fromRGB(34, 68, 50)
         else
             backgroundColor = Color3.fromRGB(236, 44, 75)
+            gradientColor = ColorSequence.new(Color3.fromRGB(255,255,255),Color3.fromRGB(255,0,0))
             shadowColor = Color3.fromRGB(73, 30, 30)
             strokeColor = Color3.fromRGB(73, 30, 30)
         end
         purchaseButton.PriceFrame.CurrencyIcon.Visible = true
     end
+
+    purchaseButton.UIGradient.Color = gradientColor
     purchaseButton.BackgroundColor3 = backgroundColor
     purchaseButton.Shadow.BackgroundColor3 = shadowColor
     purchaseButton.PriceFrame.PriceText.UIStroke.Color = strokeColor
 end
 
-function ButtonStatus:PurchasePerSecUpgrade(player, currentUpgrade, purchaseButton)
+function ButtonStatus:PurchasePerSecUpgrade(player, currentUpgrade, amount, purchaseButton)
 
-    local backgroundColor, shadowColor, strokeColor
+    local backgroundColor, shadowColor, strokeColor, gradientColor
 
-    if canPurchasePerSec(player, PerSecondUpgrades[currentUpgrade]) then
+    if canPurchasePerSec(player, PerSecondUpgrades[currentUpgrade], amount) then
+        gradientColor = ColorSequence.new(Color3.fromRGB(255,255,255),Color3.fromRGB(15,255,83))
         backgroundColor = Color3.fromRGB(85, 170, 127)
         shadowColor = Color3.fromRGB(34, 68, 50)
         strokeColor = Color3.fromRGB(34, 68, 50)
     else
+        gradientColor = ColorSequence.new(Color3.fromRGB(255,255,255),Color3.fromRGB(255,0,0))
         backgroundColor = Color3.fromRGB(236, 44, 75)
         shadowColor = Color3.fromRGB(73, 30, 30)
         strokeColor = Color3.fromRGB(73, 30, 30)
     end
 
+    purchaseButton.UIGradient.Color = gradientColor
     purchaseButton.PriceFrame.CurrencyIcon.Visible = true
     purchaseButton.BackgroundColor3 = backgroundColor
     purchaseButton.Shadow.BackgroundColor3 = shadowColor
     purchaseButton.PriceFrame.PriceText.UIStroke.Color = strokeColor
 end
 
-function ButtonStatus:PurchaseCase(player, currentCase, purchaseButton)
+function ButtonStatus:PurchaseCase(player, currentCase, amount, purchaseButton)
 
-    local backgroundColor, shadowColor, strokeColor
+    local backgroundColor, shadowColor, strokeColor, gradientColor
 
-    if canPurchaseCase(player, Cases[currentCase]) then
+    if canPurchaseCase(player, Cases[currentCase], amount) then
+        gradientColor = ColorSequence.new(Color3.fromRGB(255,255,255),Color3.fromRGB(15,255,83))
         backgroundColor = Color3.fromRGB(85, 170, 127)
         shadowColor = Color3.fromRGB(34, 68, 50)
         strokeColor = Color3.fromRGB(34, 68, 50)
     else
+        gradientColor = ColorSequence.new(Color3.fromRGB(255,255,255),Color3.fromRGB(255,0,0))
         backgroundColor = Color3.fromRGB(236, 44, 75)
         shadowColor = Color3.fromRGB(73, 30, 30)
         strokeColor = Color3.fromRGB(73, 30, 30)
     end
 
+    purchaseButton.UIGradient.Color = gradientColor
     purchaseButton.PriceFrame.CurrencyIcon.Visible = true
     purchaseButton.BackgroundColor3 = backgroundColor
     purchaseButton.Shadow.BackgroundColor3 = shadowColor
@@ -286,18 +311,21 @@ end
 
 function ButtonStatus:PurchaseRebirthUpgrade(player, currentUpgrade, purchaseButton)
 
-    local backgroundColor, shadowColor, strokeColor
+    local backgroundColor, shadowColor, strokeColor, gradientColor
 
     if canPurchaseRebirth(player, RebirthUpgrades[currentUpgrade]) then
+        gradientColor = ColorSequence.new(Color3.fromRGB(255,255,255),Color3.fromRGB(15,255,83))
         backgroundColor = Color3.fromRGB(85, 170, 127)
         shadowColor = Color3.fromRGB(34, 68, 50)
         strokeColor = Color3.fromRGB(34, 68, 50)
     else
+        gradientColor = ColorSequence.new(Color3.fromRGB(255,255,255),Color3.fromRGB(255,0,0))
         backgroundColor = Color3.fromRGB(236, 44, 75)
         shadowColor = Color3.fromRGB(73, 30, 30)
         strokeColor = Color3.fromRGB(73, 30, 30)
     end
 
+    purchaseButton.UIGradient.Color = gradientColor
     purchaseButton.PriceFrame.CurrencyIcon.Visible = true
     purchaseButton.BackgroundColor3 = backgroundColor
     purchaseButton.Shadow.BackgroundColor3 = shadowColor
@@ -310,26 +338,31 @@ function ButtonStatus:CaseInventory(player, caseID, purchaseButton)
     local accessoriesLimit = player.TemporaryData.AccessoriesLimit
 
     local cases = player.ReplicatedData.Cases
-    local openText, backgroundColor, shadowColor, strokeColor
+    local openText, backgroundColor, shadowColor, strokeColor, gradientColor
 
     if cases:FindFirstChild(caseID) then
         if accessoriesLimit.Value <= accessoriesCount then
             openText = "Accessories Full"
+            gradientColor = ColorSequence.new(Color3.fromRGB(255,255,255),Color3.fromRGB(100,100,100))
             backgroundColor = Color3.fromRGB(82, 81, 81)
-            shadowColor = Color3.fromRGB(36, 35, 35)
-            strokeColor = Color3.fromRGB(36, 35, 35)
+            shadowColor = Color3.fromRGB(36, 36, 36)
+            strokeColor = Color3.fromRGB(36, 36, 36)
         else
             openText = "Open"
+            gradientColor = ColorSequence.new(Color3.fromRGB(255,255,255),Color3.fromRGB(15,255,83))
             backgroundColor = Color3.fromRGB(85, 170, 127)
             shadowColor = Color3.fromRGB(34, 68, 50)
             strokeColor = Color3.fromRGB(34, 68, 50)
         end
     else
         openText = "Unavailable"
+        gradientColor = ColorSequence.new(Color3.fromRGB(255,255,255),Color3.fromRGB(100,100,100))
         backgroundColor = Color3.fromRGB(82, 81, 81)
-        shadowColor = Color3.fromRGB(36, 35, 35)
-        strokeColor = Color3.fromRGB(36, 35, 35)
+        shadowColor = Color3.fromRGB(36, 36, 36)
+        strokeColor = Color3.fromRGB(36, 36, 36)
     end
+
+    purchaseButton.UIGradient.Color = gradientColor
     purchaseButton.OpenText.Text = openText
     purchaseButton.BackgroundColor3 = backgroundColor
     purchaseButton.Shadow.BackgroundColor3 = shadowColor

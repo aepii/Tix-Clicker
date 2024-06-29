@@ -17,32 +17,43 @@ local Portals = Workspace.Portals
 
 local Networking = ReplicatedStorage.Networking
 local UpdateCameraRemote = Networking.UpdateCamera
+local AnimateCircleRemote = Networking.AnimateCircle
 
 ---- Teleport ----
 
-local debounce = false  -- Initialize debounce variable
+local debounceTable = {}
 
 script.Parent.Touched:Connect(function(hit)
     local portalID = script.Parent.Parent.Parent.Name
-    if not debounce then 
-        debounce = true 
-        local player = game.Players:GetPlayerFromCharacter(hit.Parent)
-        if player then
-            local torso = hit.Parent:FindFirstChild("HumanoidRootPart")
-            if torso then
-                local profile = ProfileCacher:GetProfile(player)
-                local data = profile.Data
-                if table.find(data["Zones"], portalID) then
-                    if script.Parent.Name == "TouchPart" then
-                        torso.CFrame = Shops[portalID].Shop.TeleportPart.CFrame
-                        UpdateCameraRemote:FireClient(player, "Lock")
+
+    local player = game.Players:GetPlayerFromCharacter(hit.Parent)
+    if player and not debounceTable[player] then
+		debounceTable[player] = player
+        local torso = hit.Parent:FindFirstChild("HumanoidRootPart")
+        if torso then
+            local profile = ProfileCacher:GetProfile(player)
+            local data = profile.Data
+            local displayUI = player.Character.Head.DisplayNameUI
+            if table.find(data["Zones"], portalID) then
+                AnimateCircleRemote:FireClient(player)
+                task.wait(1)
+                if script.Parent.Name == "TouchPart" then
+                    UpdateCameraRemote:FireClient(player, "Lock")
+                    torso.CFrame = Shops[portalID].Shop.TeleportPart.CFrame
+
+                    displayUI.Enabled = false
+                else
+                    UpdateCameraRemote:FireClient(player, "Reset")
+                    if portalID == "Z0" then
+                        torso.CFrame = Portals.RebirthTeleport.CFrame
                     else
                         torso.CFrame = Portals.Teleport.CFrame
-                        UpdateCameraRemote:FireClient(player, "Reset")
                     end
+                    displayUI.Enabled = true
                 end
             end
         end
+        task.wait(2)
+        debounceTable[player] = nil
     end
-    debounce = false
 end)

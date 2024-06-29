@@ -48,6 +48,7 @@ local CurrentUI = InfoUI.CurrentUI
 
 local Networking = ReplicatedStorage.Networking
 local UpdateClientShopInfoRemote = Networking.UpdateClientShopInfo
+local BindableUpdateClientShopInfoRemote = Networking.BindableUpdateClientShopInfo
 
 ---- Private Functions ----
 
@@ -65,11 +66,17 @@ local function getShopInfo(nearest)
     end
 end
 
-local function populateCaseRarity(weights, rewardsFrame)
+local function populateCaseRarity(caseID, rewardsFrame)
     local i;
+
+    local totalWeight = TemporaryData:GetTotalWeight(Player, caseID)
+    local weights = Cases[caseID].Weights
+
     for index, data in weights do
+        local weight = TemporaryData:ApplyLuck(Player, data[2], index, #weights)
         local gradient = RarityColors:GetGradient(data[1])
-        rewardsFrame[index].ChanceText.Text = data[2] .. "%"
+        local weightedPercent = TemporaryData:WeightedPercent(weight, totalWeight)
+        rewardsFrame[index].ChanceText.Text = weightedPercent.. "%"
         rewardsFrame[index].RarityText.Text = data[1]
         rewardsFrame[index].Visible = true
         rewardsFrame[index].RarityText.UIGradient.Color = gradient
@@ -81,7 +88,7 @@ local function populateCaseRarity(weights, rewardsFrame)
     end
 end
 
-local function populateCaseItems(weights, rewardsFrame)
+local function populateCaseItems(caseID, rewardsFrame)
 
     local InvFrame = rewardsFrame.InvFrame
     local Holder = InvFrame.Holder
@@ -93,10 +100,16 @@ local function populateCaseItems(weights, rewardsFrame)
         end
     end
 
+    local totalWeight = TemporaryData:GetTotalWeight(Player, caseID)
+    local weights = Cases[caseID].Weights
+
     for index, data in weights do
+        local weight = TemporaryData:ApplyLuck(Player, data[2], index, #weights)
+        local weightedPercent = TemporaryData:WeightedPercent(weight, totalWeight)
+        print(data[1], TemporaryData:WeightedPercent(weight, totalWeight))
         local icon = IconCopy:Clone()
         icon.Name = data[1]
-        icon.ChanceFrame.ChanceText.Text = data[2] / 1000 .. "%"
+        icon.ChanceFrame.ChanceText.Text = weightedPercent .. "%"
         icon.IconImage.Image = "http://www.roblox.com/Thumbs/Asset.ashx?Width=256&Height=256&AssetID=" .. Accessories[data[1]].AssetID
         icon.Visible = true
         CollectionService:RemoveTag(icon.Shadow.UIStroke, "Ignore")
@@ -105,7 +118,7 @@ local function populateCaseItems(weights, rewardsFrame)
     end
 end
 
-local function populateMaterialCost(itemCosts, materialsHolder)
+local function populateMaterialCost(itemCosts, materialsHolder, multiplier)
     for count = 1, 3 do
         materialsHolder[count].Visible = false
     end
@@ -118,17 +131,50 @@ local function populateMaterialCost(itemCosts, materialsHolder)
     for key, data in itemCosts do
 
         local materialID = data[1]
-        local materialCost = data[2]
+        local materialCost = data[2] * multiplier
 
         local material = Materials[materialID]
 
         local gradient = RarityColors:GetGradient(material.Rarity)
         
-        materialsHolder[index].CostText.Text = materialCost
+        materialsHolder[index].CostText.Text = SuffixHandler:Convert(materialCost)
         materialsHolder[index].MaterialIcon.Image = material.Image
         materialsHolder[index].Visible = true
         materialsHolder[index].CostText.UIGradient.Color = gradient
         index += 1
+    end
+end
+
+local function updateButtonInfo(nearest, shopInfo)
+    local InfoFrame = shopInfo.InfoFrame
+    local PurchaseButton = InfoFrame.PurchaseButton
+ 
+    local item;
+    if shopInfo.Name == "CustomCaseInfo" then
+        item = Cases[nearest]
+        if item then
+            ButtonStatus:PurchaseCase(Player, nearest, InfoFrame.Amount.Value, PurchaseButton)
+        end
+    elseif shopInfo.Name == "CaseInfo" then
+        item = Cases[nearest]
+        if item then
+            ButtonStatus:PurchaseCase(Player, nearest, InfoFrame.Amount.Value, PurchaseButton)
+        end
+    elseif shopInfo.Name == "PerSecInfo" then
+        item = PerSecondUpgrades[nearest]
+        if item then
+            ButtonStatus:PurchasePerSecUpgrade(Player, nearest, InfoFrame.Amount.Value, PurchaseButton)
+        end
+    elseif shopInfo.Name == "UpgradeInfo" then
+        item = Upgrades[nearest]
+        if item then
+            ButtonStatus:PurchaseUpgrade(Player, nearest, PurchaseButton)
+        end
+    elseif shopInfo.Name == "RebirthInfo" then
+        item = RebirthUpgrades[nearest]
+        if item then
+            ButtonStatus:PurchaseRebirthUpgrade(Player, nearest, PurchaseButton)
+        end
     end
 end
 
@@ -140,37 +186,40 @@ local function updateShopInfo(nearest, shopInfo)
     local RewardsFrame = InfoFrame.RewardsFrame
 
     local item;
+    print("UPDATE")
 
-    print(item, nearest, shopInfo.Name)
     if shopInfo.Name == "CustomCaseInfo" then
         item = Cases[nearest]
         if item then
             local MaterialsHolder = InfoFrame.MaterialsFrame.MaterialsHolder
             local ownedValue = Player.ReplicatedData.Cases:FindFirstChild(nearest) and Player.ReplicatedData.Cases[nearest].Value or 0
-            PurchaseButton.PriceFrame.PriceText.Text = SuffixHandler:Convert(item.Cost["RebirthTix"])
+            InfoFrame.ID.Value = item.ID
+            PurchaseButton.PriceFrame.PriceText.Text = SuffixHandler:Convert(item.Cost["RebirthTix"] * InfoFrame.Amount.Value)
             InfoFrame.OwnedFrame.Owned.Text = "Owned " .. ownedValue
-            populateCaseItems(item.Weights, RewardsFrame)
-            populateMaterialCost(item.Cost["Materials"] or nil, MaterialsHolder)
-            ButtonStatus:PurchaseCase(Player, CurrentUI.Value, PurchaseButton)
+            populateCaseItems(item.ID, RewardsFrame)
+            populateMaterialCost(item.Cost["Materials"] or nil, MaterialsHolder, InfoFrame.Amount.Value)
+            ButtonStatus:PurchaseCase(Player, nearest, InfoFrame.Amount.Value, PurchaseButton)
         end
     elseif shopInfo.Name == "CaseInfo" then
         item = Cases[nearest]
         if item then
             local ownedValue = Player.ReplicatedData.Cases:FindFirstChild(nearest) and Player.ReplicatedData.Cases[nearest].Value or 0
-            PurchaseButton.PriceFrame.PriceText.Text = SuffixHandler:Convert(item.Cost["Rocash"])
+            InfoFrame.ID.Value = item.ID
+            PurchaseButton.PriceFrame.PriceText.Text = SuffixHandler:Convert(item.Cost["Rocash"] * InfoFrame.Amount.Value)
             InfoFrame.OwnedFrame.Owned.Text = "Owned " .. ownedValue
-            populateCaseRarity(item.Weights, RewardsFrame)
-            ButtonStatus:PurchaseCase(Player, CurrentUI.Value, PurchaseButton)
+            populateCaseRarity(item.ID, RewardsFrame)
+            ButtonStatus:PurchaseCase(Player, nearest, InfoFrame.Amount.Value, PurchaseButton)
         end
     elseif shopInfo.Name == "PerSecInfo" then
         item = PerSecondUpgrades[nearest]
         if item then
             local levelValue = Player.ReplicatedData.PerSecondUpgrades:FindFirstChild(nearest) and Player.ReplicatedData.PerSecondUpgrades[nearest].Value or 0
-            PurchaseButton.PriceFrame.PriceText.Text = SuffixHandler:Convert(TemporaryData:CalculateTixPerSecondCost(levelValue, nearest, 1))
+            InfoFrame.ID.Value = item.ID
+            PurchaseButton.PriceFrame.PriceText.Text = SuffixHandler:Convert(TemporaryData:CalculateTixPerSecondCost(levelValue, nearest, InfoFrame.Amount.Value))
             InfoFrame.LevelFrame.Level.Text = "Level " .. levelValue  
-            RewardsFrame["1"].RewardText.Text = "+".. SuffixHandler:Convert(item.Reward.AddPerSecond)
-            RewardsFrame["2"].RewardText.Text = "-".. SuffixHandler:Convert(item.Reward.AddConvert)
-            ButtonStatus:PurchasePerSecUpgrade(Player, CurrentUI.Value, PurchaseButton)
+            RewardsFrame["1"].RewardText.Text = "+".. SuffixHandler:Convert(item.Reward.AddPerSecond * InfoFrame.Amount.Value)
+            RewardsFrame["2"].RewardText.Text = "-".. SuffixHandler:Convert(item.Reward.AddConvert * InfoFrame.Amount.Value)
+            ButtonStatus:PurchasePerSecUpgrade(Player, nearest, InfoFrame.Amount.Value, PurchaseButton)
         end
     elseif shopInfo.Name == "UpgradeInfo" then
         local MaterialsHolder = InfoFrame.MaterialsFrame.MaterialsHolder
@@ -179,8 +228,8 @@ local function updateShopInfo(nearest, shopInfo)
             PurchaseButton.PriceFrame.PriceText.Text = SuffixHandler:Convert(item.Cost["Rocash"])
             RewardsFrame.MultPerClick.RewardText.Text = "x"..SuffixHandler:Convert(item.Reward["MultPerClick"])
             RewardsFrame.MultStorage.RewardText.Text = "x"..SuffixHandler:Convert(item.Reward["MultStorage"])
-            populateMaterialCost(item.Cost["Materials"] or nil, MaterialsHolder)
-            ButtonStatus:PurchaseUpgrade(Player, CurrentUI.Value, PurchaseButton)
+            populateMaterialCost(item.Cost["Materials"] or nil, MaterialsHolder, 1)
+            ButtonStatus:PurchaseUpgrade(Player, nearest, PurchaseButton)
         end
     elseif shopInfo.Name == "RebirthInfo" then
         item = RebirthUpgrades[nearest]
@@ -204,7 +253,7 @@ local function updateShopInfo(nearest, shopInfo)
 
             RewardsFrame.InitialText.Text = initialMessage
             RewardsFrame.RewardText.Text = item.RewardMessage
-            ButtonStatus:PurchaseRebirthUpgrade(Player, CurrentUI.Value, PurchaseButton)
+            ButtonStatus:PurchaseRebirthUpgrade(Player, nearest, PurchaseButton)
         end
     end
     if item then
@@ -212,6 +261,9 @@ local function updateShopInfo(nearest, shopInfo)
         ItemName.Title.Text = item.Name
     end
 end
+
+local lastUpdate = 0
+local updateInterval = 0.5
 
 local function getNearest()
     local distance = 10
@@ -238,7 +290,18 @@ local function getNearest()
             shopInfo.Adornee = nearest
             shopInfo.Enabled = true
             CurrentUI.Value = nearestName
+            if shopInfo.InfoFrame:FindFirstChild("Amount") then
+                shopInfo.InfoFrame.Amount.Value = 1
+                shopInfo.InfoFrame.AmountFrame.AmountText.Text = "+1"
+            end
             updateShopInfo(nearestName, shopInfo)
+        else
+            local shopInfo = getShopInfo(nearestName)
+            local currentTime = tick()
+            if currentTime - lastUpdate >= updateInterval then
+                updateButtonInfo(nearestName, shopInfo)
+                lastUpdate = currentTime
+            end
         end
     elseif CurrentUI.Value ~= "" then
         if Shop:FindFirstChild(CurrentUI.Value) then
@@ -249,10 +312,15 @@ local function getNearest()
     end
 end
 
-RunService.RenderStepped:Connect(function()
+RunService.Heartbeat:Connect(function()
 	getNearest()
 end)
 
 UpdateClientShopInfoRemote.OnClientEvent:Connect(function(shopName)
     updateShopInfo(CurrentUI.Value,getShopInfo(shopName))
 end)
+
+BindableUpdateClientShopInfoRemote.Event:Connect(function(shopName)
+    updateShopInfo(CurrentUI.Value,getShopInfo(shopName))
+end)
+

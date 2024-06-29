@@ -34,6 +34,7 @@ local MultiScrapFrame = ScrapMenu.MultiScrapFrame
 local IconCopy = InvHolder.IconCopy
 local SearchBar = ScrapMenu.SearchBar.TextBox
 local MultiScrapButton = ScrapMenu.MultiScrapButton
+local SelectAllButton = ScrapMenu.SelectAllButton
 
 local IconScript = script.Parent.Icon
 IconScript.Name = "IconScript"
@@ -47,6 +48,8 @@ local UIVisibleScrap = ScrapFrame.UIVisible
 local CurrentUI = UI.CurrentUI
 local CurrentRarity = MultiScrapFrame.CurrentRarity
 local MultiScrap = ScrapMenu.MultiScrap
+local SelectAll = ScrapMenu.SelectAll
+local SelectAllValid = ScrapMenu.SelectAllValid
 local MultiSelected = ScrapMenu.MultiSelected
 
 ---- Sound ----
@@ -62,6 +65,7 @@ local PopSound = Sounds:WaitForChild("PopSound")
 local Networking = ReplicatedStorage.Networking
 local ScrapAccessoryRemote = Networking.ScrapAccessory
 local UpdateClientAccessoriesInventoryRemote = Networking.UpdateClientAccessoriesInventory
+local BindableSelectAllAccessoriesRemote = Networking.BindableSelectAllAccessories
 
 ---- Private Functions ----
 
@@ -128,6 +132,10 @@ local function resetMultiScrapFrame()
     MultiScrap.Value = false
     SearchBar.PlaceholderText = "Search"
     MultiScrapButton.ScrapText.Text = "Multi Scrap"
+    SelectAllButton.SelectText.Text = "Select All"
+    SelectAllValid.Value = false
+    SelectAll.Value = false
+    SelectAllButton.Visible = false
     for index, icon in InvHolder:GetChildren() do
         if icon:IsA("Frame") and icon ~= IconCopy then
             icon.SelectedIcon.Visible = false
@@ -266,6 +274,7 @@ local EXITBUTTON_ORIGINALSIZE = ExitButton.Size
 local SCRAPBUTTON_ORIGINALSIZE = ScrapButton.Size
 local MULTISCRAPBUTTON_ORIGINALSIZE = MultiScrapButton.Size
 local CONFIRMMULTISCRAPBUTTON_ORIGINALSIZE = ConfirmMultiScrapButton.Size
+local SELECTALLBUTTON_ORIGINALSIZE = SelectAllButton.Size
 
 local function playClickSound()
     SoundService:PlayLocalSound(ClickSound)
@@ -362,6 +371,50 @@ local function confirmMultiScrapMouseUp()
     TweenButton:Reset(ConfirmMultiScrapButton, CONFIRMMULTISCRAPBUTTON_ORIGINALSIZE)
 end
 
+local function selectAllHover()
+    TweenButton:Grow(SelectAllButton, SELECTALLBUTTON_ORIGINALSIZE)
+end
+
+local function selectAllLeave()
+    TweenButton:Reset(SelectAllButton, SELECTALLBUTTON_ORIGINALSIZE)
+end
+
+local function selectAllMouseDown()
+    playClickSound()
+    TweenButton:Shrink(SelectAllButton, SELECTALLBUTTON_ORIGINALSIZE)
+    if SelectAllValid.Value == true  then
+        if SelectAll.Value == false then
+            SelectAll.Value = true
+            BindableSelectAllAccessoriesRemote:Fire(CurrentRarity.Value, "Select")
+            SelectAllButton.SelectText.Text = "Deselect All"
+        else
+            SelectAll.Value = false
+            BindableSelectAllAccessoriesRemote:Fire(CurrentRarity.Value, "Deselect")
+            SelectAllButton.SelectText.Text = "Select All"
+        end
+    end
+end
+
+local function selectAllMouseUp()
+    TweenButton:Reset(SelectAllButton, SELECTALLBUTTON_ORIGINALSIZE)
+end
+
+local function multiSelectedUpdated()
+    if #MultiSelected:GetChildren() == 1 then
+        SelectAllValid.Value = true
+        SelectAllButton.SelectText.Text = "Select All"
+        SelectAllButton.Visible = true
+    elseif #MultiSelected:GetChildren() == 0 then
+        SelectAllValid.Value = false
+        SelectAllButton.SelectText.Text = "Select All"
+        SelectAllButton.Visible = false
+    end
+end
+
+MultiSelected.ChildAdded:Connect(multiSelectedUpdated)
+
+MultiSelected.ChildRemoved:Connect(multiSelectedUpdated)
+
 ExitButton.ClickDetector.MouseEnter:Connect(exitHover)
 ExitButton.ClickDetector.MouseLeave:Connect(exitLeave)
 ExitButton.ClickDetector.MouseButton1Down:Connect(exitMouseDown)
@@ -381,3 +434,8 @@ MultiScrapButton.ClickDetector.MouseEnter:Connect(multiScrapHover)
 MultiScrapButton.ClickDetector.MouseLeave:Connect(multiScrapLeave)
 MultiScrapButton.ClickDetector.MouseButton1Down:Connect(multiScrapMouseDown)
 MultiScrapButton.ClickDetector.MouseButton1Up:Connect(multiScrapMouseUp)
+
+SelectAllButton.ClickDetector.MouseEnter:Connect(selectAllHover)
+SelectAllButton.ClickDetector.MouseLeave:Connect(selectAllLeave)
+SelectAllButton.ClickDetector.MouseButton1Down:Connect(selectAllMouseDown)
+SelectAllButton.ClickDetector.MouseButton1Up:Connect(selectAllMouseUp)

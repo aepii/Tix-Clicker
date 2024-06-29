@@ -18,6 +18,12 @@ local function playerAdded(player)
     local character = player.Character or player.CharacterAdded:Wait()
 
     character.Humanoid:RemoveAccessories()
+    
+    if not character.Head:FindFirstChild("face") then
+        local Desc = game:GetService("Players"):GetHumanoidDescriptionFromUserId(player.UserId)
+        Desc.Head = "7430070993"
+        character.Humanoid:ApplyDescription(Desc)
+    end
     character.Head.face.Texture = "rbxasset://textures/face.png"
 
     for ID, GUID in data.EquippedAccessories do

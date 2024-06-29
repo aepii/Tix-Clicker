@@ -12,6 +12,7 @@ local TweenButton = require(Modules.TweenButton)
 local TixUIAnim = require(Modules.TixUIAnim)
 local Cases = require(ReplicatedStorage.Data.Cases)
 local Materials = require(ReplicatedStorage.Data.Materials)
+local TemporaryData = require(Modules.TemporaryData)
 
 ---- UI ----
 
@@ -36,11 +37,64 @@ local ErrorSound = Sounds:WaitForChild("ErrorSound")
 
 local Networking = ReplicatedStorage.Networking
 local PurchaseCaseRemote = Networking.PurchaseCase
+local BindableUpdateClientShopInfoRemote = Networking.BindableUpdateClientShopInfo
+
+---- Amounts ----
+
+local multiBuyButtons = InfoFrame.MultiBuy
+local amountFrame = InfoFrame.AmountFrame
+
+local amount = InfoFrame.Amount
+
+local function playClickSound()
+    SoundService:PlayLocalSound(ClickSound)
+end
+
+local function buttonBehavior(button, originalSize)
+
+    local function buttonHover()
+        TweenButton:Grow(button.UIScale, originalSize)
+    end
+
+    local function buttonLeave()
+        TweenButton:Reset(button.UIScale, originalSize)
+    end
+
+    local function buttonMouseDown()
+        playClickSound()
+        TweenButton:Shrink(button.UIScale, originalSize)
+        if button.Name == "Max" then
+            amount.Value = math.max(1, TemporaryData:CalculateMaxCases(Player, InfoFrame.ID.Value))
+        else
+            amount.Value = button.Name
+        end
+        BindableUpdateClientShopInfoRemote:Fire("Case")
+        amountFrame.AmountText.Text = "+"..amount.Value
+    end
+
+    local function buttonMouseUp()
+        TweenButton:Reset(button.UIScale, originalSize)
+    end
+
+    button.ClickDetector.MouseEnter:Connect(buttonHover)
+    button.ClickDetector.MouseLeave:Connect(buttonLeave)
+    button.ClickDetector.MouseButton1Down:Connect(buttonMouseDown)
+    button.ClickDetector.MouseButton1Up:Connect(buttonMouseUp)
+end
+
+local function setupButtonsInFrame()
+    for _, frame in multiBuyButtons:GetChildren() do
+        if frame:IsA("Frame") then
+            buttonBehavior(frame, frame.UIScale.Scale)  -- Assuming originalSize is the initial Size of the button
+        end
+    end
+end
+setupButtonsInFrame()
 
 ---- Private Functions ----
 
 local function purchaseCase(caseID)
-    local costs = PurchaseCaseRemote:InvokeServer(caseID)
+    local costs = PurchaseCaseRemote:InvokeServer(caseID, amount.Value)
     coroutine.wrap(function()
         if costs then
             SoundService:PlayLocalSound(MoneySound)

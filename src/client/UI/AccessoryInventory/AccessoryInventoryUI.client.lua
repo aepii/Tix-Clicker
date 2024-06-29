@@ -136,7 +136,17 @@ local function updateInventory(ID, GUID, method)
         icon.GUID.Value = GUID
         icon.Rarity.Value = Accessories[ID].Rarity
         icon.AccessoryName.Value = Accessories[ID].Name
-        icon.ValueFrame.ValueText.Text = "$"..SuffixHandler:Convert(Accessories[ID].Value)
+        
+        if string.sub(ID, 1, 2) == "CA" then
+            icon.ValueFrame.Visible = false
+            icon.MultiplierFrame.Visible = true
+            icon.MultiplierFrame.MultiText.Text = "x"..Accessories[ID].Reward["Best"]
+        else
+            icon.ValueFrame.Visible = true
+            icon.MultiplierFrame.Visible = false
+            icon.ValueFrame.ValueText.Text = "$"..SuffixHandler:Convert(Accessories[ID].Value)
+        end
+
         icon.IconImage.Image = "http://www.roblox.com/Thumbs/Asset.ashx?Width=256&Height=256&AssetID="..Accessories[ID].AssetID
         icon.UIGradient.Color = RarityColors:GetGradient(Accessories[ID].Rarity)
         icon.Parent = InvHolder

@@ -10,6 +10,7 @@ local ProfileData = require(Data:WaitForChild("ProfileData"))
 local Upgrades = require(ReplicatedStorage.Data.Upgrades)
 local PerSecondUpgrades = require(ReplicatedStorage.Data.PerSecondUpgrades)
 local Accessories = require(ReplicatedStorage.Data.Accessories)
+local Cases = require(ReplicatedStorage.Data.Cases)
 local Materials = require(ReplicatedStorage.Data.Materials)
 local RebirthUpgrades = require(ReplicatedStorage.Data.RebirthUpgrades)
 
@@ -100,9 +101,9 @@ function TemporaryData:GetBestAccessories(player)
                 local bestAccessory = TemporaryData:GetBestAccessory(player)
                 local bestRewards = bestAccessory.Reward
 
-                valueIndicator = bestRewards["AddPerClick"] * accessory.Reward["Best"]
+                valueIndicator = (bestRewards["AddPerClick"] + bestRewards["AddStorage"]) * accessory.Reward["Best"]
             else
-                valueIndicator = rewards["AddPerClick"] 
+                valueIndicator = rewards["AddPerClick"] + rewards["AddStorage"]
             end
 
             table.insert(UnsortedAccessories, {GUID = GUID, Value = valueIndicator})
@@ -219,16 +220,84 @@ function TemporaryData:CalculateSpeedTixConvert(player, data)
     return speedTixConvert
 end
 
-function TemporaryData:CalculateTixPerSecondCost(owned, upgrade, amount)
-	local cost = PerSecondUpgrades[upgrade].Cost
-	local modifier = PerSecondUpgrades[upgrade].Modifier
-	return math.ceil(cost * modifier^(owned + amount - 1))
+function TemporaryData:CalculateTixPerSecondCost(owned, upgradeID, amount)
+	local cost = PerSecondUpgrades[upgradeID].Cost
+	local modifier = PerSecondUpgrades[upgradeID].Modifier
+	return math.ceil(cost*(modifier^(owned + amount)-modifier^(owned))/(modifier-1))
 end
+
+function TemporaryData:CalculateMaxTixPerSecondAmount(player, upgradeID)
+    local currencyAmount = player.ReplicatedData.Rocash
+    local owned = player.ReplicatedData["PerSecondUpgrades"]:FindFirstChild(upgradeID) and player.ReplicatedData["PerSecondUpgrades"]:FindFirstChild(upgradeID).Value or 0
+
+    local cost = PerSecondUpgrades[upgradeID].Cost
+	local modifier = PerSecondUpgrades[upgradeID].Modifier
+	return math.floor(math.log10((((currencyAmount.Value * (modifier - 1)) / cost) + (modifier ^ owned)) / (modifier ^ owned)) / math.log10(modifier))
+end
+
+function TemporaryData:CalculateMaxCases(player, caseID)
+
+    local case = Cases[caseID]
+    local playerData = player.ReplicatedData
+
+    local amount = math.huge
+    local maxPurchases = {}
+
+    if case.Cost["RebirthTix"] then
+        local cost = case.Cost["RebirthTix"]
+        if playerData["Rebirth Tix"].Value < cost then
+            return 0
+        end
+        maxPurchases["RebirthTix"] = math.floor(playerData["Rebirth Tix"].Value / cost)
+    end
+
+    if case.Cost["Rocash"] then
+        local cost = case.Cost["Rocash"]
+        if playerData["Rocash"].Value < cost then
+            return 0
+        end
+        maxPurchases["Rocash"] = math.floor(playerData["Rocash"].Value / cost)
+    end
+        
+    if case.Cost["Materials"] then
+        local cost = case.Cost["Materials"]
+        maxPurchases["Materials"] = {}
+        for key, materialData in cost do
+            local materialID = materialData[1]
+            local materialCostVal = materialData[2]
+            if not playerData.Materials:FindFirstChild(materialID) then
+                return 0
+            end
+            if playerData.Materials[materialID].Value < materialCostVal then
+                return 0
+            end
+            maxPurchases["Materials"][materialID] = math.floor(playerData.Materials[materialID].Value / materialCostVal)
+        end
+    end
+
+    for key, value in pairs(maxPurchases) do
+        if type(value) == "number" then
+            if value < amount then
+                amount = value
+            end
+        elseif type(value) == "table" then 
+            for _, innerValue in value do
+                if innerValue < amount then
+                    amount = innerValue
+                end
+            end
+        end
+    end
+
+    print(amount)
+    return amount
+end
+
 
 function TemporaryData:CalculateRebirthUpgradeCost(owned, upgrade, amount)
 	local cost = RebirthUpgrades[upgrade].Cost
 	local modifier = RebirthUpgrades[upgrade].Modifier
-	return math.ceil(cost * modifier^(owned + amount - 1))
+	return math.ceil(cost*(modifier^(owned + amount)-modifier^(owned))/(modifier-1))
 end
 
 function TemporaryData:CalculateTixPerSecond(player, data)
@@ -278,6 +347,36 @@ function TemporaryData:GetLeaderstatDisplayName(key)
 	end
 end
 
+function TemporaryData:ApplyLuck(player, weight, index, totalIndices)
+    local ReplicatedTemporaryData = player.TemporaryData
+    local luck = ReplicatedTemporaryData.Luck
+
+    return weight * (1 + (luck.Value - 1) * (index - 1) / (totalIndices - 1))
+end
+
+function TemporaryData:GetTotalWeight(player, caseID)
+    local weights = Cases[caseID].Weights
+
+    local totalWeight = 0
+    for index, entry in weights do
+        totalWeight += TemporaryData:ApplyLuck(player, entry[2], index, #weights)
+    end
+    return totalWeight
+end
+
+function TemporaryData:FormatNumber(num)
+    if num == math.floor(num) then
+        return string.format("%d", num)
+    else
+        return string.format("%.5f", num):gsub("0*$", ""):gsub("%.$", "")
+    end
+end
+
+function TemporaryData:WeightedPercent(weight, totalWeight)
+ 
+    return TemporaryData:FormatNumber((weight / totalWeight) * 100)
+end
+
 function TemporaryData:Setup(player, data)
     TemporaryData:CalculateTixStorage(player, data)
 	TemporaryData:CalculateTixPerClick(player, data)
@@ -300,8 +399,9 @@ function TemporaryData:CalculateMaterialInfo(player, itemValue)
             local materialID = material.ID
             local minVal = material.Value[1]
             local maxVal = material.Value[2]
-            local maxQuantity =  player.TemporaryData.MaterialMaxDrop.Value
-            local minQuantity = 1
+            local maxQuantity = player.TemporaryData.MaterialMaxDrop.Value
+            local minQuantity = (player.TemporaryData.MaterialMaxDrop.Value - TemporaryProfileData.MaterialMaxDrop.Value) + 1
+            print(minQuantity)
             local chanceToReceive = player.TemporaryData.MaterialDropChance.Value / 100
             local quantity = math.floor(minQuantity + (itemValue - minVal) * ((maxQuantity - minQuantity) / (maxVal - minVal)))
 

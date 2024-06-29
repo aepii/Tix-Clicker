@@ -1,20 +1,16 @@
 ---- Services ----
 
 local Players = game:GetService("Players")
-local Workspace = game:GetService("Workspace")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local SoundService = game:GetService("SoundService")
 local Player = Players.LocalPlayer
-
----- Shop ----
-
-local Shop = Workspace.ShopUpgrades
 
 ---- Modules ----
 
 local Modules = ReplicatedStorage.Modules
 local TweenButton = require(Modules.TweenButton)
 local TixUIAnim = require(Modules.TixUIAnim)
+local TemporaryData = require(Modules.TemporaryData)
 
 ---- UI ----
 
@@ -23,8 +19,8 @@ local UI = PlayerGui:WaitForChild("UI")
 local VFX = UI:WaitForChild("VFX")
 
 local InfoUI = PlayerGui:WaitForChild("InfoUI")
-local PerSecInfoInfo = InfoUI.PerSecInfo
-local InfoFrame = PerSecInfoInfo.InfoFrame
+local PerSecInfo = InfoUI.PerSecInfo
+local InfoFrame = PerSecInfo.InfoFrame
 local CurrentUI = InfoUI.CurrentUI
 
 ---- Sound ----
@@ -39,11 +35,64 @@ local ErrorSound = Sounds:WaitForChild("ErrorSound")
 
 local Networking = ReplicatedStorage.Networking
 local PurchasePerSecondUpgradeRemote = Networking.PurchasePerSecondUpgrade
+local BindableUpdateClientShopInfoRemote = Networking.BindableUpdateClientShopInfo
+
+---- Amounts ----
+
+local multiBuyButtons = InfoFrame.MultiBuy
+local amountFrame = InfoFrame.AmountFrame
+
+local amount = InfoFrame.Amount
+
+local function playClickSound()
+    SoundService:PlayLocalSound(ClickSound)
+end
+
+local function buttonBehavior(button, originalSize)
+
+    local function buttonHover()
+        TweenButton:Grow(button.UIScale, originalSize)
+    end
+
+    local function buttonLeave()
+        TweenButton:Reset(button.UIScale, originalSize)
+    end
+
+    local function buttonMouseDown()
+        playClickSound()
+        TweenButton:Shrink(button.UIScale, originalSize)
+        if button.Name == "Max" then
+            amount.Value = math.max(1, TemporaryData:CalculateMaxTixPerSecondAmount(Player, InfoFrame.ID.Value))
+        else
+            amount.Value = button.Name
+        end
+        BindableUpdateClientShopInfoRemote:Fire("PerSecondUpgrade")
+        amountFrame.AmountText.Text = "+"..amount.Value
+    end
+
+    local function buttonMouseUp()
+        TweenButton:Reset(button.UIScale, originalSize)
+    end
+
+    button.ClickDetector.MouseEnter:Connect(buttonHover)
+    button.ClickDetector.MouseLeave:Connect(buttonLeave)
+    button.ClickDetector.MouseButton1Down:Connect(buttonMouseDown)
+    button.ClickDetector.MouseButton1Up:Connect(buttonMouseUp)
+end
+
+local function setupButtonsInFrame()
+    for _, frame in multiBuyButtons:GetChildren() do
+        if frame:IsA("Frame") then
+            buttonBehavior(frame, frame.UIScale.Scale)  -- Assuming originalSize is the initial Size of the button
+        end
+    end
+end
+setupButtonsInFrame()
 
 ---- Private Functions ----
 
 local function purchasePerSecondUpgrade(upgradeName)
-    local response = PurchasePerSecondUpgradeRemote:InvokeServer(upgradeName)
+    local response = PurchasePerSecondUpgradeRemote:InvokeServer(upgradeName, amount.Value)
     coroutine.wrap(function()
         if response then
             SoundService:PlayLocalSound(MoneySound)

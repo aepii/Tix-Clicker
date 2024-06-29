@@ -3,6 +3,8 @@
 local Player = game.Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local SoundService = game:GetService("SoundService")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
 
 ---- Modules ----
 
@@ -27,6 +29,13 @@ local RewardsFrame = EquipFrame.RewardsFrame
 local RarityText = EquipFrame.Rarity
 local EquipButton = EquipFrame.EquipButton
 
+local TooltipFrame = AccessoryInventory.TooltipFrame
+local TooltipRewardsFrame = TooltipFrame.RewardsFrame
+local RewardsBestText = TooltipFrame.RewardsBest
+local TooltipRarityText = TooltipFrame.Rarity
+local TooltipItemName = TooltipFrame.ItemName.Title
+local TooltipExistsFrame = TooltipFrame.ExistsFrame
+
 ---- UI Values ----
 
 local UIVisible = EquipFrame.UIVisible
@@ -34,10 +43,18 @@ local CurrentAccessory = EquipFrame.CurrentAccessory
 
 local GUID = IconButton.GUID
 
+local TooltipConnected = false
+
+
 ---- Sound ----
 
 local Sounds = Player:WaitForChild("Sounds")
 local ClickSound = Sounds:WaitForChild("ClickSound")
+
+---- Networking ----
+
+local Networking = ReplicatedStorage.Networking
+local GetAccessoryCountRemote = Networking.GetAccessoryCount
 
 ---- Private Functions ----
 
@@ -74,7 +91,6 @@ local function updateEquipFrame()
                 local prefix = string.find(rewardFrame.Name, "Add") and "+" or "x"
                 rewardFrame.RewardText.Text = prefix .. SuffixHandler:Convert(reward)
                 rewardFrame.Visible = true
-                rewardFrame.Parent = EquipFrame.RewardsFrame
             else
                 rewardFrame.Visible = false
             end
@@ -91,6 +107,68 @@ local function updateEquipFrame()
     ButtonStatus:AccessoryInventory(Player, GUID.Value, EquipButton)
 end
 
+local function updateTooltip()
+    local ID = Player.ReplicatedData.Accessories[GUID.Value].Value
+    local accessory = Accessories[ID]  
+
+    if string.sub(ID, 1, 2) == "CA" then
+        RewardsBestText.Text = "This item will always be " ..Accessories[ID].Reward["Best"].. "x stronger than your strongest accessory!"
+        RewardsBestText.Visible = true
+        TooltipRewardsFrame.Visible = false
+    else
+        RewardsBestText.Visible = false
+        TooltipRewardsFrame.Visible = true
+        for _, rewardFrame in TooltipRewardsFrame:GetChildren() do
+            if rewardFrame:IsA("Frame") then
+                local reward = accessory.Reward[rewardFrame.Name]
+    
+                if reward then
+                    local prefix = string.find(rewardFrame.Name, "Add") and "+" or "x"
+                    rewardFrame.RewardText.Text = prefix .. SuffixHandler:Convert(reward)
+                    rewardFrame.Visible = true
+                else
+                    rewardFrame.Visible = false
+                end
+            end
+        end
+    end
+
+    TooltipExistsFrame.ExistText.Text = GetAccessoryCountRemote:InvokeServer(accessory.ID).." Exist"
+    TooltipRarityText.Text = accessory.Rarity
+    TooltipRarityText.UIGradient.Color = RarityColors:GetGradient(accessory.Rarity)
+    TooltipItemName.Text = accessory.Name
+end
+
+local function updateTooltipPosition()
+    local MousePosition = UserInputService:GetMouseLocation()
+
+    -- Get the mouse position relative to the screen
+    local mouseX, mouseY = MousePosition.X, MousePosition.Y
+
+    -- Convert the mouse position to the local space of AccessoryInventory
+    local relativeX = mouseX - AccessoryInventory.AbsolutePosition.X
+    local relativeY = mouseY - AccessoryInventory.AbsolutePosition.Y
+
+    -- Get the size of the TooltipFrame
+    local frameWidth, frameHeight = TooltipFrame.AbsoluteSize.X, TooltipFrame.AbsoluteSize.Y
+
+    -- Set the position of the TooltipFrame
+    TooltipFrame.Position = UDim2.new(0, relativeX + frameWidth / 8, 0, relativeY - frameHeight / 2)
+end
+
+local function connectTooltipPositionUpdate()
+    if not TooltipConnected then
+        RunService.Heartbeat:Connect(updateTooltipPosition)
+        TooltipConnected = true
+    end
+end
+
+local function disconnectTooltipPositionUpdate()
+    if TooltipConnected then
+        TooltipConnected = false
+    end
+end
+
 ---- Buttons ----
 
 local ICONIMAGE_ORIGINALSIZE = IconButton.IconImage.Size
@@ -101,10 +179,20 @@ end
 
 local function iconHover()
     TweenButton:Grow(IconButtonImage, ICONIMAGE_ORIGINALSIZE)
+    coroutine.wrap(function()
+        updateTooltip()
+        connectTooltipPositionUpdate()
+        updateTooltipPosition()
+    end)()
+    TooltipFrame.Visible = true
 end
 
 local function iconLeave()
     TweenButton:Reset(IconButtonImage, ICONIMAGE_ORIGINALSIZE)
+    coroutine.wrap(function()
+        disconnectTooltipPositionUpdate()
+    end)()
+    TooltipFrame.Visible = false
 end
 
 local function iconMouseDown()

@@ -26,19 +26,19 @@ local zones = {
 
 	Z4 = {
 		Name = "Advanced Shop";
-		Cost =  {RebirthTix = 500};
+		Cost =  {RebirthTix = 750};
 		ID = "Z4"
 	};
 	
 	Z5 = {
 		Name = "Expert Shop";
-		Cost =  {RebirthTix = 15000};
+		Cost =  {RebirthTix = 30000};
 		ID = "Z5"
 	};
 
 	Z6 = {
 		Name = "Master Shop";
-		Cost =  {RebirthTix = 600000};
+		Cost =  {RebirthTix = 1000000};
 		ID = "Z6"
 	};
 

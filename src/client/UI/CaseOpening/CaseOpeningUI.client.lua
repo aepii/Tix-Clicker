@@ -9,16 +9,18 @@ local TweenService = game:GetService("TweenService")
 ---- Modules ----
 
 local Modules = ReplicatedStorage.Modules
+local TemporaryData = require(Modules.TemporaryData)
 local Cases = require(ReplicatedStorage.Data.Cases)
 local Accessories = require(ReplicatedStorage.Data.Accessories)
 local RarityColors = require(Modules.RarityColors)
 local TixUIAnim = require(Modules.TixUIAnim)
 local SuffixHandler = require(Modules.SuffixHandler)
+local TweenButton = require(Modules.TweenButton)
 
 ---- Data ----
 
-local TemporaryData = Player:WaitForChild("TemporaryData")
-local CaseTime = TemporaryData.CaseTime
+local ReplicatedTemporaryData = Player:WaitForChild("TemporaryData")
+local CaseTime = ReplicatedTemporaryData.CaseTime
 
 ---- UI ----
 
@@ -28,9 +30,12 @@ local UI = PlayerGui:WaitForChild("UI")
 local VFX = UI:WaitForChild("VFX")
 
 local CaseWinningFrame = OpenUI.CaseWinningFrame
-local CaseOpeningFrame = OpenUI.CaseOpeningFrame
-local ItemHolder = CaseOpeningFrame.ItemFrame.Holder
-local IconCopy = ItemHolder.IconCopy
+local CaseScroll = OpenUI.CaseScroll
+local Message = OpenUI.Message
+local CaseOpeningFrameCopy = CaseScroll.CaseOpeningFrameCopy
+local IconCopy = CaseWinningFrame.IconCopy
+
+local AutoOpen = UI.CaseInventory.AutoOpen
 
 ---- Sound ----
 
@@ -46,7 +51,7 @@ local OpenCaseAnimRemote = Networking.OpenCaseAnim
 
 ---- Private Functions ----
 
-local function applyColorTheme(caseID)
+local function applyColorTheme(caseID, CaseOpeningFrame)
     
     local attributes = RarityColors.CaseColors[caseID]
     local affectedUI = CaseOpeningFrame
@@ -61,12 +66,15 @@ local function applyColorTheme(caseID)
                 if element:IsA("Frame") then
                     element.BackgroundColor3 = color
                 end
+                if element:IsA("UIGradient") then
+                    CaseOpeningFrame.TitleFrame.Title.UIGradient.Color = ColorSequence.new(Color3.fromRGB(255,255,255), color)
+                end
             end
         end
     end
 end
 
-function confetti(rarity)
+function confetti(rarity, copy)
 	local totalTime = 2 -- how many seconds it will run
 	local confetti = Instance.new("Frame")
 	confetti.Size = UDim2.new(0.08, 0, 0.125, 0)
@@ -81,7 +89,7 @@ function confetti(rarity)
 		newConfetti.Position = UDim2.new(math.random(3,97)/100, 0, -0.1, 0)
 		newConfetti.BorderSizePixel = 0
 		newConfetti.Rotation = math.random(-360,360)
-		newConfetti.Parent = CaseWinningFrame
+		newConfetti.Parent = copy
 		local randomLifetime = math.random(7,15)/10
 		game:GetService("TweenService"):Create(newConfetti, TweenInfo.new(randomLifetime, Enum.EasingStyle.Linear), {Rotation = math.random(-360,360), Size = UDim2.new(0, 0, 0, 0), Position = UDim2.new(newConfetti.Position.X.Scale, 0, 1.1, 0)}):Play()
 		game.Debris:AddItem(newConfetti, randomLifetime)
@@ -111,18 +119,14 @@ local function pickItemHelper(rarity, caseID)
 end
 
 local function pickItem(caseID)
+    local totalWeight = TemporaryData:GetTotalWeight(Player, caseID)
     local weights = Cases[caseID].Weights
-
-    local totalWeight = 0
-    for _, entry in weights do
-        totalWeight = totalWeight + entry[2]
-    end
 
     local randomNumber = math.random() * totalWeight
 
     local currentWeight = 0
-    for _, entry in weights do
-        currentWeight = currentWeight + entry[2]
+    for index, entry in weights do
+        currentWeight += TemporaryData:ApplyLuck(Player, entry[2], index, #weights)
         if currentWeight >= randomNumber then
             if string.sub(caseID, 1, 2) == "CC" then
                 return Accessories[entry[1]]
@@ -133,76 +137,107 @@ local function pickItem(caseID)
     end
 end
 
-local function showWinner(winner)
+local function showWinners(winners)
     SoundService:PlayLocalSound(RewardSound)
     CaseWinningFrame.Visible = true
     CaseWinningFrame:TweenSize(UDim2.new(0.5, 0, 0.5, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.5, true)
 
-    coroutine.wrap(function()
-        confetti(winner.Rarity)
-    end)()
+    local totalValue = 0
+    for item, count in winners do
+        spawn(function()
 
-    coroutine.wrap(function()
-        local tweenInfo = TweenInfo.new(
-                5, -- The time the tween takes to complete
-                Enum.EasingStyle.Linear, -- The tween style.
-                Enum.EasingDirection.Out, -- EasingDirection
-                -1, -- How many times you want the tween to repeat. If you make it less than 0 it will repeat forever.
-                false, -- Reverse?
-                0 -- Delay
-            )
+            local item = Accessories[item]
+            totalValue += item.Value
+            local Icon = IconCopy:Clone()
+            Icon.Name = item.ID
+            Icon.Visible = true
+            Icon.Parent = CaseWinningFrame 
 
-        local Tween = TweenService:Create(CaseWinningFrame.Icon.Sunray, tweenInfo, {Rotation = 360}) 
-        Tween:Play() 
+            coroutine.wrap(function()
+                confetti(item.Rarity, Icon)
+            end)()
 
-        while CaseWinningFrame.Visible == true do
+            coroutine.wrap(function()
+                local tweenInfo = TweenInfo.new(
+                        5, -- The time the tween takes to complete
+                        Enum.EasingStyle.Linear, -- The tween style.
+                        Enum.EasingDirection.Out, -- EasingDirection
+                        -1, -- How many times you want the tween to repeat. If you make it less than 0 it will repeat forever.
+                        false, -- Reverse?
+                        0 -- Delay
+                    )
+        
+                local Tween = TweenService:Create(Icon.Sunray, tweenInfo, {Rotation = 360}) 
+                Tween:Play() 
+        
+                while CaseWinningFrame.Visible == true do
+                    if not CaseWinningFrame:FindFirstChild(item.ID) then break end
+                    Icon.Sunray:TweenSize(UDim2.new(1, 0, 1, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 1, true)
+                    Icon.IconImage:TweenSize(UDim2.new(1, 0, 1, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 1, true)
+                    Icon.Rarity:TweenPosition(UDim2.new(0.5, 0, 0.915, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, .9, true)
+                    Icon.Title:TweenPosition(UDim2.new(0.5, 0, 0.8, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, .85, true)
+                    task.wait(0.5)
+                    if not CaseWinningFrame:FindFirstChild(item.ID) then break end
+                    Icon.Sunray:TweenSize(UDim2.new(2, 0, 2, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 1, true)
+                    Icon.IconImage:TweenSize(UDim2.new(1.5, 0, 1.5, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 1, true)
+                    Icon.Rarity:TweenPosition(UDim2.new(0.5, 0, 0.885, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, .9, true)
+                    Icon.Title:TweenPosition(UDim2.new(0.5, 0, 0.770, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, .85, true)
+                    task.wait(0.5)
+                end
+                Tween:Cancel()
+            end)()
 
-            CaseWinningFrame.Icon.Sunray:TweenSize(UDim2.new(1, 0, 1, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 1, true)
-            CaseWinningFrame.Icon.IconImage:TweenSize(UDim2.new(1, 0, 1, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 1, true)
-            CaseWinningFrame.Icon.Rarity:TweenPosition(UDim2.new(0.5, 0, 0.915, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, .9, true)
-            CaseWinningFrame.Icon.Title:TweenPosition(UDim2.new(0.5, 0, 0.8, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, .85, true)
-            CaseWinningFrame.Icon.Message:TweenPosition(UDim2.new(0.5, 0, 1.15, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, .8, true)
-            task.wait(0.5)
-            CaseWinningFrame.Icon.Sunray:TweenSize(UDim2.new(2, 0, 2, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 1, true)
-            CaseWinningFrame.Icon.IconImage:TweenSize(UDim2.new(1.5, 0, 1.5, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 1, true)
-            CaseWinningFrame.Icon.Rarity:TweenPosition(UDim2.new(0.5, 0, 0.885, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, .9, true)
-            CaseWinningFrame.Icon.Title:TweenPosition(UDim2.new(0.5, 0, 0.770, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, .85, true)
-            CaseWinningFrame.Icon.Message:TweenPosition(UDim2.new(0.5, 0, 1.120, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, .8, true)
-            task.wait(0.5)
-        end
-        Tween:Cancel()
-    end)()
 
-    CaseWinningFrame.Icon.IconImage.Image = "http://www.roblox.com/Thumbs/Asset.ashx?Width=256&Height=256&AssetID="..winner.AssetID
-    CaseWinningFrame.Icon.Title.Text = winner.Name 
-    CaseWinningFrame.Icon.Rarity.Text = winner.Rarity
+            Icon.IconImage.Image = "http://www.roblox.com/Thumbs/Asset.ashx?Width=256&Height=256&AssetID="..item.AssetID
+            Icon.Title.Text = item.Name 
+            Icon.Rarity.Text = item.Rarity
 
-    local randomNum = math.random(1,2)
+            if count > 1 then
+                Icon.Copies.Visible = true
+                Icon.Copies.Text = "x"..count
+            end
+            
+            local randomNum = math.random(1,2)
 
-    CaseWinningFrame.Icon.Rarity.UIGradient.Color = RarityColors:GetGradient(winner.Rarity)
-    CaseWinningFrame.Icon.Sunray.ImageColor3 = RarityColors:GetGradient(winner.Rarity).Keypoints[randomNum].Value 
-    
-    local Mouse = game.Players.LocalPlayer:GetMouse()
-    Mouse.Button1Down:Wait()
-    SoundService:PlayLocalSound(ClickSound)
-    
+            local Color = RarityColors:GetGradient(item.Rarity)
+        
+            Icon.Rarity.UIGradient.Color = Color
+            Icon.Sunray.ImageColor3 = Color.Keypoints[randomNum].Value 
+        end)
+    end
+
+    if AutoOpen.Value == false then
+        Message:TweenPosition(UDim2.new(0.5, 0, 0.925, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Linear, .25, true)
+        local Mouse = game.Players.LocalPlayer:GetMouse()
+        Mouse.Button1Down:Wait()
+        SoundService:PlayLocalSound(ClickSound)
+    end
+    Message:TweenPosition(UDim2.new(0.5, 0, 2, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, .25, true)
     CaseWinningFrame:TweenSize(UDim2.new(0, 0, 0, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Linear, 0.25, true)
     task.wait(0.25)
     CaseWinningFrame.Visible = false
+   
     UI.Enabled = true
     if VFX.OtherVFX.Value == true then
         coroutine.wrap(function()
-            TixUIAnim:Animate(Player, "ValueDetail", winner.Value, nil)
+            TixUIAnim:Animate(Player, "ValueDetail", totalValue, nil)
             SoundService:PlayLocalSound(PopSound)
         end)()
     end
 
-    OpenCaseAnimRemote:FireServer()
+    OpenUI.Enabled = false
 end
 
-local function populateCase(caseID, winner)
-    applyColorTheme(caseID)
-    CaseOpeningFrame:TweenPosition(UDim2.new(0.5, 0, 0.5, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.5, true)
+local function populateCase(caseID, winner, copy)
+
+    local CaseOpeningFrame = copy
+    local ItemHolder = CaseOpeningFrame.ItemFrame.Holder
+    local IconCopy = ItemHolder.IconCopy
+
+    OpenUI.Enabled = true
+    applyColorTheme(caseID, CaseOpeningFrame)
+
+    CaseScroll:TweenPosition(UDim2.new(0.5, 0, 0.5, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.5, true)
 
     UI.Enabled = false
 
@@ -217,7 +252,7 @@ local function populateCase(caseID, winner)
         task.wait()
         local item;
         if i == 85 then
-            item = winner
+            item = Accessories[winner]
         else
             item = pickItem(caseID)
         end
@@ -227,7 +262,16 @@ local function populateCase(caseID, winner)
         icon.Name = item.Name
         icon.IconImage.Image = "http://www.roblox.com/Thumbs/Asset.ashx?Width=256&Height=256&AssetID="..item.AssetID
         icon.UIGradient.Color = RarityColors:GetGradient(item.Rarity)
-        icon.ValueText.Text = "$"..SuffixHandler:Convert(item.Value)
+        if string.sub(item.ID, 1, 2) == "CA" then
+            icon.ValueText.Visible = false
+            icon.MultiText.Visible = true
+            icon.MultiText.Text = "x"..SuffixHandler:Convert(item.Reward["Best"])
+        else
+            icon.ValueText.Visible = true
+            icon.MultiText.Visible = false
+            icon.ValueText.Text = "$"..SuffixHandler:Convert(item.Value)
+        end
+        
         icon.Parent = ItemHolder
     end
     local tweenInfo = TweenInfo.new(
@@ -237,6 +281,7 @@ local function populateCase(caseID, winner)
     local finishTweenInfo = TweenInfo.new(
         0.5, Enum.EasingStyle.Elastic, Enum.EasingDirection.Out
     )
+
     local lastPlayedElement = 0
     RunService:BindToRenderStep("SpinSound", 100, function()
         local currentElement = math.ceil((ItemHolder.Position.X.Scale) / 0.25)
@@ -256,17 +301,140 @@ local function populateCase(caseID, winner)
     finishTween:Play()
     finishTween.Completed:Wait()
     task.wait(0.1)
-    CaseOpeningFrame:TweenPosition(UDim2.new(0.5, 0, 2, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
-
-    for index, icon in ItemHolder:GetChildren() do
-        if icon:IsA("Frame") and icon ~= IconCopy then
-            icon:Destroy()
-        end
-    end
-    RunService:UnbindFromRenderStep("SpinSound")
-    showWinner(winner)
+    CaseScroll:TweenPosition(UDim2.new(0.5, 0, 2, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Bounce, 0.1, true)
+    task.wait(.1)
+    CaseOpeningFrame:Destroy()
 end
 
-OpenCaseAnimRemote.OnClientEvent:Connect(function(caseID, winner)
-    populateCase(caseID, winner)
+OpenCaseAnimRemote.OnClientEvent:Connect(function(caseID, items)
+    local totalCopies = 0
+    local completedCopies = 0
+    local shouldComplete = false
+
+    for item, count in pairs(items) do
+        totalCopies = totalCopies + count
+    end
+
+    for item, count in pairs(items) do
+        for i = 1, count do
+            spawn(function()
+                local copy = CaseOpeningFrameCopy:Clone()
+                copy.Visible = true
+                copy.Parent = CaseScroll     
+                populateCase(caseID, item, copy)           
+                completedCopies = completedCopies + 1
+
+                if completedCopies == totalCopies then
+                    shouldComplete = true
+                end
+            end)
+        end
+    end
+
+    if totalCopies <= 2 then
+        -- Adjust CaseScroll settings for fewer copies
+        CaseScroll.UIGridLayout.VerticalAlignment = "Center"
+        CaseScroll.UIGridLayout.CellSize = UDim2.new(0.75, 0, 0.5, 0)
+        CaseScroll.UIGridLayout.CellPadding = UDim2.new(0, 0, 0, 0)
+    
+        -- Adjust CaseWinningFrame settings based on totalCopies
+        CaseWinningFrame.UIGridLayout.CellSize = UDim2.new(0.5, 0, 1, 0)
+        CaseWinningFrame.UIGridLayout.CellPadding = UDim2.new(0.15, 0, 0, 0)
+    elseif totalCopies == 3 then
+        -- Adjust CaseScroll settings for medium number of copies
+        CaseScroll.UIGridLayout.VerticalAlignment = "Top"
+        CaseScroll.UIGridLayout.CellSize = UDim2.new(0.75, 0, 0.3, 0)
+        CaseScroll.UIGridLayout.CellPadding = UDim2.new(0, 0, 0.075, 0)
+    
+        -- Adjust CaseWinningFrame settings
+        CaseWinningFrame.UIGridLayout.CellSize = UDim2.new(0.5, 0, 1, 0)
+        CaseWinningFrame.UIGridLayout.CellPadding = UDim2.new(0.15, 0, 0, 0)
+
+    elseif totalCopies >= 4 and totalCopies <= 6 then
+        -- Adjust CaseScroll settings for medium number of copies
+        CaseScroll.UIGridLayout.VerticalAlignment = "Top"
+        CaseScroll.UIGridLayout.CellSize = UDim2.new(0.75, 0, 0.3, 0)
+        CaseScroll.UIGridLayout.CellPadding = UDim2.new(0, 0, 0.075, 0)
+    
+        -- Adjust CaseWinningFrame settings
+        CaseWinningFrame.UIGridLayout.CellSize = UDim2.new(0.5, 0, 0.5, 0)
+        CaseWinningFrame.UIGridLayout.CellPadding = UDim2.new(0.15, 0, 0, 0)
+    
+    elseif totalCopies >= 7 and totalCopies <= 8 then
+        -- Adjust CaseScroll settings for higher number of copies
+        CaseScroll.UIGridLayout.VerticalAlignment = "Top"
+        CaseScroll.UIGridLayout.CellSize = UDim2.new(0.75, 0, 0.3, 0)
+        CaseScroll.UIGridLayout.CellPadding = UDim2.new(0, 0, 0.075, 0)
+    
+        -- Adjust CaseWinningFrame settings
+        CaseWinningFrame.UIGridLayout.CellSize = UDim2.new(0.35, 0, 0.35, 0)
+        CaseWinningFrame.UIGridLayout.CellPadding = UDim2.new(0.15, 0, 0, 0)
+    
+    elseif totalCopies == 9 then
+        -- Adjust CaseScroll settings for specific number of copies
+        CaseScroll.UIGridLayout.VerticalAlignment = "Top"
+        CaseScroll.UIGridLayout.CellSize = UDim2.new(0.75, 0, 0.3, 0)
+        CaseScroll.UIGridLayout.CellPadding = UDim2.new(0, 0, 0.075, 0)
+    
+        -- Adjust CaseWinningFrame settings
+        CaseWinningFrame.UIGridLayout.CellSize = UDim2.new(0.33, 0, 0.33, 0)
+        CaseWinningFrame.UIGridLayout.CellPadding = UDim2.new(0.15, 0, 0, 0)
+    
+    elseif totalCopies == 10 then
+        -- Adjust CaseScroll settings for specific number of copies
+        CaseScroll.UIGridLayout.VerticalAlignment = "Top"
+        CaseScroll.UIGridLayout.CellSize = UDim2.new(0.75, 0, 0.3, 0)
+        CaseScroll.UIGridLayout.CellPadding = UDim2.new(0, 0, 0.075, 0)
+    
+        -- Adjust CaseWinningFrame settings
+        CaseWinningFrame.UIGridLayout.CellSize = UDim2.new(0.25, 0, 0.35, 0)
+        CaseWinningFrame.UIGridLayout.CellPadding = UDim2.new(0.15, 0, 0, 0)
+    end
+    
+
+    spawn(function()
+        while task.wait() and not shouldComplete do end
+        RunService:UnbindFromRenderStep("SpinSound")
+        showWinners(items)
+        for _, icon in CaseWinningFrame:GetChildren() do
+            if icon:IsA("Frame") and icon ~= IconCopy then
+                icon:Destroy()
+            end
+        end
+        OpenCaseAnimRemote:FireServer()
+    end)
 end)
+
+
+---- Buttons ----
+
+local CancelAutoOpenButton = OpenUI.CancelAutoOpenButton
+local CANCELAUTOOPENBUTTON_ORIGINALSIZE = CancelAutoOpenButton.Size
+
+local function playClickSound()
+    SoundService:PlayLocalSound(ClickSound)
+end
+
+local function cancelCancelAutoOpenHover()
+    TweenButton:Grow(CancelAutoOpenButton, CANCELAUTOOPENBUTTON_ORIGINALSIZE)
+end
+
+local function cancelCancelAutoOpenLeave()
+    TweenButton:Reset(CancelAutoOpenButton, CANCELAUTOOPENBUTTON_ORIGINALSIZE)
+end
+
+local function cancelCancelAutoOpenMouseDown()
+    playClickSound()
+    TweenButton:Shrink(CancelAutoOpenButton, CANCELAUTOOPENBUTTON_ORIGINALSIZE)
+    CancelAutoOpenButton.Visible = false
+    AutoOpen.Value = false
+end
+
+local function cancelCancelAutoOpenMouseUp()
+    TweenButton:Reset(CancelAutoOpenButton, CANCELAUTOOPENBUTTON_ORIGINALSIZE)
+end
+
+CancelAutoOpenButton.ClickDetector.MouseEnter:Connect(cancelCancelAutoOpenHover)
+CancelAutoOpenButton.ClickDetector.MouseLeave:Connect(cancelCancelAutoOpenLeave)
+CancelAutoOpenButton.ClickDetector.MouseButton1Down:Connect(cancelCancelAutoOpenMouseDown)
+CancelAutoOpenButton.ClickDetector.MouseButton1Up:Connect(cancelCancelAutoOpenMouseUp)

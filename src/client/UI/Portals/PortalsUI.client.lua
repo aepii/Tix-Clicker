@@ -36,13 +36,11 @@ function initPortals()
             local portalUI = PortalUI:Clone()
             local Holder = portalUI.Holder
             local PurchaseButton = Holder.PurchaseButton
-            local ZoneName = Holder.ZoneName
             local CostText = PurchaseButton.Cost.IconImage.Amount
             portalUI.Adornee = portal:WaitForChild("Portal").TouchPart
             portalUI.Name = portalID
             portalUI.Parent = PlayerGui
             CostText.Text = SuffixHandler:Convert(Zones[portalID].Cost.RebirthTix)
-            ZoneName.Text = Zones[portalID].Name
             portalUI.PortalScript.Enabled = true
         end
     end

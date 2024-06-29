@@ -139,6 +139,14 @@ ProfileData.TemporaryData = {
 		Value = 100,
 		Type = "Number"
 	};
+	["Luck"] = {
+		Value = 1,
+		Type = "Number"
+	};
+	["MaxCaseOpenings"] = {
+		Value = 1,
+		Type = "Number"
+	};
 	["SpeedTixConvert"] = {
 		Value = 1,
 		Type = "Number"

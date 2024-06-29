@@ -21,7 +21,7 @@ local DataManager = require(ServerScriptService.Data.DataManager)
 ---- Private Variables ----
 
 local GameProfileStore = ProfileService.GetProfileStore(
-	"PlayerData25",
+	"PlayerData26",
 	ProfileTemplate
 )
 

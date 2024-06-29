@@ -1,6 +1,5 @@
 ---- Services ----
 
-local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 local HttpService = game:GetService("HttpService")
@@ -9,11 +8,9 @@ local HttpService = game:GetService("HttpService")
 
 local ProfileCacher = require(ServerScriptService.Data.ProfileCacher)
 local DataManager = require(ServerScriptService.Data.DataManager)
+local GlobalData = require(ServerScriptService.Data.GlobalData)
 local Cases = require(ReplicatedStorage.Data.Cases)
 local Accessories = require(ReplicatedStorage.Data.Accessories)
-
----- Modules ----
-
 local Modules = ReplicatedStorage.Modules
 local TemporaryData = require(Modules.TemporaryData)
 
@@ -29,7 +26,6 @@ local UpdateClientShopInfoRemote = Networking.UpdateClientShopInfo
 ---- Private Functions ----
 
 function findRarityIndex(rarity, caseWeights)
-
     for k, v in pairs(caseWeights) do
         if v[1] == rarity then
             return k
@@ -49,19 +45,18 @@ local function pickWinner(rarity, caseID)
     return matchingAccessories[randomIndex]
 end
 
-local function roll(caseID)
+local function roll(player, caseID)
+    local totalWeight = TemporaryData:GetTotalWeight(player, caseID)
     local weights = Cases[caseID].Weights
-
-    local totalWeight = 0
-    for _, entry in weights do
-        totalWeight = totalWeight + entry[2]
-    end
 
     local randomNumber = math.random() * totalWeight
 
     local currentWeight = 0
-    for _, entry in weights do
-        currentWeight = currentWeight + entry[2]
+    for index, entry in weights do
+        local weight = TemporaryData:ApplyLuck(player, entry[2], index, #weights)
+        currentWeight += weight
+        print(randomNumber, currentWeight, totalWeight)
+        print(entry[1],TemporaryData:WeightedPercent(weight, totalWeight).."% chance")
         if currentWeight >= randomNumber then
             if string.sub(caseID, 1, 2) == "CC" then
                 return Accessories[entry[1]]
@@ -72,7 +67,7 @@ local function roll(caseID)
     end
 end
 
-OpenCaseRemote.OnServerInvoke = (function(player, caseID)
+OpenCaseRemote.OnServerInvoke = (function(player, caseID, amount)
     local profile = ProfileCacher:GetProfile(player)
     local data = profile.Data
 
@@ -82,32 +77,46 @@ OpenCaseRemote.OnServerInvoke = (function(player, caseID)
     local case = Cases[caseID]
     local owned = data.Cases[caseID]
 
+    local items = {}
+    local totalValue = 0
+
     if temporaryData.ActiveCaseOpening.Value == false then
-        if #replicatedData.Accessories:GetChildren() < temporaryData.AccessoriesLimit.Value then 
-            if owned >= 1 then
-                local GUID = HttpService:GenerateGUID(false)
-                local item = roll(caseID)
+        if temporaryData.MaxCaseOpenings.Value >= amount then
+            if #replicatedData.Accessories:GetChildren() + amount <= temporaryData.AccessoriesLimit.Value then 
+                if owned >= amount then
+                    DataManager:SetValue(player, profile, {"Cases", caseID}, data["Cases"][caseID] - amount)
 
-                temporaryData.LastClickTime.Value = os.clock()
+                    for i = 1, amount do
+                        local GUID = HttpService:GenerateGUID(false)
+                        local item = roll(player, caseID)
+                        DataManager:SetValue(player, profile, {"Accessories", GUID}, item.ID)
+                        UpdateClientAccessoriesInventoryRemote:FireClient(player, item.ID, GUID, "ADD") 
+                        items[item.ID] = (items[item.ID] or 0) + 1
+                        totalValue += item.Value
+                    end
+                    print(items)
 
-                DataManager:SetValue(player, profile, {"Cases", caseID}, data["Cases"][caseID] - 1)
-                DataManager:SetValue(player, profile, {"Accessories", GUID}, item.ID)
-                
-                UpdateClientAccessoriesInventoryRemote:FireClient(player, item.ID, GUID, "ADD") 
-                UpdateClientShopInfoRemote:FireClient(player, "Case")
+                    for item, count in items do
+                        print(item, count)
+                        GlobalData:QueueAccessoryCountUpdate(item, count)
+                    end
+                    
+                    temporaryData.LastClickTime.Value = os.clock()
 
-                if data.Cases[caseID] then
-                    UpdateClientCaseInventoryRemote:FireClient(player, case, "UPDATE") 
+                    UpdateClientShopInfoRemote:FireClient(player, "Case")
+                    if data.Cases[caseID] then
+                        UpdateClientCaseInventoryRemote:FireClient(player, case, "UPDATE") 
+                    end
+                    if data.Cases[caseID] == 0 then
+                        DataManager:SetValue(player, profile, {"Cases", caseID}, nil)
+                        UpdateClientCaseInventoryRemote:FireClient(player, case, "DEL")
+                    end
+                    
+                    DataManager:SetValue(player, profile, {"Lifetime Value"}, (profile.Data["Lifetime Value"] or 0) + totalValue)
+                    DataManager:SetValue(player, profile, {"Lifetime Cases"}, (profile.Data["Lifetime Cases"] or 0) + amount)
+                    temporaryData.ActiveCaseOpening.Value = true
+                    OpenCaseAnimRemote:FireClient(player, caseID, items)
                 end
-                if data.Cases[caseID] == 0 then
-                    DataManager:SetValue(player, profile, {"Cases", caseID}, nil)
-                    UpdateClientCaseInventoryRemote:FireClient(player, case, "DEL")
-                end
-                
-                DataManager:SetValue(player, profile, {"Lifetime Value"}, (profile.Data["Lifetime Value"] or 0) + item.Value)
-                DataManager:SetValue(player, profile, {"Lifetime Cases"}, (profile.Data["Lifetime Cases"] or 0) + 1)
-                temporaryData.ActiveCaseOpening.Value = true
-                OpenCaseAnimRemote:FireClient(player, caseID, item)
             end
         end
     end

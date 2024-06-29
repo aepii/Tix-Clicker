@@ -19,12 +19,12 @@ local UpdateClientMaterialsInventoryRemote = Networking.UpdateClientMaterialsInv
 
 ---- Private Functions ----
 
-local function canPurchase(playerData, case)
+local function canPurchase(playerData, case, amount)
     
     local costs = {}
 
     if case.Cost["RebirthTix"] then
-        local cost = case.Cost["RebirthTix"]
+        local cost = case.Cost["RebirthTix"] * amount
         if playerData["Rebirth Tix"] < cost then
             return false
         end
@@ -32,7 +32,7 @@ local function canPurchase(playerData, case)
     end
 
     if case.Cost["Rocash"] then
-        local cost = case.Cost["Rocash"]
+        local cost = case.Cost["Rocash"] * amount
         if playerData["Rocash"] < cost then
             return false
         end
@@ -44,7 +44,7 @@ local function canPurchase(playerData, case)
 
         for key, materialData in cost do
             local materialID = materialData[1]
-            local materialCostVal = materialData[2]
+            local materialCostVal = materialData[2] * amount
             if not playerData.Materials[materialID] then
                 return false
             end
@@ -59,7 +59,11 @@ local function canPurchase(playerData, case)
 end
 
 
-PurchaseCaseRemote.OnServerInvoke = (function(player, caseID)
+PurchaseCaseRemote.OnServerInvoke = (function(player, caseID, amount)
+    if amount <= 0 then
+        return
+    end
+
     local profile = ProfileCacher:GetProfile(player)
     local data = profile.Data
 
@@ -68,17 +72,18 @@ PurchaseCaseRemote.OnServerInvoke = (function(player, caseID)
     local case = Cases[caseID]
 
     if temporaryData.ActiveCaseOpening.Value == false then
-        local canPurchase = canPurchase(data, case)
+        local canPurchase = canPurchase(data, case, amount)
         if canPurchase then
             if not data.Cases[caseID] then
                 UpdateClientCaseInventoryRemote:FireClient(player, case, "ADD")
             end
+
             -- Remove Materials
             if canPurchase["Materials"] then
                 local materialCost = case.Cost["Materials"] 
                 for key, materialData in materialCost do
                     local materialID = materialData[1]
-                    local materialCostVal = materialData[2]
+                    local materialCostVal = materialData[2] * amount
                     local newMaterialValue = (data.Materials[materialID] or 0) - materialCostVal
                     DataManager:SetValue(player, profile, {"Materials", materialID}, newMaterialValue)
                     if newMaterialValue ~= 0 then
@@ -92,19 +97,19 @@ PurchaseCaseRemote.OnServerInvoke = (function(player, caseID)
 
             -- Remove Rocash
             if canPurchase["Rocash"] then
-                local rocashCost = case.Cost["Rocash"]
+                local rocashCost = case.Cost["Rocash"] * amount
                 DataManager:SetValue(player, profile, {"Rocash"}, data.Rocash - rocashCost)
                 DataManager:UpdateLeaderstats(player, profile, "Rocash")
             end
 
              -- Remove Rebirth Tix
              if canPurchase["RebirthTix"] then
-                local rebirthTixCost = case.Cost["RebirthTix"]
+                local rebirthTixCost = case.Cost["RebirthTix"] * amount
                 DataManager:SetValue(player, profile, {"Rebirth Tix"}, data["Rebirth Tix"] - rebirthTixCost)
                 DataManager:UpdateLeaderstats(player, profile, "Rebirth Tix")
             end
 
-            DataManager:SetValue(player, profile, {"Cases", caseID}, (data.Cases[caseID] or 0) + 1)
+            DataManager:SetValue(player, profile, {"Cases", caseID}, (data.Cases[caseID] or 0) + amount)
             UpdateClientShopInfoRemote:FireClient(player, caseID)
 
             if data.Cases[caseID] then

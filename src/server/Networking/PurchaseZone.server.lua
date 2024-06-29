@@ -13,6 +13,7 @@ local Zones = require(ReplicatedStorage.Data.Zones)
 
 local Networking = ReplicatedStorage.Networking
 local PurchaseZoneRemote = Networking.PurchaseZone
+local BindableUpdateDisplayNameRemote = Networking.BindableUpdateDisplayName
 
 ---- Private Functions ----
 
@@ -31,6 +32,8 @@ PurchaseZoneRemote.OnServerInvoke = (function(player, portalID)
                 DataManager:SetValue(player, profile, {"Rebirth Tix"}, data["Rebirth Tix"] - cost)
                 DataManager:ArrayInsert(player, profile, {"Zones"}, portalID)
                 DataManager:UpdateLeaderstats(player, profile, "Rebirth Tix")
+
+                BindableUpdateDisplayNameRemote:Fire(player, data)
                 return cost
             end
         end
