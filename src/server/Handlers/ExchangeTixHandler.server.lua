@@ -17,6 +17,8 @@ local ExchangeTixRemote = Networking.ExchangeTix
 
 ---- Exchange Tix ----
 
+local debounceTable = {}
+
 local function exchangeTix(player)
     local profile = ProfileCacher:GetProfile(player)
     local data = ProfileCacher:GetProfile(player).Data
@@ -44,6 +46,11 @@ local Hitbox = ExchangeStation.TouchPart.Hitbox
 Hitbox.Touched:Connect(function(hit)
     if hit.Parent:FindFirstChild("Humanoid") then
 		local player = Players:GetPlayerFromCharacter(hit.Parent)
-        exchangeTix(player)
+        if not debounceTable[player] then
+            debounceTable[player] = player
+            exchangeTix(player)
+            task.wait(1)
+            debounceTable[player] = nil
+        end
     end
 end)

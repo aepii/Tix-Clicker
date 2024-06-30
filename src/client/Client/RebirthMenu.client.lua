@@ -62,7 +62,7 @@ local function checkDistance()
         connection = RunService.Heartbeat:Connect(function()
             if character and character.Parent then
                 local distance = (humanoidRootPart.Position - RebirthStation.TouchPart.Position).magnitude
-                if distance <= 15 then
+                if distance <= 20 then
                     toggleMenu(true)
                 else
                     toggleMenu(false)

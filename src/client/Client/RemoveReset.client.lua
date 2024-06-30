@@ -7,6 +7,7 @@ local coreCall do
 	function coreCall(method, ...)
 		local result = {}
 		for retries = 1, MAX_RETRIES do
+			print("TRY")
 			result = {pcall(StarterGui[method], StarterGui, ...)}
 			if result[1] then
 				break
