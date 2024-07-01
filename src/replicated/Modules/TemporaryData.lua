@@ -435,7 +435,7 @@ function TemporaryData:CalculateMultipleMaterialInfo(player, multiSelected)
         local minVal = Materials[materialID].Value[1]
         local maxVal = Materials[materialID].Value[2]
         local maxQuantity =  player.TemporaryData.MaterialMaxDrop.Value
-        local minQuantity = 1
+        local minQuantity = (player.TemporaryData.MaterialMaxDrop.Value - TemporaryProfileData.MaterialMaxDrop.Value) + 1
         local quantity = math.floor(minQuantity + (itemValue - minVal) * ((maxQuantity - minQuantity) / (maxVal - minVal)))
 
         totalQuantity += quantity
