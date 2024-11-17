@@ -5,7 +5,8 @@ local cases = {
         Weights = {
             [1] = {"Basic", 82},
             [2] = {"Common", 15},
-            [3] = {"Uncommon", 3},
+            [3] = {"Uncommon", 2.5},
+            [4] = {"Fine", 0.5},
         },
         Image = "rbxassetid://17227170475",
         ID = "C1"
@@ -17,7 +18,8 @@ local cases = {
         Weights = {
             [1] = {"Common", 62.5},
             [2] = {"Uncommon", 32.5},
-            [3] = {"Fine", 5},
+            [3] = {"Fine", 4.7},
+            [4] = {"Rare", 0.3},
         },
         Image = "rbxassetid://17875805217",
         ID = "C2"

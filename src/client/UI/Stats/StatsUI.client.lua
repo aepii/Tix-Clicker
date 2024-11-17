@@ -2,7 +2,6 @@
 
 local Player = game.Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local SoundService = game:GetService("SoundService")
 
 ---- Modules ----
 
@@ -20,8 +19,8 @@ local RocashLeaderstat = leaderstats[TemporaryData:GetLeaderstatDisplayName("Roc
 local RebirthTixLeaderstat = leaderstats[TemporaryData:GetLeaderstatDisplayName("Rebirth Tix")]
 local ValueLeaderstat = leaderstats[TemporaryData:GetLeaderstatDisplayName("Value")]
 
-local TixStorage = ReplicatedTemporaryData.TixStorage
-local Tix = ReplicatedData.Tix
+local TixStorage = ReplicatedTemporaryData:WaitForChild("TixStorage")
+local Tix = ReplicatedData:WaitForChild("Tix")
 
 ---- UI ----
 

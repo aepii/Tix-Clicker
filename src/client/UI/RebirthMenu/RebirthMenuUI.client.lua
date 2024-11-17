@@ -16,8 +16,8 @@ local TixUIAnim = require(Modules.TixUIAnim)
 
 local ReplicatedData = Player:WaitForChild("ReplicatedData")
 local ReplicatedTemporaryData = Player:WaitForChild("TemporaryData")
-local Rocash = ReplicatedData.Rocash
-local Value = ReplicatedTemporaryData.Value
+local Rocash = ReplicatedData:WaitForChild("Rocash")
+local Value = ReplicatedTemporaryData:WaitForChild("Value")
 
 ---- UI ----
 

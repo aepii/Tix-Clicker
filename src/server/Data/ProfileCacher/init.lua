@@ -21,7 +21,7 @@ local DataManager = require(ServerScriptService.Data.DataManager)
 ---- Private Variables ----
 
 local GameProfileStore = ProfileService.GetProfileStore(
-	"PlayerData26",
+	"PlayerData27",
 	ProfileTemplate
 )
 
@@ -76,9 +76,9 @@ function ProfileManager:Init()
 	Players.PlayerRemoving:Connect(playerRemoved)
 
 	game:BindToClose(function()
-		table.foreach(Players:GetPlayers(),function(_,player)
+		for player in Players:GetPlayers() do
 			playerRemoved(player)
-		end)
+		end		
 	end)
 end
 
@@ -97,6 +97,9 @@ function ProfileManager:GetProfile(player)
 	if player:IsDescendantOf(Players) == true then
 		player:Kick("Error finding data, please rejoin.") 
 	end
+
+	return nil
+
 end
 
 return ProfileManager

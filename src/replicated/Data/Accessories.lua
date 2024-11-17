@@ -67373,7 +67373,7 @@ local accessories = {
         ID = "CA9"
     },
     CA10 = {
-        Name = "Helm of the TIx Warrior",
+        Name = "Helm of the Tix Warrior",
         Type = "Accessory",
         AssetID = 385895944,
         Reward = {
@@ -67608,19 +67608,6 @@ local accessories = {
     },
     
 }
-local RAPRanges = {
-    Basic = {Lower = 0, Upper = 40},
-    Common = {Lower = 41, Upper = 70},
-    Uncommon = {Lower = 71, Upper = 150},
-    Fine = {Lower = 151, Upper = 300},
-    Rare = {Lower = 301, Upper = 750},
-    Exceptional = {Lower = 751, Upper = 2000},
-    Epic = {Lower = 2001, Upper = 4000},
-    Heroic = {Lower = 4001, Upper = 8000},
-    Legendary = {Lower = 8001, Upper = 16000},
-    Mythical = {Lower = 16001, Upper = 32000},
-    Divine = {Lower = 32001, Upper = 64000}
-}
 
 --[[
     RARITY:         VALUE                | ROBLOX RAP
@@ -67638,6 +67625,56 @@ local RAPRanges = {
 
 ]]
 
+local RarityRewards = {
+    Basic = {
+        LowerAddPerClick = 1, UpperAddPerClick = 2,
+        LowerAddStorage = 20, UpperAddStorage = 40
+    },
+    Common = {
+        LowerAddPerClick = 3, UpperAddPerClick = 5,
+        LowerAddStorage = 41, UpperAddStorage = 100
+    },
+    Uncommon = {
+        LowerAddPerClick = 6, UpperAddPerClick = 9,
+        LowerAddStorage = 101, UpperAddStorage = 180
+    },
+    Fine = {
+        LowerAddPerClick = 10, UpperAddPerClick = 14,
+        LowerAddStorage = 181, UpperAddStorage = 280
+    },
+    Rare = {
+        LowerAddPerClick = 15, UpperAddPerClick = 20,
+        LowerAddStorage = 281, UpperAddStorage = 400
+    },
+    Exceptional = {
+        LowerAddPerClick = 21, UpperAddPerClick = 27,
+        LowerAddStorage = 401, UpperAddStorage = 540
+    },
+    Epic = {
+        LowerAddPerClick = 28, UpperAddPerClick = 35,
+        LowerAddStorage = 541, UpperAddStorage = 700
+    },
+    Heroic = {
+        LowerAddPerClick = 36, UpperAddPerClick = 44,
+        LowerAddStorage = 701, UpperAddStorage = 880
+    },
+    Legendary = {
+        LowerAddPerClick = 45, UpperAddPerClick = 54,
+        LowerAddStorage = 881, UpperAddStorage = 1080
+    },
+    Mythical = {
+        LowerAddPerClick = 55, UpperAddPerClick = 65,
+        LowerAddStorage = 1081, UpperAddStorage = 1300
+    },
+    Divine = {
+        LowerAddPerClick = 66, UpperAddPerClick = 77,
+        LowerAddStorage = 1301, UpperAddStorage = 1540
+    },
+}
+local Rarities = {
+    "Basic", "Common", "Uncommon", "Fine", "Rare", "Exceptional",
+    "Epic", "Heroic", "Legendary", "Mythical", "Divine"
+}
 local RarityRanges = {
     Basic = {Lower = 1, Upper = 10},
     Common = {Lower = 11, Upper = 50},
@@ -67652,79 +67689,8 @@ local RarityRanges = {
     Divine = {Lower = 4000001, Upper = 18000000}
 }
 
-local RarityRewards = {
-    Basic = {
-        LowerAddPerClick = 1, UpperAddPerClick = 2,
-        LowerAddStorage = 20, UpperAddStorage = 40
-    },
-    Common = {
-        LowerAddPerClick = 2, UpperAddPerClick = 4,
-        LowerAddStorage = 40, UpperAddStorage = 80
-    },
-    Uncommon = {
-        LowerAddPerClick = 4, UpperAddPerClick = 8,
-        LowerAddStorage = 80, UpperAddStorage = 160
-    },
-    Fine = {
-        LowerAddPerClick = 8, UpperAddPerClick = 12,
-        LowerAddStorage = 160, UpperAddStorage = 320
-    },
-    Rare = {
-        LowerAddPerClick = 12, UpperAddPerClick = 18,
-        LowerAddStorage = 320, UpperAddStorage = 640
-    },
-    Exceptional = {
-        LowerAddPerClick = 18, UpperAddPerClick = 27,
-        LowerAddStorage = 640, UpperAddStorage = 1280
-    },
-    Epic = {
-        LowerAddPerClick = 27, UpperAddPerClick = 40,
-        LowerAddStorage = 1280, UpperAddStorage = 2560
-    },
-    Heroic = {
-        LowerAddPerClick = 40, UpperAddPerClick = 60,
-        LowerAddStorage = 2560, UpperAddStorage = 5120
-    },
-    Legendary = {
-        LowerAddPerClick = 60, UpperAddPerClick = 90,
-        LowerAddStorage = 5120, UpperAddStorage = 10240
-    },
-    Mythical = {
-        LowerAddPerClick = 90, UpperAddPerClick = 133,
-        LowerAddStorage = 10240, UpperAddStorage = 20480
-    },
-    Divine = {
-        LowerAddPerClick = 133, UpperAddPerClick = 192,
-        LowerAddStorage = 20480, UpperAddStorage = 40960
-    },
-}
-
-function DynamicAccessories:CalculateDynamicValue(ID)
-    local accessory = accessories[ID]
-
-    local RAP = accessory.Value
-    
-    local rarity = nil
-
-    for name, range in RAPRanges do
-        if RAP >= range.Lower and RAP <= range.Upper then
-            rarity = name
-            
-            local valueRange = RarityRanges[rarity]
-            local rarityUpper = valueRange.Upper
-            local rarityLower = valueRange.Lower
-
-            RAP = math.ceil(rarityLower + (RAP - range.Lower) * ((rarityUpper - rarityLower) / (range.Upper - range.Lower)))
-            break
-        end
-    end
-    
-    if rarity == nil then
-        RAP = 0
-    end
-
-    return RAP, rarity
-end
+local SortedAccessories = {}
+local ItemsPerRarity = 100
 
 function DynamicAccessories:CalculateDynamicRewards(ID)
 
@@ -67750,45 +67716,49 @@ function DynamicAccessories:CalculateDynamicRewards(ID)
     return reward
 end
 
+function DynamicAccessories:CalculateDynamicValue(index)
+
+    local rarity = Rarities[math.ceil(index/ItemsPerRarity)]
+
+    local valueRange = RarityRanges[rarity]
+    local rarityUpper = valueRange.Upper
+    local rarityLower = valueRange.Lower
+
+    local positionInRarity = (index - 1) % ItemsPerRarity + 1
+    local value = math.ceil(rarityLower + (positionInRarity - 1) * ((rarityUpper - rarityLower) / (ItemsPerRarity - 1)))
+    print(index, value, rarity)
+
+    return value, rarity
+end
+
 function DynamicAccessories:Init()
-    for index, data in accessories do
+
+    for id, accessory in accessories do
+        if accessory.Rarity ~= nil then
+            continue
+        end
+        table.insert(SortedAccessories, {accessory.ID, accessory.Value})
+    end
+
+    table.sort(SortedAccessories, function(a, b)
+        return a[2] < b[2]
+    end)
+
+    for index, data in SortedAccessories do
         if data.Rarity ~= nil then
             continue
         end
-        data.Value, data.Rarity = DynamicAccessories:CalculateDynamicValue(index)
-        data.Reward = DynamicAccessories:CalculateDynamicRewards(index)
+        if #Rarities * ItemsPerRarity < index then
+            break
+        end
+        local ID = data[1]
+        accessories[ID].Value, accessories[ID].Rarity = DynamicAccessories:CalculateDynamicValue(index)
+        accessories[ID].Reward = DynamicAccessories:CalculateDynamicRewards(ID)
     end
+    print(SortedAccessories)
 end
 
 DynamicAccessories:Init()
-
---[[
-    RARITY:         VALUE                | ROBLOX RAP
-    Basic :         0-10                 | FREE
-    Common :        11-50                | 1-70
-    Uncommon :      51-250               | 71-150
-    Fine :          250-900              | 151-300
-    Rare :          901-3,500            | 301-750
-    Exceptional     3,501-14,000         | 751-2000
-    Epic :          14,001-55,000        | 2001-6000
-    Heroic :        55,001-225,000       | 6001-18,000
-    Legendary :     225,001-900,000      | 18,001-55,000
- 
-
-]]
-
---[[
-     A_ = {
-        Name = "",
-        Type = "Accessory/Face",
-        AssetID = 0,
-        Reward = {AddPerClick = 1, AddStorage = 1},
-        Value = 0,
-        Rarity = "Basic",
-        Cases = {"C1", "C2", "C3"},
-        ID = "_"
-    }
-]]
 
 return accessories
 

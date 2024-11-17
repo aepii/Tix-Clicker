@@ -17,8 +17,8 @@ local SuffixHandler = require(Modules.SuffixHandler)
 ---- Data ----
 
 local ReplicatedData = Player:WaitForChild("ReplicatedData")
-local ReplicatedAccessories = ReplicatedData.Accessories
-local EquippedAccessories = ReplicatedData.EquippedAccessories
+local ReplicatedAccessories = ReplicatedData:WaitForChild("Accessories")
+local EquippedAccessories = ReplicatedData:WaitForChild("EquippedAccessories")
 
 ---- UI ----
 
@@ -253,7 +253,7 @@ local function updateInventory(ID, GUID, method)
 end
 
 function initInventory()
-    for _, accessory in ReplicatedData.Accessories:GetChildren() do
+    for _, accessory in ReplicatedAccessories:GetChildren() do
         updateInventory(accessory.Value, accessory.Name, "ADD")
     end
 end

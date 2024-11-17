@@ -2,7 +2,7 @@ local ProfileData = {}
 
 ProfileData.Data = {
 	["Tix"] = 0;
-	["Rocash"] = 0;
+	["Rocash"] = 100;
 	["Rebirth Tix"] = 0;
 
 	["Join Time"] = os.time();

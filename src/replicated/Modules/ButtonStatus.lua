@@ -16,10 +16,12 @@ local Cases = require(ReplicatedStorage.Data.Cases)
 local function canPurchase(player, upgrade)
     
     local ReplicatedData = player:WaitForChild("ReplicatedData")
+    local ReplicatedRocash = ReplicatedData:WaitForChild("Rocash")
+    local ReplicatedMaterials = ReplicatedData:WaitForChild("Materials")
 
     local cost = upgrade.Cost["Rocash"]
 
-    if ReplicatedData.Rocash.Value < cost then
+    if ReplicatedRocash.Value < cost then
         return false
     end
 
@@ -29,10 +31,11 @@ local function canPurchase(player, upgrade)
         for key, materialData in materialCost do
             local materialID = materialData[1]
             local materialCostVal = materialData[2]
-            if not ReplicatedData.Materials:FindFirstChild(materialID) then
+            local replicatedMaterial = ReplicatedMaterials:FindFirstChild(materialID) 
+            if not replicatedMaterial then
                 return false
             end
-            if ReplicatedData.Materials[materialID].Value < materialCostVal then
+            if replicatedMaterial.Value < materialCostVal then
                 return false
             end
         end
@@ -43,10 +46,13 @@ end
 local function canPurchaseCase(player, case, amount)
     
     local ReplicatedData = player:WaitForChild("ReplicatedData")
+    local ReplicatedRebirthTix = ReplicatedData:WaitForChild("Rebirth Tix")
+    local ReplicatedRocash = ReplicatedData:WaitForChild("Rocash")
+    local ReplicatedMaterials = ReplicatedData:WaitForChild("Materials")
 
     if case.Cost["RebirthTix"] then
         local cost = case.Cost["RebirthTix"] * amount
-        if ReplicatedData["Rebirth Tix"].Value < cost then
+        if ReplicatedRebirthTix.Value < cost then
             print("NOT ENOUGH REBIRTH TIX")
             return false
         end
@@ -54,7 +60,7 @@ local function canPurchaseCase(player, case, amount)
 
     if case.Cost["Rocash"] then
         local cost = case.Cost["Rocash"] * amount
-        if ReplicatedData["Rocash"].Value < cost then
+        if ReplicatedRocash.Value < cost then
             print("NOT ENOUGH ROCASH")
             return false
         end
@@ -66,10 +72,11 @@ local function canPurchaseCase(player, case, amount)
         for key, materialData in cost do
             local materialID = materialData[1]
             local materialCostVal = materialData[2] * amount
-            if not ReplicatedData.Materials:FindFirstChild(materialID) then
+            local replicatedMaterial = ReplicatedMaterials:FindFirstChild(materialID) 
+            if not replicatedMaterial then
                 return false
             end
-            if ReplicatedData.Materials[materialID].Value < materialCostVal then
+            if replicatedMaterial.Value < materialCostVal then
                 return false
             end
         end

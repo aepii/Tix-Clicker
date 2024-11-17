@@ -14,9 +14,9 @@ local Upgrades = require(ReplicatedStorage.Data.Upgrades)
 
 local ReplicatedData = Player:WaitForChild("ReplicatedData")
 local TemporaryData = Player:WaitForChild("TemporaryData")
-local ToolEquipped = ReplicatedData.ToolEquipped
-local XP = TemporaryData.XP
-local requiredXP = TemporaryData.RequiredXP
+local ToolEquipped = ReplicatedData:WaitForChild("ToolEquipped")
+local XP = TemporaryData:WaitForChild("XP")
+local requiredXP = TemporaryData:WaitForChild("RequiredXP")
 
 ---- UI ----
 

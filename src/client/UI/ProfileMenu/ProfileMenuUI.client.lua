@@ -14,17 +14,16 @@ local SuffixHandler = require(Modules.SuffixHandler)
 
 local ReplicatedData = Player:WaitForChild("ReplicatedData")
 
-local JoinTime = ReplicatedData["Join Time"]
-local LifetimeTix = ReplicatedData["Lifetime Tix"]
-local LifetimeRocash = ReplicatedData["Lifetime Rocash"]
-local LifetimeRebirthTix = ReplicatedData["Lifetime Rebirth Tix"]
-local LifetimeValue = ReplicatedData["Lifetime Value"]
-local LifetimeCases = ReplicatedData["Lifetime Cases"]
---local LifetimeScrapped = ReplicatedData["Lifetime Scrapped"]
-local LifetimeMaterials = ReplicatedData["Lifetime Materials"]
-local LifetimeRobuxSpent = ReplicatedData["Lifetime Robux Spent"]
-local LifetimePlaytime = ReplicatedData["Lifetime Playtime"]
-
+local JoinTime = ReplicatedData:WaitForChild("Join Time")
+local LifetimeTix = ReplicatedData:WaitForChild("Lifetime Tix")
+local LifetimeRocash = ReplicatedData:WaitForChild("Lifetime Rocash")
+local LifetimeRebirthTix = ReplicatedData:WaitForChild("Lifetime Rebirth Tix")
+local LifetimeValue = ReplicatedData:WaitForChild("Lifetime Value")
+local LifetimeCases = ReplicatedData:WaitForChild("Lifetime Cases")
+--local LifetimeScrapped = ReplicatedData:WaitForChild("Lifetime Scrapped")
+local LifetimeMaterials = ReplicatedData:WaitForChild("Lifetime Materials")
+local LifetimeRobuxSpent = ReplicatedData:WaitForChild("Lifetime Robux Spent")
+local LifetimePlaytime = ReplicatedData:WaitForChild("Lifetime Playtime")
 ---- UI ----
 
 local PlayerGui = Player.PlayerGui
@@ -78,41 +77,6 @@ local function updateJoinTimeHolder()
 end
 JoinTime.Changed:Connect(updateJoinTimeHolder)
 
-local function updateTixHolder()
-    TixHolder.ValueText.Text = SuffixHandler:Convert(LifetimeTix.Value)
-end
-LifetimeTix.Changed:Connect(updateTixHolder)
-
-local function updateRocashHolder()
-    RocashHolder.ValueText.Text = SuffixHandler:Convert(LifetimeRocash.Value)
-end
-LifetimeRocash.Changed:Connect(updateRocashHolder)
-
-local function updateRebirthTixHolder()
-    RebirthTixHolder.ValueText.Text = SuffixHandler:Convert(LifetimeRebirthTix.Value)
-end
-LifetimeRebirthTix.Changed:Connect(updateRebirthTixHolder)
-
-local function updateValueHolder()
-    ValueHolder.ValueText.Text = SuffixHandler:Convert(LifetimeValue.Value)
-end
-LifetimeValue.Changed:Connect(updateValueHolder)
-
-local function updateCasesHolder()
-    CasesHolder.ValueText.Text = SuffixHandler:Convert(LifetimeCases.Value)
-end
-LifetimeCases.Changed:Connect(updateCasesHolder)
-
-local function updateMaterialsHolder()
-    MaterialsHolder.ValueText.Text = SuffixHandler:Convert(LifetimeMaterials.Value)
-end
-LifetimeMaterials.Changed:Connect(updateMaterialsHolder)
-
-local function updateRobuxHolder()
-    RobuxHolder.ValueText.Text = SuffixHandler:Convert(LifetimeRobuxSpent.Value)
-end
-LifetimeRobuxSpent.Changed:Connect(updateRobuxHolder)
-
 local function updateTimeHolder()
     local playtimeSeconds = LifetimePlaytime.Value
     local days = math.floor(playtimeSeconds / (24 * 3600))
@@ -126,15 +90,27 @@ local function updateTimeHolder()
 end
 LifetimePlaytime.Changed:Connect(updateTimeHolder)
 
+local function updateHolder(holder, lifetimeValue)
+    holder.ValueText.Text = SuffixHandler:Convert(lifetimeValue.Value)
+end
+
+LifetimeTix.Changed:Connect(function() updateHolder(TixHolder, LifetimeTix) end)
+LifetimeRocash.Changed:Connect(function() updateHolder(RocashHolder, LifetimeRocash) end)
+LifetimeRebirthTix.Changed:Connect(function() updateHolder(RebirthTixHolder, LifetimeRebirthTix) end)
+LifetimeValue.Changed:Connect(function() updateHolder(ValueHolder, LifetimeValue) end)
+LifetimeCases.Changed:Connect(function() updateHolder(CasesHolder, LifetimeCases) end)
+LifetimeMaterials.Changed:Connect(function() updateHolder(MaterialsHolder, LifetimeMaterials) end)
+LifetimeRobuxSpent.Changed:Connect(function() updateHolder(RobuxHolder, LifetimeRobuxSpent) end)
+
 local function init()
-    updateTixHolder()
+    updateHolder(TixHolder, LifetimeTix)
+    updateHolder(RocashHolder, LifetimeRocash)
+    updateHolder(RebirthTixHolder, LifetimeRebirthTix)
+    updateHolder(ValueHolder, LifetimeValue)
+    updateHolder(CasesHolder, LifetimeCases)
+    updateHolder(MaterialsHolder, LifetimeMaterials)
+    updateHolder(RobuxHolder, LifetimeRobuxSpent)
     updateJoinTimeHolder()
-    updateRocashHolder()
-    updateRebirthTixHolder()
-    updateValueHolder()
-    updateCasesHolder()
-    updateMaterialsHolder()
-    updateRobuxHolder()
     updateTimeHolder()
 end
 init()

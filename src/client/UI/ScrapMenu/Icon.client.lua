@@ -18,8 +18,8 @@ local TemporaryData = require(Modules.TemporaryData)
 ---- Data ----
 
 local ReplicatedData = Player:WaitForChild("ReplicatedData")
-local ReplicatedAccessories = ReplicatedData.Accessories
-local EquippedAccessories = ReplicatedData.EquippedAccessories
+local ReplicatedAccessories = ReplicatedData:WaitForChild("Accessories")
+local EquippedAccessories = ReplicatedData:WaitForChild("EquippedAccessories")
 
 ---- UI ----
 
@@ -112,7 +112,7 @@ local function search(text)
 end
 
 local function updateScrapFrame()
-    local ID = Player.ReplicatedData.Accessories[GUID.Value].Value
+    local ID = ReplicatedAccessories[GUID.Value].Value
     local accessory = Accessories[ID]
     
     local taggedName = TemporaryData:CalculateTag(Player, GUID.Value)
@@ -152,7 +152,7 @@ end
 
 
 local function updateMultiScrapFrame()
-    local ID = Player.ReplicatedData.Accessories[GUID.Value].Value
+    local ID = ReplicatedAccessories[GUID.Value].Value
     local accessory = Accessories[ID]
     
     if CurrentRarity.Value == "" then

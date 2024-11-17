@@ -14,6 +14,8 @@ local Cases = require(ReplicatedStorage.Data.Cases)
 ---- Data ----
 
 local ReplicatedData = Player:WaitForChild("ReplicatedData")
+local ReplicatedAccessories = ReplicatedData:WaitForChild("Accessories")
+local ReplicatedCases = ReplicatedData:WaitForChild("Cases")
 local TemporaryData = Player:WaitForChild("TemporaryData")
 local ActiveCaseOpening = TemporaryData:WaitForChild("ActiveCaseOpening")
 local AccessoriesLimit = TemporaryData:WaitForChild("AccessoriesLimit")
@@ -70,19 +72,19 @@ local UpdateClientAccessoriesInventoryRemote = Networking.UpdateClientAccessorie
 ---- Private Functions ----
 
 local function openCase(caseID)
-    local caseData = ReplicatedData.Cases:FindFirstChild(caseID)
+    local caseData = ReplicatedCases:FindFirstChild(caseID)
     local availableCases = caseData and caseData.Value or 0
-    local amount = math.min(availableCases, Amount.Value, AccessoriesLimit.Value - #ReplicatedData.Accessories:GetChildren())
+    local amount = math.min(availableCases, Amount.Value, AccessoriesLimit.Value - #ReplicatedAccessories:GetChildren())
 
     if AutoOpen.Value == false then
         OpenCaseRemote:InvokeServer(caseID, amount)
     else
-        while AutoOpen.Value == true and #ReplicatedData.Accessories:GetChildren() + amount <= AccessoriesLimit.Value do
+        while AutoOpen.Value == true and #ReplicatedAccessories:GetChildren() + amount <= AccessoriesLimit.Value do
             task.wait()
             if ActiveCaseOpening.Value == false then
                 OpenCaseRemote:InvokeServer(caseID, amount)
             end
-            amount = math.min(availableCases, Amount.Value, AccessoriesLimit.Value - #ReplicatedData.Accessories:GetChildren())
+            amount = math.min(availableCases, Amount.Value, AccessoriesLimit.Value - #ReplicatedAccessories:GetChildren())
         end
         AutoOpenButton.AutoText.Text = "Auto Open"
         CancelAutoOpenButton.Visible = false
@@ -117,21 +119,21 @@ local function updateInventory(case, method)
             customIcon.Visible = true
             customIcon.Name = case.ID
             customIcon.IconImage.Image = case.Image
-            customIcon.OwnedFrame.OwnedText.Text = "x"..(Player.ReplicatedData.Cases:FindFirstChild(case.ID) and Player.ReplicatedData.Cases[case.ID].Value or 0)
+            customIcon.OwnedFrame.OwnedText.Text = "x"..(ReplicatedCases:FindFirstChild(case.ID) and ReplicatedCases[case.ID].Value or 0)
             customIcon.Parent = InvHolder
         else
             local icon = IconCopy:Clone()
             icon.Visible = true
             icon.Name = case.ID
             icon.IconImage.Image = case.Image
-            icon.OwnedFrame.OwnedText.Text =  "x"..(Player.ReplicatedData.Cases:FindFirstChild(case.ID) and Player.ReplicatedData.Cases[case.ID].Value or 0)
+            icon.OwnedFrame.OwnedText.Text =  "x"..(ReplicatedCases:FindFirstChild(case.ID) and ReplicatedCases[case.ID].Value or 0)
             icon.Parent = InvHolder
         end
     elseif method == "UPDATE" then
         local icon = getIcon(case.ID)
-        icon.OwnedFrame.OwnedText.Text = "x"..(Player.ReplicatedData.Cases:FindFirstChild(case.ID) and Player.ReplicatedData.Cases[case.ID].Value or 0)
+        icon.OwnedFrame.OwnedText.Text = "x"..(ReplicatedCases:FindFirstChild(case.ID) and ReplicatedCases[case.ID].Value or 0)
         if CurrentCase.Value == case.ID then
-            local ownedValue = Player.ReplicatedData.Cases:FindFirstChild(case.ID) and Player.ReplicatedData.Cases[case.ID].Value or 0
+            local ownedValue = ReplicatedCases:FindFirstChild(case.ID) and ReplicatedCases[case.ID].Value or 0
             OpenFrame.OwnedFrame.Owned.Text = "Owned " .. ownedValue  
         end
      elseif method == "DEL" then
@@ -148,7 +150,7 @@ local function updateInventory(case, method)
 end
 
 function initInventory()
-    for _, case in ReplicatedData.Cases:GetChildren() do
+    for _, case in ReplicatedCases:GetChildren() do
         updateInventory(Cases[case.Name], "ADD")
     end
 end

@@ -15,7 +15,7 @@ local SuffixHandler = require(Modules.SuffixHandler)
 ---- Data ----
 
 local ReplicatedData = Player:WaitForChild("ReplicatedData")
-local ToolEquipped = ReplicatedData.ToolEquipped
+local ToolEquipped = ReplicatedData:WaitForChild("ToolEquipped")
 
 ---- UI ----
 

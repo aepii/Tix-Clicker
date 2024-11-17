@@ -472,6 +472,7 @@ function TemporaryData:CalculateTag(player, GUID)
                     return RarityTags[rarity] .. ID .. value .. GUID
                 end
             else
+                print(value, ID)
                 return RarityTags[rarity] .. ID .. value .. GUID
             end
         end

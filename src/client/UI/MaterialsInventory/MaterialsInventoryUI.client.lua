@@ -7,6 +7,7 @@ local SoundService = game:GetService("SoundService")
 ---- Data ----
 
 local ReplicatedData = Player:WaitForChild("ReplicatedData")
+local ReplicatedMaterials = ReplicatedData:WaitForChild("Materials")
 
 ---- Modules ----
 
@@ -76,7 +77,7 @@ end
 ---- Initialize ----
 
 function initMaterialsInventory()
-    for _, material in ReplicatedData.Materials:GetChildren() do
+    for _, material in ReplicatedMaterials:GetChildren() do
         updateMaterialsInventory(material.Value, material.Name, "ADD")
     end
 end

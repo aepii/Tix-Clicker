@@ -14,7 +14,7 @@ local SuffixHandler = require(Modules.SuffixHandler)
 ---- Data ----
 
 local ReplicatedData = Player:WaitForChild("ReplicatedData")
-local ReplicatedZones = ReplicatedData.Zones
+local ReplicatedZones = ReplicatedData:WaitForChild("Zones")
 
 ---- Variables ----
 

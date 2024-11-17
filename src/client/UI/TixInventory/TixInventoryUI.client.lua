@@ -14,6 +14,7 @@ local Upgrades = require(ReplicatedStorage.Data.Upgrades)
 ---- Data ----
 
 local ReplicatedData = Player:WaitForChild("ReplicatedData")
+local ReplicatedUpgrades = ReplicatedData:WaitForChild("Upgrades")
 
 ---- UI ----
 
@@ -79,7 +80,7 @@ local function updateInventory(upgrade, method)
 end
 
 function initInventory()
-    for _, upgrade in ReplicatedData.Upgrades:GetChildren() do
+    for _, upgrade in ReplicatedUpgrades:GetChildren() do
         updateInventory(Upgrades[upgrade.Name], "ADD")
     end
 end
