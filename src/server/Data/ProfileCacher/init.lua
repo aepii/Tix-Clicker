@@ -18,6 +18,11 @@ local ProfileTemplate = ProfileData.Data
 local ProfileService = require(script.ProfileService)
 local DataManager = require(ServerScriptService.Data.DataManager)
 
+---- Networking ----
+
+local Networking = ReplicatedStorage.Networking
+local LoadUI = Networking.LoadUI
+
 ---- Private Variables ----
 
 local GameProfileStore = ProfileService.GetProfileStore(
@@ -30,7 +35,7 @@ local PlayerProfiles = {} -- [player]
 ---- Private Functions ----
 
 local function playerAdded(player)
-	print("PLAYER JOINED")
+	print("PLAYER JOINED", os.time())
 	local profile = GameProfileStore:LoadProfileAsync("Player_" .. player.UserId)
 	if profile ~= nil then
 		profile:AddUserId(player.UserId) -- GDPR compliance
@@ -44,8 +49,8 @@ local function playerAdded(player)
 			-- Replica service
 			PlayerProfiles[player] = profile
 			-- A profile has been successfully loaded:
-			print("SUCCESSFULLY LOADED")
-			DataManager:InitializeReplicatedData(player, profile) 
+			DataManager:Init(player, profile) 
+			LoadUI:FireClient(player)
 		else
 			-- Player left before the profile loaded:
 			profile:Release()

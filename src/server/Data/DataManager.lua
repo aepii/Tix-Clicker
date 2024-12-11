@@ -115,10 +115,10 @@ end
 
 local DataManager = {}
 
-function DataManager:InitializeReplicatedData(player, profile)
+function DataManager:Init(player, profile)
 	createReplicatedData(player, profile)
 	createTemporaryData(player, profile)
-    createLeaderstats(player, profile)
+	createLeaderstats(player, profile)
 end
 
 function DataManager:UpdateLeaderstats(player, profile, key)
@@ -131,8 +131,8 @@ function DataManager:UpdateLeaderstats(player, profile, key)
 end
 
 function DataManager:SetValue(player, profile, path, key)
-    local currentProfile = profile.Data
-    local currentReplicated = player.ReplicatedData
+	local currentProfile = profile.Data
+	local currentReplicated = player.ReplicatedData
 
 	local response = "Exists"
 
@@ -188,8 +188,8 @@ function DataManager:SetValue(player, profile, path, key)
 end
 
 function DataManager:ArrayInsert(player, profile, path, key)
-    local currentProfile = profile.Data
-    local currentReplicated = player.ReplicatedData
+	local currentProfile = profile.Data
+	local currentReplicated = player.ReplicatedData
 
 	local response = "Exists"
 

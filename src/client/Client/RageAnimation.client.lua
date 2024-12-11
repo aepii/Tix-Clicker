@@ -3,7 +3,6 @@
 local Player = game.Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local SoundService = game:GetService("SoundService")
-local RunService = game:GetService("RunService")
 
 ---- Sound ----
 

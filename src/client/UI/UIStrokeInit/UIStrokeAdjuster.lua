@@ -8,7 +8,7 @@
 
 -- Paste the following code into the command bar and change the Studio_Viewport_Size to the values in the output bar:
 -- print(workspace.CurrentCamera.ViewportSize)
-local Studio_Viewport_Size = Vector2.new(1007, 578)
+local Studio_Viewport_Size = Vector2.new(1280, 720)
 
 -- Set to true to automatically tag BillboardGuis and ScreenGuis recursively in PlayerGui
 -- It's advised to use the :TagScreenGui() and :TagBillboardGui() features for the best performance

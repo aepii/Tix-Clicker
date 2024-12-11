@@ -1,10 +1,9 @@
 ---- Services ----
 
 local Players = game:GetService("Players")
-local LocalPlayer = game.Players.LocalPlayer
+local LocalPlayer = Players.LocalPlayer
 local Workspace = game:GetService("Workspace")
 local RunService = game:GetService("RunService") 
-
 
 ---- UI ----
 
