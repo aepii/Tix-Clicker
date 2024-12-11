@@ -12,7 +12,6 @@ local TemporaryData = require(Modules.TemporaryData)
 ---- Data ----
 
 local ProfileCacher = require(ServerScriptService.Data.ProfileCacher)
-local DataManager = require(ServerScriptService.Data.DataManager)
 
 ---- Networking ----
 

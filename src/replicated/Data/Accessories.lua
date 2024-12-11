@@ -67628,52 +67628,69 @@ local accessories = {
 local RarityRewards = {
     Basic = {
         LowerAddPerClick = 1, UpperAddPerClick = 2,
-        LowerAddStorage = 20, UpperAddStorage = 40
+        LowerAddStorage = 20, UpperAddStorage = 100
     },
     Common = {
         LowerAddPerClick = 3, UpperAddPerClick = 5,
-        LowerAddStorage = 41, UpperAddStorage = 100
+        LowerAddStorage = 101, UpperAddStorage = 260
     },
     Uncommon = {
         LowerAddPerClick = 6, UpperAddPerClick = 9,
-        LowerAddStorage = 101, UpperAddStorage = 180
+        LowerAddStorage = 261, UpperAddStorage = 500
     },
     Fine = {
         LowerAddPerClick = 10, UpperAddPerClick = 14,
-        LowerAddStorage = 181, UpperAddStorage = 280
+        LowerAddStorage = 501, UpperAddStorage = 820
     },
     Rare = {
         LowerAddPerClick = 15, UpperAddPerClick = 20,
-        LowerAddStorage = 281, UpperAddStorage = 400
+        LowerAddStorage = 820, UpperAddStorage = 1220
     },
     Exceptional = {
         LowerAddPerClick = 21, UpperAddPerClick = 27,
-        LowerAddStorage = 401, UpperAddStorage = 540
+        LowerAddStorage = 1221, UpperAddStorage = 1700
     },
     Epic = {
         LowerAddPerClick = 28, UpperAddPerClick = 35,
-        LowerAddStorage = 541, UpperAddStorage = 700
+        LowerAddStorage = 1701, UpperAddStorage = 2260
     },
     Heroic = {
         LowerAddPerClick = 36, UpperAddPerClick = 44,
-        LowerAddStorage = 701, UpperAddStorage = 880
+        LowerAddStorage = 2261, UpperAddStorage = 2900
     },
     Legendary = {
         LowerAddPerClick = 45, UpperAddPerClick = 54,
-        LowerAddStorage = 881, UpperAddStorage = 1080
+        LowerAddStorage = 2901, UpperAddStorage = 3620
     },
     Mythical = {
         LowerAddPerClick = 55, UpperAddPerClick = 65,
-        LowerAddStorage = 1081, UpperAddStorage = 1300
+        LowerAddStorage = 3621, UpperAddStorage = 4420
     },
     Divine = {
         LowerAddPerClick = 66, UpperAddPerClick = 77,
-        LowerAddStorage = 1301, UpperAddStorage = 1540
+        LowerAddStorage = 4421, UpperAddStorage = 5300
+    },
+    Celestial = {
+        LowerAddPerClick = 78, UpperAddPerClick = 90,
+        LowerAddStorage = 5301, UpperAddStorage = 6260
+    },
+    Ascended = {
+        LowerAddPerClick = 90, UpperAddPerClick = 103,
+        LowerAddStorage = 6261, UpperAddStorage = 7300
+    },
+    Transcendent = {
+        LowerAddPerClick = 104, UpperAddPerClick = 118,
+        LowerAddStorage = 7301, UpperAddStorage = 8420
+    },
+    Cosmic = {
+        LowerAddPerClick = 119, UpperAddPerClick = 134,
+        LowerAddStorage = 8421, UpperAddStorage = 9620
     },
 }
 local Rarities = {
     "Basic", "Common", "Uncommon", "Fine", "Rare", "Exceptional",
-    "Epic", "Heroic", "Legendary", "Mythical", "Divine"
+    "Epic", "Heroic", "Legendary", "Mythical", "Divine", "Celestial",
+    "Ascended", "Transcendent", "Cosmic"
 }
 local RarityRanges = {
     Basic = {Lower = 1, Upper = 10},
@@ -67686,11 +67703,15 @@ local RarityRanges = {
     Heroic = {Lower = 55001, Upper = 225000},
     Legendary = {Lower = 225001, Upper = 900000},
     Mythical = {Lower = 900001, Upper = 4000000},
-    Divine = {Lower = 4000001, Upper = 18000000}
+    Divine = {Lower = 4000001, Upper = 18000000},
+    Celestial = {Lower = 18000001, Upper = 18000000},
+    Ascended = {Lower = 80000001, Upper = 400000000},
+    Transcendent = {Lower = 400000001, Upper = 2000000000},
+    Cosmic = {Lower = 2000000001, Upper = 10000000000},
 }
 
 local SortedAccessories = {}
-local ItemsPerRarity = 100
+local ItemsPerRarity = 75
 
 function DynamicAccessories:CalculateDynamicRewards(ID)
 
@@ -67726,7 +67747,6 @@ function DynamicAccessories:CalculateDynamicValue(index)
 
     local positionInRarity = (index - 1) % ItemsPerRarity + 1
     local value = math.ceil(rarityLower + (positionInRarity - 1) * ((rarityUpper - rarityLower) / (ItemsPerRarity - 1)))
-    print(index, value, rarity)
 
     return value, rarity
 end
@@ -67755,7 +67775,6 @@ function DynamicAccessories:Init()
         accessories[ID].Value, accessories[ID].Rarity = DynamicAccessories:CalculateDynamicValue(index)
         accessories[ID].Reward = DynamicAccessories:CalculateDynamicRewards(ID)
     end
-    print(SortedAccessories)
 end
 
 DynamicAccessories:Init()

@@ -104,7 +104,6 @@ local function getIcon(GUID)
             return icon
         end
     end
-    return false
 end
 
 

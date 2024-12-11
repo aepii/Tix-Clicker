@@ -49,7 +49,6 @@ local function populateCaseRarity(caseID, rewardsFrame)
     for index, data in weights do
         local weight = TemporaryData:ApplyLuck(Player, data[2], index, #weights)
         local gradient = RarityColors:GetGradient(data[1])
-        print(data[1], TemporaryData:WeightedPercent(weight, totalWeight))
         rewardsFrame[index].ChanceText.Text = TemporaryData:WeightedPercent(weight, totalWeight) .. "%"
         rewardsFrame[index].RarityText.Text = data[1]
         rewardsFrame[index].Visible = true

@@ -97,8 +97,8 @@ local UIFrames = {
     ProfileMenu = UI.ProfileMenu,
     SettingsMenu = UI.SettingsMenu,
     --RewardsMenu = UI.RewardsMenu,
-    --QuestsMenu = UI.QuestsMenu,
-    --ShopMenu = UI.ShopMenu,
+    AchievementsMenu = UI.AchievementsMenu,
+    ShopMenu = UI.ShopMenu,
 }
 
 local function playClickSound()

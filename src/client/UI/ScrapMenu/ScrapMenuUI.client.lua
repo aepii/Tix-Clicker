@@ -178,9 +178,11 @@ local function getIcon(GUID)
     for index, icon in InvHolder:GetChildren() do
         if icon:IsA("Frame") and icon.GUID.Value == GUID then
             return icon
+        elseif icon:IsA("Frame") then
+            print(icon.Name)
+            print(icon.GUID.Value, GUID)
         end
     end
-    return false
 end
 
 local function updateInventory(ID, GUID, method)
@@ -202,6 +204,7 @@ local function updateInventory(ID, GUID, method)
         if icon then
             icon:Destroy()
         end
+        print(#ReplicatedAccessories:GetChildren())
     elseif method == "ADD" then
         local icon = IconCopy:Clone()
         icon.Visible = true
@@ -253,9 +256,13 @@ local function updateInventory(ID, GUID, method)
 end
 
 function initInventory()
+    local counter = 0
+    print(#ReplicatedAccessories:GetChildren())
     for _, accessory in ReplicatedAccessories:GetChildren() do
+        counter += 1
         updateInventory(accessory.Value, accessory.Name, "ADD")
     end
+    print("SCRAP ACCESSORIES COUNTER:", counter)
 end
 
 initInventory()

@@ -98,7 +98,6 @@ local function getIcon(caseID)
             return icon
         end
     end
-    return false
 end
 
 local function updateInventory(case, method)

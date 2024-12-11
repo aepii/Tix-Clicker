@@ -56,7 +56,7 @@ ScrapAccessoryRemote.OnServerInvoke = (function(player, accessoryGUID)
 
     if accessoryID and not isEquipped(data.EquippedAccessories, accessoryGUID) then
 
-        local amount, materialID = calculateRate(TemporaryData:CalculateMaterialInfo(player, accessory.Value))
+        local amount, materialID = calculateRate(TemporaryData:CalculateMaterialInfo(player, accessory))
         local newMaterialValue = (data.Materials[materialID] or 0) + amount
 
         if not data.Materials[materialID] and newMaterialValue > 0 then

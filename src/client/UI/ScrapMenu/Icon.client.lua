@@ -131,7 +131,7 @@ local function updateScrapFrame()
 
     for _, rewardFrame in RewardsFrame:GetChildren() do
         if rewardFrame:IsA("Frame") then
-            local quantity, chanceToReceive, materialID = TemporaryData:CalculateMaterialInfo(Player, accessory.Value)
+            local quantity, chanceToReceive, materialID = TemporaryData:CalculateMaterialInfo(Player, accessory)
             local prefix = "x"
             rewardFrame.RewardText.UIGradient.Color = gradient
             rewardFrame.RewardText.Text = prefix  .. "0-" .. quantity
@@ -198,7 +198,6 @@ BindableSelectAllAccessoriesRemote.Event:Connect(function(rarity, method)
                 updateMultiScrapFrame()
             end
         else
-            print(method)
             if MultiSelected:FindFirstChild(script.Parent.GUID.Value) then
                 updateMultiScrapFrame()
             end

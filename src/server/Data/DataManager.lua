@@ -24,7 +24,6 @@ local typeMap = {
 
 local tableMap = {
 	["Upgrades"] = "boolean",
-	["PerSecondUpgrades"] = "number",
 	["RebirthUpgrades"] = "number",
 	["Accessories"] = "string",
 	["Cases"] = "number",

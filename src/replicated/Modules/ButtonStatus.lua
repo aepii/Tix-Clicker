@@ -7,7 +7,6 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Modules = ReplicatedStorage.Modules
 local TemporaryData = require(Modules.TemporaryData)
 local Upgrades = require(ReplicatedStorage.Data.Upgrades)
-local PerSecondUpgrades = require(ReplicatedStorage.Data.PerSecondUpgrades)
 local RebirthUpgrades = require(ReplicatedStorage.Data.RebirthUpgrades)
 local Cases = require(ReplicatedStorage.Data.Cases)
 
@@ -53,7 +52,6 @@ local function canPurchaseCase(player, case, amount)
     if case.Cost["RebirthTix"] then
         local cost = case.Cost["RebirthTix"] * amount
         if ReplicatedRebirthTix.Value < cost then
-            print("NOT ENOUGH REBIRTH TIX")
             return false
         end
     end
@@ -61,7 +59,6 @@ local function canPurchaseCase(player, case, amount)
     if case.Cost["Rocash"] then
         local cost = case.Cost["Rocash"] * amount
         if ReplicatedRocash.Value < cost then
-            print("NOT ENOUGH ROCASH")
             return false
         end
     end
@@ -85,29 +82,6 @@ local function canPurchaseCase(player, case, amount)
     return true
 end
 
-
-local function canPurchasePerSec(player, perSecUpgrade, amount)
-    
-    local ReplicatedData = player:WaitForChild("ReplicatedData")
-    local perSecUpgrades = ReplicatedData:WaitForChild("PerSecondUpgrades")
-    local upgradeData = perSecUpgrades:FindFirstChild(perSecUpgrade.ID)
-    local levelValue = upgradeData and perSecUpgrades[perSecUpgrade.ID].Value or 0
-    local cost;
-
-    if upgradeData then
-        print(amount)
-        cost = TemporaryData:CalculateTixPerSecondCost(levelValue, perSecUpgrade.ID, amount)
-    else
-        cost = perSecUpgrade.Cost
-    end
-
-    if ReplicatedData["Rocash"].Value < cost then
-        return false
-    end
-
-    return true
-end
-
 local function canPurchaseRebirth(player, rebirthUpgrade)
     
     local ReplicatedData = player:WaitForChild("ReplicatedData")
@@ -119,7 +93,6 @@ local function canPurchaseRebirth(player, rebirthUpgrade)
     if upgradeData then
         cost = TemporaryData:CalculateRebirthUpgradeCost(levelValue, rebirthUpgrade.ID, 1)
     else
-        print(cost)
         cost = rebirthUpgrade.Cost
     end
 
@@ -264,29 +237,6 @@ function ButtonStatus:PurchaseUpgrade(player, currentUpgrade, purchaseButton)
     end
 
     purchaseButton.UIGradient.Color = gradientColor
-    purchaseButton.BackgroundColor3 = backgroundColor
-    purchaseButton.Shadow.BackgroundColor3 = shadowColor
-    purchaseButton.PriceFrame.PriceText.UIStroke.Color = strokeColor
-end
-
-function ButtonStatus:PurchasePerSecUpgrade(player, currentUpgrade, amount, purchaseButton)
-
-    local backgroundColor, shadowColor, strokeColor, gradientColor
-
-    if canPurchasePerSec(player, PerSecondUpgrades[currentUpgrade], amount) then
-        gradientColor = ColorSequence.new(Color3.fromRGB(255,255,255),Color3.fromRGB(15,255,83))
-        backgroundColor = Color3.fromRGB(85, 170, 127)
-        shadowColor = Color3.fromRGB(34, 68, 50)
-        strokeColor = Color3.fromRGB(34, 68, 50)
-    else
-        gradientColor = ColorSequence.new(Color3.fromRGB(255,255,255),Color3.fromRGB(255,0,0))
-        backgroundColor = Color3.fromRGB(236, 44, 75)
-        shadowColor = Color3.fromRGB(73, 30, 30)
-        strokeColor = Color3.fromRGB(73, 30, 30)
-    end
-
-    purchaseButton.UIGradient.Color = gradientColor
-    purchaseButton.PriceFrame.CurrencyIcon.Visible = true
     purchaseButton.BackgroundColor3 = backgroundColor
     purchaseButton.Shadow.BackgroundColor3 = shadowColor
     purchaseButton.PriceFrame.PriceText.UIStroke.Color = strokeColor

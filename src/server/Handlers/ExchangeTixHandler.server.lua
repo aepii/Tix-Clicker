@@ -21,7 +21,7 @@ local debounceTable = {}
 
 local function exchangeTix(player)
     local profile = ProfileCacher:GetProfile(player)
-    local data = ProfileCacher:GetProfile(player).Data
+    local data = profile.Data
     
     if player.TemporaryData.ActiveCaseOpening.Value == false then
         if data.Tix >= 20 then

@@ -24,6 +24,8 @@ GlobalData:Init()
 spawn(function()
     while task.wait(1) do
         local data = GlobalData:GetQueue()
-        print(data)
+        if #data > 0 then
+            print(data)
+        end
     end
 end)

@@ -20,7 +20,6 @@ local Humanoid = Character:WaitForChild("Humanoid")
 
 local Materials = require(ReplicatedStorage.Data.Materials)
 local Upgrades = require(ReplicatedStorage.Data.Upgrades)
-local PerSecondUpgrades = require(ReplicatedStorage.Data.PerSecondUpgrades)
 local RebirthUpgrades = require(ReplicatedStorage.Data.RebirthUpgrades)
 local Cases = require(ReplicatedStorage.Data.Cases)
 local Accessories = require(ReplicatedStorage.Data.Accessories)
@@ -36,7 +35,6 @@ local SuffixHandler = require(Modules.SuffixHandler)
 ---- UI ----
 
 local InfoUI = Player.PlayerGui:WaitForChild("InfoUI")
-local PerSecInfo = InfoUI.PerSecInfo
 local UpgradeInfo = InfoUI.UpgradeInfo
 local RebirthInfo = InfoUI.RebirthInfo
 local CaseInfo = InfoUI.CaseInfo
@@ -55,8 +53,6 @@ local BindableUpdateClientShopInfoRemote = Networking.BindableUpdateClientShopIn
 local function getShopInfo(nearest)
     if string.sub(nearest, 1, 2) == "CC" then
         return CustomCaseInfo
-    elseif string.sub(nearest, 1, 1) == "P" then
-        return PerSecInfo
     elseif string.sub(nearest, 1, 1) == "C" then
         return CaseInfo
     elseif string.sub(nearest, 1, 1) == "U" then
@@ -64,6 +60,7 @@ local function getShopInfo(nearest)
     elseif string.sub(nearest, 1, 1) == "R" then
         return RebirthInfo
     end
+    return nil
 end
 
 local function populateCaseRarity(caseID, rewardsFrame)
@@ -106,7 +103,6 @@ local function populateCaseItems(caseID, rewardsFrame)
     for index, data in weights do
         local weight = TemporaryData:ApplyLuck(Player, data[2], index, #weights)
         local weightedPercent = TemporaryData:WeightedPercent(weight, totalWeight)
-        print(data[1], TemporaryData:WeightedPercent(weight, totalWeight))
         local icon = IconCopy:Clone()
         icon.Name = data[1]
         icon.ChanceFrame.ChanceText.Text = weightedPercent .. "%"
@@ -160,11 +156,6 @@ local function updateButtonInfo(nearest, shopInfo)
         if item then
             ButtonStatus:PurchaseCase(Player, nearest, InfoFrame.Amount.Value, PurchaseButton)
         end
-    elseif shopInfo.Name == "PerSecInfo" then
-        item = PerSecondUpgrades[nearest]
-        if item then
-            ButtonStatus:PurchasePerSecUpgrade(Player, nearest, InfoFrame.Amount.Value, PurchaseButton)
-        end
     elseif shopInfo.Name == "UpgradeInfo" then
         item = Upgrades[nearest]
         if item then
@@ -186,7 +177,6 @@ local function updateShopInfo(nearest, shopInfo)
     local RewardsFrame = InfoFrame.RewardsFrame
 
     local item;
-    print("UPDATE")
 
     if shopInfo.Name == "CustomCaseInfo" then
         item = Cases[nearest]
@@ -209,17 +199,6 @@ local function updateShopInfo(nearest, shopInfo)
             InfoFrame.OwnedFrame.Owned.Text = "Owned " .. ownedValue
             populateCaseRarity(item.ID, RewardsFrame)
             ButtonStatus:PurchaseCase(Player, nearest, InfoFrame.Amount.Value, PurchaseButton)
-        end
-    elseif shopInfo.Name == "PerSecInfo" then
-        item = PerSecondUpgrades[nearest]
-        if item then
-            local levelValue = Player.ReplicatedData.PerSecondUpgrades:FindFirstChild(nearest) and Player.ReplicatedData.PerSecondUpgrades[nearest].Value or 0
-            InfoFrame.ID.Value = item.ID
-            PurchaseButton.PriceFrame.PriceText.Text = SuffixHandler:Convert(TemporaryData:CalculateTixPerSecondCost(levelValue, nearest, InfoFrame.Amount.Value))
-            InfoFrame.LevelFrame.Level.Text = "Level " .. levelValue  
-            RewardsFrame["1"].RewardText.Text = "+".. SuffixHandler:Convert(item.Reward.AddPerSecond * InfoFrame.Amount.Value)
-            RewardsFrame["2"].RewardText.Text = "-".. SuffixHandler:Convert(item.Reward.AddConvert * InfoFrame.Amount.Value)
-            ButtonStatus:PurchasePerSecUpgrade(Player, nearest, InfoFrame.Amount.Value, PurchaseButton)
         end
     elseif shopInfo.Name == "UpgradeInfo" then
         local MaterialsHolder = InfoFrame.MaterialsFrame.MaterialsHolder

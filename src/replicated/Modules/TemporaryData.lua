@@ -8,7 +8,6 @@ local Data = ReplicatedStorage:WaitForChild("Data")
 local ProfileData = require(Data:WaitForChild("ProfileData"))
 
 local Upgrades = require(ReplicatedStorage.Data.Upgrades)
-local PerSecondUpgrades = require(ReplicatedStorage.Data.PerSecondUpgrades)
 local Accessories = require(ReplicatedStorage.Data.Accessories)
 local Cases = require(ReplicatedStorage.Data.Cases)
 local Materials = require(ReplicatedStorage.Data.Materials)
@@ -220,21 +219,6 @@ function TemporaryData:CalculateSpeedTixConvert(player, data)
     return speedTixConvert
 end
 
-function TemporaryData:CalculateTixPerSecondCost(owned, upgradeID, amount)
-	local cost = PerSecondUpgrades[upgradeID].Cost
-	local modifier = PerSecondUpgrades[upgradeID].Modifier
-	return math.ceil(cost*(modifier^(owned + amount)-modifier^(owned))/(modifier-1))
-end
-
-function TemporaryData:CalculateMaxTixPerSecondAmount(player, upgradeID)
-    local currencyAmount = player.ReplicatedData.Rocash
-    local owned = player.ReplicatedData["PerSecondUpgrades"]:FindFirstChild(upgradeID) and player.ReplicatedData["PerSecondUpgrades"]:FindFirstChild(upgradeID).Value or 0
-
-    local cost = PerSecondUpgrades[upgradeID].Cost
-	local modifier = PerSecondUpgrades[upgradeID].Modifier
-	return math.floor(math.log10((((currencyAmount.Value * (modifier - 1)) / cost) + (modifier ^ owned)) / (modifier ^ owned)) / math.log10(modifier))
-end
-
 function TemporaryData:CalculateMaxCases(player, caseID)
 
     local case = Cases[caseID]
@@ -289,7 +273,6 @@ function TemporaryData:CalculateMaxCases(player, caseID)
         end
     end
 
-    print(amount)
     return amount
 end
 
@@ -297,19 +280,18 @@ end
 function TemporaryData:CalculateRebirthUpgradeCost(owned, upgrade, amount)
 	local cost = RebirthUpgrades[upgrade].Cost
 	local modifier = RebirthUpgrades[upgrade].Modifier
-	return math.ceil(cost*(modifier^(owned + amount)-modifier^(owned))/(modifier-1))
+
+    if owned == 0 then
+        return cost
+    else
+        return math.ceil(cost*(modifier^(owned + amount)-modifier^(owned))/(modifier-1))
+    end
 end
 
 function TemporaryData:CalculateTixPerSecond(player, data)
     TemporaryData:CalculateAccessories(player, data)
     TemporaryData:CalculateRebirthUpgrades(player, data)
 	local tixPerSecond = 0
-	for upgrade, value in data.PerSecondUpgrades do
-        if PerSecondUpgrades[upgrade] then
-            local reward = PerSecondUpgrades[upgrade].Reward.AddPerSecond
-            tixPerSecond += value * reward
-        end
-	end
     player.TemporaryData.TixPerSecond.Value = tixPerSecond * (1 + player.TemporaryData.RebirthMultPerSecond.Value / 100)
 	return tixPerSecond
 end
@@ -318,12 +300,6 @@ function TemporaryData:CalculateConvertPerSecond(player, data)
     TemporaryData:CalculateAccessories(player, data)
     TemporaryData:CalculateRebirthUpgrades(player, data)
 	local convertPerSecond = 0
-	for upgrade, value in data.PerSecondUpgrades do
-        if PerSecondUpgrades[upgrade] then
-            local reward = PerSecondUpgrades[upgrade].Reward.AddConvert
-            convertPerSecond += value * reward
-        end
-	end
     player.TemporaryData.ConvertPerSecond.Value = convertPerSecond
 	return convertPerSecond
 end
@@ -373,7 +349,6 @@ function TemporaryData:FormatNumber(num)
 end
 
 function TemporaryData:WeightedPercent(weight, totalWeight)
- 
     return TemporaryData:FormatNumber((weight / totalWeight) * 100)
 end
 
@@ -392,16 +367,16 @@ function TemporaryData:Setup(player, data)
     TemporaryData:CalculateCriticalPower(player, data)
 end
 
-function TemporaryData:CalculateMaterialInfo(player, itemValue)
-
+function TemporaryData:CalculateMaterialInfo(player, accessory)
+    local accessoryRarity = accessory.Rarity
+    local itemValue = accessory.Value
     for _, material in Materials do
-        if material.Rarity and itemValue >= material.Value[1] and itemValue <= material.Value[2] then
+        if material.Rarity == accessoryRarity then
             local materialID = material.ID
             local minVal = material.Value[1]
             local maxVal = material.Value[2]
             local maxQuantity = player.TemporaryData.MaterialMaxDrop.Value
             local minQuantity = (player.TemporaryData.MaterialMaxDrop.Value - TemporaryProfileData.MaterialMaxDrop.Value) + 1
-            print(minQuantity)
             local chanceToReceive = player.TemporaryData.MaterialDropChance.Value / 100
             local quantity = math.floor(minQuantity + (itemValue - minVal) * ((maxQuantity - minQuantity) / (maxVal - minVal)))
 
@@ -411,7 +386,6 @@ function TemporaryData:CalculateMaterialInfo(player, itemValue)
 end
 
 function TemporaryData:CalculateMultipleMaterialInfo(player, multiSelected)
-
     local materialID;
     local totalQuantity = 0
     local chanceToReceive = player.TemporaryData.MaterialDropChance.Value / 100
@@ -423,7 +397,6 @@ function TemporaryData:CalculateMultipleMaterialInfo(player, multiSelected)
     for _, material in Materials do
         if material.Rarity and itemSelectedValue >= material.Value[1] and itemSelectedValue <= material.Value[2] then
             materialID = material.ID
-            print(materialID)
             break
         end
     end
@@ -441,7 +414,6 @@ function TemporaryData:CalculateMultipleMaterialInfo(player, multiSelected)
         totalQuantity += quantity
     end
     
-    print(totalQuantity)
     return totalQuantity, chanceToReceive, materialID
 
 end
@@ -472,7 +444,6 @@ function TemporaryData:CalculateTag(player, GUID)
                     return RarityTags[rarity] .. ID .. value .. GUID
                 end
             else
-                print(value, ID)
                 return RarityTags[rarity] .. ID .. value .. GUID
             end
         end
@@ -480,7 +451,6 @@ function TemporaryData:CalculateTag(player, GUID)
 end
 
 function TemporaryData:GetBestAccessory(player)
-
     local ReplicatedData = player.ReplicatedData
     local ReplicatedAccessories = ReplicatedData.Accessories
 

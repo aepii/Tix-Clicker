@@ -14,10 +14,10 @@ local ReplicatedData = Player:WaitForChild("ReplicatedData")
 local ReplicatedTemporaryData = Player:WaitForChild("TemporaryData")
 local leaderstats = Player:WaitForChild("leaderstats")
 
-local TixLeaderstat = leaderstats[TemporaryData:GetLeaderstatDisplayName("Tix")]
-local RocashLeaderstat = leaderstats[TemporaryData:GetLeaderstatDisplayName("Rocash")]
-local RebirthTixLeaderstat = leaderstats[TemporaryData:GetLeaderstatDisplayName("Rebirth Tix")]
-local ValueLeaderstat = leaderstats[TemporaryData:GetLeaderstatDisplayName("Value")]
+local TixLeaderstat = leaderstats:WaitForChild(TemporaryData:GetLeaderstatDisplayName("Tix"))
+local RocashLeaderstat = leaderstats:WaitForChild(TemporaryData:GetLeaderstatDisplayName("Rocash"))
+local RebirthTixLeaderstat = leaderstats:WaitForChild(TemporaryData:GetLeaderstatDisplayName("Rebirth Tix"))
+local ValueLeaderstat = leaderstats:WaitForChild(TemporaryData:GetLeaderstatDisplayName("Value"))
 
 local TixStorage = ReplicatedTemporaryData:WaitForChild("TixStorage")
 local Tix = ReplicatedData:WaitForChild("Tix")

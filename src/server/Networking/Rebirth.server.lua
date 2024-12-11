@@ -19,20 +19,13 @@ local TemporaryData = require(Modules.TemporaryData)
 local Networking = ReplicatedStorage.Networking
 local RebirthRemote = Networking.Rebirth
 local UpdateClientInventoryRemote = Networking.UpdateClientInventory
-local BindableEquipTix = Networking.BindableEquipTix
 local AnimateCircleRemote = Networking.AnimateCircle
 
 ---- Private Functions ----
 
 local function setData(player, profile, rebirthTixReward)
-    DataManager:ArrayClear(player, profile, {"Upgrades"})
-    DataManager:ArrayClear(player, profile, {"PerSecondUpgrades"})
-
     DataManager:SetValue(player, profile, {"Tix"}, 0)
     DataManager:SetValue(player, profile, {"Rocash"}, 0)
-    DataManager:SetValue(player, profile, {"ToolEquipped"}, "U1")
-
-    DataManager:ArrayInsert(player, profile, {"Upgrades"}, "U1")
 
     DataManager:SetValue(player, profile, {"Rebirth Tix"}, (profile.Data["Rebirth Tix"] or 0) + rebirthTixReward)
     DataManager:SetValue(player, profile, {"Lifetime Rebirth Tix"}, (profile.Data["Lifetime Rebirth Tix"] or 0) + rebirthTixReward)
@@ -52,7 +45,6 @@ local function setClientData(player, profile)
 end
 
 local function resetPhysicalStates(player, profile)
-    BindableEquipTix:Fire(player, "U1")
     local character = player.Character or player.CharacterAdded:Wait()
     local torso = character:FindFirstChild("HumanoidRootPart")
     AnimateCircleRemote:FireClient(player)

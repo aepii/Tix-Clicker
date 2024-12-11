@@ -21,7 +21,7 @@ local DataManager = require(ServerScriptService.Data.DataManager)
 ---- Private Variables ----
 
 local GameProfileStore = ProfileService.GetProfileStore(
-	"PlayerData27",
+	"PlayerData30",
 	ProfileTemplate
 )
 
@@ -30,6 +30,7 @@ local PlayerProfiles = {} -- [player]
 ---- Private Functions ----
 
 local function playerAdded(player)
+	print("PLAYER JOINED")
 	local profile = GameProfileStore:LoadProfileAsync("Player_" .. player.UserId)
 	if profile ~= nil then
 		profile:AddUserId(player.UserId) -- GDPR compliance
@@ -43,6 +44,7 @@ local function playerAdded(player)
 			-- Replica service
 			PlayerProfiles[player] = profile
 			-- A profile has been successfully loaded:
+			print("SUCCESSFULLY LOADED")
 			DataManager:InitializeReplicatedData(player, profile) 
 		else
 			-- Player left before the profile loaded:
@@ -84,13 +86,14 @@ end
 
 function ProfileManager:GetProfile(player)
 	local count = 0
-
-	while count < 3 do
+	print("FETCH ATTEMPT")
+	while count < 5 do
 		local profile = PlayerProfiles[player]
 		if profile ~= nil then
 			return profile
 		end
 		count += 1
+		print("ATTEMPT TRY AGAIN", count)
 		task.wait(count)
 	end
 
