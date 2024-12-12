@@ -208,6 +208,10 @@ ProfileData.TemporaryData = {
 		Value = 0,
 		Type = "Number"
 	};
+	["RebirthLuck"] = {
+		Value = 0,
+		Type = "Number"
+	};
 }
 
 ProfileData.leaderstats = {

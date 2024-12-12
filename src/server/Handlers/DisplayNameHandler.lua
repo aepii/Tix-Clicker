@@ -63,7 +63,6 @@ function DisplayNameHandler:Init()
         player.CharacterAdded:Connect(function(character)
             local profile = ProfileCacher:GetProfile(player)
             local data = profile.Data
-            task.wait(1)
             local displayUI = ReplicatedStorage:WaitForChild("DisplayNameUI"):Clone()
             displayUI.Parent = character:WaitForChild("Head")
             updateDisplay(player, data)

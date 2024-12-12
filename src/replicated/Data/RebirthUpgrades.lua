@@ -125,6 +125,21 @@ local rebirthUpgrades = {
 		Image = "rbxassetid://17875932069";
 		ID = "R9"
 	};
+	R10 = {
+		Name = "Increase Luck";
+		Cost = 2;
+		Modifier = 2;
+		Limit = 100;
+		RewardType = "RebirthLuck";
+		Initial = 1;
+		Reward = 0.25;
+		Type = "Increase";
+		InitialMessage = "Current Luck : &";
+		RewardMessage = "Increase Luck by 0.25!";
+		Image = "rbxassetid://115783868265013";
+		ID = "R10"
+	};
+	
 	--[[R10 = {
 		Name = "Speed Up Tix Conversion";
 		Cost = 2;

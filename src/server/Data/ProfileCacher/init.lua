@@ -35,7 +35,6 @@ local PlayerProfiles = {} -- [player]
 ---- Private Functions ----
 
 local function playerAdded(player)
-	print("PLAYER JOINED", os.time())
 	local profile = GameProfileStore:LoadProfileAsync("Player_" .. player.UserId)
 	if profile ~= nil then
 		profile:AddUserId(player.UserId) -- GDPR compliance

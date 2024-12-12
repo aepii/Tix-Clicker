@@ -141,6 +141,7 @@ function TemporaryData:CalculateRebirthUpgrades(player, data)
     TemporaryData:CalculateSpeedTixConvert(player, data)
     TemporaryData:CalculateCriticalChance(player, data)
     TemporaryData:CalculateCriticalPower(player, data)
+    TemporaryData:CalculateLuck(player, data)
 end
 
 function TemporaryData:CalculateTixPerClick(player, data)
@@ -211,6 +212,12 @@ function TemporaryData:CalculateCriticalPower(player, data)
     local criticalPower = TemporaryProfileData.CriticalPower.Value + player.TemporaryData.RebirthCriticalPower.Value
     player.TemporaryData.CriticalPower.Value = criticalPower
     return criticalPower
+end
+
+function TemporaryData:CalculateLuck(player, data)
+    local luck = TemporaryProfileData.Luck.Value + player.TemporaryData.RebirthLuck.Value
+    player.TemporaryData.Luck.Value = luck
+    return luck
 end
 
 function TemporaryData:CalculateSpeedTixConvert(player, data)
@@ -357,6 +364,7 @@ function TemporaryData:Setup(player, data)
 	TemporaryData:CalculateTixPerClick(player, data)
 	TemporaryData:CalculateTixPerSecond(player, data)
     TemporaryData:CalculateConvertPerSecond(player, data)
+
     TemporaryData:CalculateAccessoriesLimit(player, data)
     TemporaryData:CalculateEquippedAccessoriesLimit(player, data)
     TemporaryData:CalculateMaterialMaxDrop(player, data)
@@ -365,6 +373,7 @@ function TemporaryData:Setup(player, data)
     TemporaryData:CalculateSpeedTixConvert(player, data)
     TemporaryData:CalculateCriticalChance(player, data)
     TemporaryData:CalculateCriticalPower(player, data)
+    TemporaryData:CalculateLuck(player, data)
 end
 
 function TemporaryData:CalculateMaterialInfo(player, accessory)
