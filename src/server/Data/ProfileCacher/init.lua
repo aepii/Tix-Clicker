@@ -90,7 +90,7 @@ end
 
 function ProfileManager:GetProfile(player)
 	local count = 0
-	print("FETCH ATTEMPT")
+	
 	while count < 5 do
 		local profile = PlayerProfiles[player]
 		if profile ~= nil then

@@ -21,6 +21,7 @@ local SettingsMenuUI = require(UI:WaitForChild("SettingsMenu"):WaitForChild("Set
 local ShopMenuUI = require(UI:WaitForChild("ShopMenu"):WaitForChild("ShopMenuUI"))
 local StatsUI = require(UI:WaitForChild("Stats"):WaitForChild("StatsUI"))
 local TixInventoryUI = require(UI:WaitForChild("TixInventory"):WaitForChild("TixInventoryUI"))
+local LeaderboardsUI = require(UI:WaitForChild("Leaderboards"):WaitForChild("LeaderboardsUI"))
 
 ---- Networking ----
 
@@ -48,5 +49,6 @@ LoadUI.OnClientEvent:Connect(function()
   ShopMenuUI:Init()
   StatsUI:Init()
   TixInventoryUI:Init()
+  LeaderboardsUI:Init()
   print("Finished Loading UI")
 end)

@@ -16,7 +16,7 @@ function PlayerCollisionHandler:Init()
     end
 
     local function HandleCharacterAdded(character)
-        for _, part in ipairs(character:GetDescendants()) do
+        for _, part in character:GetDescendants() do
             ChangeGroup(part)
         end
     end

@@ -8,6 +8,7 @@ local PlaytimeHandler = require(Handlers.PlaytimeHandler)
 local TixPerSecondHandler = require(Handlers.TixPerSecondHandler)
 local TixRageMeterHandler = require(Handlers.TixRageMeterHandler)
 local TeleportHandler = require(Handlers.TeleportHandler)
+local LeaderboardHandler = require(Handlers.LeaderboardHandler)
 
 local HandlersLoader = {}
 
@@ -21,6 +22,7 @@ function HandlersLoader:Init()
   TixPerSecondHandler:Init()
   TixRageMeterHandler:Init()
   TeleportHandler:Init()
+  LeaderboardHandler:Init()
 end
 
 return HandlersLoader

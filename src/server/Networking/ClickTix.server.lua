@@ -45,7 +45,6 @@ ClickTixRemote.OnServerInvoke = (function(player)
     local elapsedTime = os.clock() - lastClickTime.Value 
     local tixValue;
 
-
     if temporaryData.ActiveCaseOpening.Value == false then
         if elapsedTime >= (1/temporaryData.ClickRate.Value) then
             lastClickTime.Value = os.clock()

@@ -24,7 +24,8 @@ function PortalsUI:Init()
     local Portals = Workspace:WaitForChild("Portals")
 
     local PlayerGui = Player:WaitForChild("PlayerGui")
-    local PortalUI = PlayerGui:WaitForChild("PortalUI")
+    local PortalUIHolder = PlayerGui:WaitForChild("PortalUI")
+    local PortalUI = PortalUIHolder:WaitForChild("PortalUI")
 
     local PortalScript = script.Parent.Portal
     PortalScript.Name = "PortalScript"
@@ -41,7 +42,7 @@ function PortalsUI:Init()
             local CostText = PurchaseButton.Cost.IconImage.Amount
             portalUI.Adornee = portal:WaitForChild("Portal").TouchPart
             portalUI.Name = portalID
-            portalUI.Parent = PlayerGui
+            portalUI.Parent = PortalUI
             CostText.Text = SuffixHandler:Convert(Zones[portalID].Cost.RebirthTix)
             portalUI.PortalScript.Enabled = true
         end

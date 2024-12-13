@@ -1,6 +1,6 @@
 local CaseOpeningUI = {}
 
-function CaseOpeningUI:Init(Plyer)
+function CaseOpeningUI:Init()
     ---- Services ----
 
     local Players = game:GetService("Players")
