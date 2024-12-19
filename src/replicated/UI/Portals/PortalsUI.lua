@@ -42,7 +42,7 @@ function PortalsUI:Init()
             local CostText = PurchaseButton.Cost.IconImage.Amount
             portalUI.Adornee = portal:WaitForChild("Portal").TouchPart
             portalUI.Name = portalID
-            portalUI.Parent = PortalUI
+            portalUI.Parent = PortalUIHolder
             CostText.Text = SuffixHandler:Convert(Zones[portalID].Cost.RebirthTix)
             portalUI.PortalScript.Enabled = true
         end

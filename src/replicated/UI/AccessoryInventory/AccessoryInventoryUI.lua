@@ -89,7 +89,7 @@ function AccessoryInventoryUI:Init()
     end)
 
 
-    local function equipAccessory(accessoryName ) --standard/collectible
+    local function equipAccessory(accessoryName)
         EquipAccessoryRemote:InvokeServer(accessoryName)
     end
 

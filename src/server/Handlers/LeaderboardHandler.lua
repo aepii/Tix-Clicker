@@ -18,6 +18,7 @@ function LeaderboardHandler:Init()
 
   -- Create OrderedDataStores for stats
   local dataStores = {}
+  local allLeaderboardData = {}
   for _, stat in stats do
     dataStores[stat.."Leaderboard"] = game:GetService("DataStoreService"):GetOrderedDataStore(stat)
   end
@@ -62,18 +63,22 @@ function LeaderboardHandler:Init()
     end
 
     -- Notify all clients about leaderboard updates
-    local leaderboardData = {}
     for _, stat in stats do
-      leaderboardData[stat] = getLeaderboardData(stat)
+      allLeaderboardData[stat] = getLeaderboardData(stat)
     end
-    UpdateLeaderboard:FireAllClients(leaderboardData)
+    
+    UpdateLeaderboard:FireAllClients(allLeaderboardData)
   end
+
+  UpdateLeaderboard.OnServerEvent:Connect(function(player)
+    UpdateLeaderboard:FireClient(player, allLeaderboardData)
+  end)
 
   -- Update player data every 60 seconds
   task.spawn(function()
     while true do
       updatePlayerData()
-      task.wait(15) 
+      task.wait(60) 
     end
   end)
 

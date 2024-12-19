@@ -54,7 +54,6 @@ EquipAccessoryRemote.OnServerInvoke = function(player, GUID)
     local equippedAccessories = data.EquippedAccessories
     local accessoriesInventory = data.Accessories
     local ID = accessoriesInventory[GUID]
-
     if temporaryData.ActiveCaseOpening.Value == false then
         if data.Accessories[GUID] then
             local count = 0

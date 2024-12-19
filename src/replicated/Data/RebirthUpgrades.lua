@@ -1,145 +1,145 @@
 local rebirthUpgrades = {
 	R1 = {
-		Name = "Multiply Tix Per Click";
-		Cost = 2;
-		Modifier = 1.35;
-		Limit = 100;
-		RewardType = "RebirthMultPerClick";
-		Initial = 100;
-		Reward = 25;
-		Type = "Multiply";
-		InitialMessage = "Current Rebirth Multiplier : &";
-		RewardMessage = "Multiply Tix Per Click Multiplier by 25%";
-		Image = "rbxassetid://9468220156";
-		ID = "R1"
-	};
+		Name = "Multiply Tix Per Click",
+		Cost = 2,
+		Modifier = 1.35,
+		Limit = 100,
+		RewardType = "RebirthMultPerClick",
+		Initial = 100,
+		Reward = 25,
+		Type = "Multiply",
+		InitialMessage = "Current Rebirth Multiplier : &",
+		RewardMessage = "Multiply Tix Per Click Multiplier by 25%",
+		Image = "rbxassetid://9468220156",
+		ID = "R1",
+	},
 	R2 = {
-		Name = "Multiply Tix Storage";
-		Cost = 1;
-		Modifier = 1.25;
-		Limit = 100;
-		RewardType = "RebirthMultStorage";
-		Initial = 100;
-		Reward = 25;
-		Type = "Multiply";
-		InitialMessage = "Current Rebirth Multiplier : &";
-		RewardMessage = "Multiply Tix Storage Multiplier by 25%";
-		Image = "rbxassetid://17801169208";
-		ID = "R2"
-	};
+		Name = "Multiply Tix Storage",
+		Cost = 1,
+		Modifier = 1.25,
+		Limit = 100,
+		RewardType = "RebirthMultStorage",
+		Initial = 100,
+		Reward = 25,
+		Type = "Multiply",
+		InitialMessage = "Current Rebirth Multiplier : &",
+		RewardMessage = "Multiply Tix Storage Multiplier by 25%",
+		Image = "rbxassetid://17801169208",
+		ID = "R2",
+	},
 	R3 = {
-		Name = "Increase Material Drop Chance";
-		Cost = 2;
-		Modifier = 3.05;
-		Limit = 16;
-		RewardType = "RebirthMaterialDropChance";
-		Initial = 50;
-		Reward = 2.5;
-		Type = "Increase";
-		InitialMessage = "Current Material Drop Chance : &%";
-		RewardMessage = "Increase Material Drop Chance by 2.5%!";
-		Image = "rbxassetid://17875994609";
-		ID = "R3"
-	};
+		Name = "Increase Material Drop Chance",
+		Cost = 2,
+		Modifier = 3.05,
+		Limit = 16,
+		RewardType = "RebirthMaterialDropChance",
+		Initial = 50,
+		Reward = 2.5,
+		Type = "Increase",
+		InitialMessage = "Current Material Drop Chance : &%",
+		RewardMessage = "Increase Material Drop Chance by 2.5%!",
+		Image = "rbxassetid://17875994609",
+		ID = "R3",
+	},
 	R4 = {
-		Name = "Increase Material Max Drop";
-		Cost = 5;
-		Modifier = 5.4;
-		Limit = 10;
-		RewardType = "RebirthMaterialMaxDrop";
-		Initial = 5;
-		Reward = 1;
-		Type = "Increase";
-		InitialMessage = "Current Max Material Drop : &";
-		RewardMessage = "Increase Max Material Drop by 1!";
-		Image = "rbxassetid://17875994917";
-		ID = "R4"
-	};
+		Name = "Increase Material Max Drop",
+		Cost = 5,
+		Modifier = 5.4,
+		Limit = 10,
+		RewardType = "RebirthMaterialMaxDrop",
+		Initial = 5,
+		Reward = 1,
+		Type = "Increase",
+		InitialMessage = "Current Max Material Drop : &",
+		RewardMessage = "Increase Max Material Drop by 1!",
+		Image = "rbxassetid://17875994917",
+		ID = "R4",
+	},
 	R5 = {
-		Name = "Increase Accessory Storage";
-		Cost = 1;
-		Modifier = 1.25;
-		Limit = 100;
-		RewardType = "RebirthAccessoriesLimit";
-		Initial = 50;
-		Reward = 10;
-		Type = "Increase";
-		InitialMessage = "Current Accessory Storage : &";
-		RewardMessage = "Increase Accessory Storage by 10!";
-		Image = "rbxassetid://123385073841937";
-		ID = "R5"
-	};
+		Name = "Increase Accessory Storage",
+		Cost = 1,
+		Modifier = 1.25,
+		Limit = 100,
+		RewardType = "RebirthAccessoriesLimit",
+		Initial = 50,
+		Reward = 10,
+		Type = "Increase",
+		InitialMessage = "Current Accessory Storage : &",
+		RewardMessage = "Increase Accessory Storage by 10!",
+		Image = "rbxassetid://123385073841937",
+		ID = "R5",
+	},
 	R6 = {
-		Name = "Increase Equipped Accessories";
-		Cost = 50;
-		Modifier = 8;
-		Limit = 7;
-		RewardType = "RebirthEquippedAccessoriesLimit";
-		Initial = 3;
-		Reward = 1;
-		Type = "Increase";
-		InitialMessage = "Current Equipped Accessories Limit : &";
-		RewardMessage = "Increase Equipped Accessories by 1!";
-		Image = "rbxassetid://108020031468790";
-		ID = "R6"
-	};
+		Name = "Increase Equipped Accessories",
+		Cost = 50,
+		Modifier = 8,
+		Limit = 7,
+		RewardType = "RebirthEquippedAccessoriesLimit",
+		Initial = 3,
+		Reward = 1,
+		Type = "Increase",
+		InitialMessage = "Current Equipped Accessories Limit : &",
+		RewardMessage = "Increase Equipped Accessories by 1!",
+		Image = "rbxassetid://108020031468790",
+		ID = "R6",
+	},
 	R7 = {
-		Name = "Speed Up Case Animation";
-		Cost = 5;
-		Modifier = 8.2;
-		Limit = 15;
-		RewardType = "RebirthCaseTime";
-		Initial = 5;
-		Reward = 0.25;
-		Type = "Decrease";
-		InitialMessage = "Current Time : &s";
-		RewardMessage = "Decrease Time by 0.25s!";
-		Image = "rbxassetid://74555789904452";
-		ID = "R7"
-	};
+		Name = "Speed Up Case Animation",
+		Cost = 5,
+		Modifier = 8.2,
+		Limit = 15,
+		RewardType = "RebirthCaseTime",
+		Initial = 5,
+		Reward = 0.25,
+		Type = "Decrease",
+		InitialMessage = "Current Time : &s",
+		RewardMessage = "Decrease Time by 0.25s!",
+		Image = "rbxassetid://74555789904452",
+		ID = "R7",
+	},
 	R8 = {
-		Name = "Increase Critical Chance";
-		Cost = 2;
-		Modifier = 2.43;
-		Limit = 20;
-		RewardType = "RebirthCriticalChance";
-		Initial = 1;
-		Reward = 0.25;
-		Type = "Increase";
-		InitialMessage = "Current Critical Chance : &%";
-		RewardMessage = "Increase Critical Chance by 0.25%!";
-		Image = "rbxassetid://17875880108";
-		ID = "R8"
-	};
+		Name = "Increase Critical Chance",
+		Cost = 2,
+		Modifier = 2.43,
+		Limit = 20,
+		RewardType = "RebirthCriticalChance",
+		Initial = 1,
+		Reward = 0.25,
+		Type = "Increase",
+		InitialMessage = "Current Critical Chance : &%",
+		RewardMessage = "Increase Critical Chance by 0.25%!",
+		Image = "rbxassetid://17875880108",
+		ID = "R8",
+	},
 	R9 = {
-		Name = "Increase Critical Power";
-		Cost = 2;
-		Modifier = 2.43;
-		Limit = 30;
-		RewardType = "RebirthCriticalPower";
-		Initial = 100;
-		Reward = 5;
-		Type = "Increase";
-		InitialMessage = "Current Critical Power : &%";
-		RewardMessage = "Increase Critical Power by 5%!";
-		Image = "rbxassetid://17875932069";
-		ID = "R9"
-	};
+		Name = "Increase Critical Power",
+		Cost = 2,
+		Modifier = 2.43,
+		Limit = 30,
+		RewardType = "RebirthCriticalPower",
+		Initial = 100,
+		Reward = 5,
+		Type = "Increase",
+		InitialMessage = "Current Critical Power : &%",
+		RewardMessage = "Increase Critical Power by 5%!",
+		Image = "rbxassetid://17875932069",
+		ID = "R9",
+	},
 	R10 = {
-		Name = "Increase Luck";
-		Cost = 2;
-		Modifier = 2;
-		Limit = 100;
-		RewardType = "RebirthLuck";
-		Initial = 1;
-		Reward = 0.25;
-		Type = "Increase";
-		InitialMessage = "Current Luck : &";
-		RewardMessage = "Increase Luck by 0.25!";
-		Image = "rbxassetid://115783868265013";
-		ID = "R10"
-	};
-	
+		Name = "Increase Luck",
+		Cost = 2,
+		Modifier = 2,
+		Limit = 100,
+		RewardType = "RebirthLuck",
+		Initial = 1,
+		Reward = 0.25,
+		Type = "Increase",
+		InitialMessage = "Current Luck : &",
+		RewardMessage = "Increase Luck by 0.25!",
+		Image = "rbxassetid://115783868265013",
+		ID = "R10",
+	},
+
 	--[[R10 = {
 		Name = "Speed Up Tix Conversion";
 		Cost = 2;
@@ -194,7 +194,8 @@ local rebirthUpgrades = {
 		RewardMessage = "Increase Tix Per Second Multiplier by 25%";
 		Image = "rbxassetid://";
 		ID = "R11"
-	};]]--
+	};]]
+	--
 }
 
 return rebirthUpgrades

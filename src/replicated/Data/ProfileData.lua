@@ -1,236 +1,238 @@
 local ProfileData = {}
 
 ProfileData.Data = {
-	["Tix"] = 0;
-	["Rocash"] = 0;
-	["Rebirth Tix"] = 0;
+	["Tix"] = 0,
+	["Rocash"] = 0,
+	["Rebirth Tix"] = 0,
 
-	["Join Time"] = os.time();
-	["Lifetime Tix"] = 0;
-	["Lifetime Rocash"] = 0;
-	["Lifetime Rebirth Tix"] = 0;
-	["Lifetime Value"] = 0;
-	["Lifetime Cases"] = 0;
-	["Lifetime Scrapped"] = 0;
-	["Lifetime Materials"] = 0;
-	["Lifetime Robux Spent"] = 0;
-	["Lifetime Playtime"] = 0;
+	["Join Time"] = os.time(),
+	["Lifetime Tix"] = 0,
+	["Lifetime Rocash"] = 0,
+	["Lifetime Rebirth Tix"] = 0,
+	["Lifetime Value"] = 0,
+	["Lifetime Cases"] = 0,
+	["Lifetime Scrapped"] = 0,
+	["Lifetime Materials"] = 0,
+	["Lifetime Robux Spent"] = 0,
+	["Lifetime Playtime"] = 0,
 
-	["ToolEquipped"] = "U1";
-	["EquippedAccessories"] = {};
-	["EquippedAmulet"] = "";
+	["ToolEquipped"] = "U1",
+	["EquippedAccessories"] = {},
+	["EquippedAmulet"] = "",
 
-	["AlphaTester"] = true;
-	
-	["Upgrades"] = {"U1"};
-	
-	["RebirthUpgrades"] = {
-	};
+	["AlphaTester"] = true,
 
-	["Accessories"] = {
-	};
+	["Upgrades"] = { "U1" },
 
-	["Cases"] = {
-	};
+	["RebirthUpgrades"] = {},
 
-	["Materials"] = {
-	};
+	["Accessories"] = {},
 
-	["Zones"] = {"Z0", "Z1"};
+	["Cases"] = {},
+
+	["Materials"] = {},
+
+	["Zones"] = { "Z0", "Z1" },
+
+	["Achievements"] = {},
 }
 
 ProfileData.TemporaryData = {
 	["LastClickTime"] = {
 		Value = 0,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["ActiveCaseOpening"] = {
 		Value = false,
-		Type = "Bool"
-	};
+		Type = "Bool",
+	},
 	["XP"] = {
 		Value = 0,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["RequiredXP"] = {
 		Value = 1000,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["RageModeTime"] = {
 		Value = 10,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["RageMode"] = {
 		Value = false,
-		Type = "Bool"
-	};
+		Type = "Bool",
+	},
 	["TixPerClick"] = {
 		Value = 1,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["TixPerSecond"] = {
 		Value = 0,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["ConvertPerSecond"] = {
 		Value = 0,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["QueuedTix"] = {
 		Value = 0,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["Value"] = {
 		Value = 0,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["TixStorage"] = {
 		Value = 20,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["CriticalChance"] = {
 		Value = 1,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["ClickRate"] = {
 		Value = 20,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["EquippedAccessoriesLimit"] = {
 		Value = 3,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["AccessoriesLimit"] = {
 		Value = 50,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["AddPerClick"] = {
 		Value = 0,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["AddStorage"] = {
 		Value = 0,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["MultPerClick"] = {
 		Value = 0,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["MultStorage"] = {
 		Value = 0,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["MaterialDropChance"] = {
 		Value = 50,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["MaterialMaxDrop"] = {
 		Value = 5,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["CaseTime"] = {
 		Value = 5,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["CriticalPower"] = {
 		Value = 100,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["Luck"] = {
 		Value = 1,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["MaxCaseOpenings"] = {
 		Value = 1,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["SpeedTixConvert"] = {
 		Value = 1,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["MultPerSecond"] = {
 		Value = 0,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["RageTime"] = {
 		Value = 10,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["RebirthMaterialDropChance"] = {
 		Value = 0,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["RebirthMaterialMaxDrop"] = {
 		Value = 0,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["RebirthMultPerClick"] = {
 		Value = 1,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["RebirthMultStorage"] = {
 		Value = 1,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["RebirthAccessoriesLimit"] = {
 		Value = 0,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["RebirthEquippedAccessoriesLimit"] = {
 		Value = 0,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["RebirthCaseTime"] = {
 		Value = 0,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["RebirthCriticalChance"] = {
 		Value = 0,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["RebirthCriticalPower"] = {
 		Value = 0,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["RebirthSpeedTixConvert"] = {
 		Value = 0,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["RebirthMultPerSecond"] = {
 		Value = 0,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["RebirthRequiredXP"] = {
 		Value = 0,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["RebirthRageTime"] = {
 		Value = 0,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
 	["RebirthLuck"] = {
 		Value = 0,
-		Type = "Number"
-	};
+		Type = "Number",
+	},
+	["AchievementCriticalPower"] = {
+		Value = 0,
+		Type = "Number",
+	},
 }
 
 ProfileData.leaderstats = {
 	[1] = {
 		ID = "Rebirth Tix",
-		DisplayName = "🌟 Rb Tix"
-	};
+		DisplayName = "🌟 Rb Tix",
+	},
 	[2] = {
 		ID = "Value",
-		DisplayName = "📈 Value"
-	};
+		DisplayName = "📈 Value",
+	},
 	[3] = {
 		ID = "Tix",
-		DisplayName = "🎟️ Tix"
-	};
+		DisplayName = "🎟️ Tix",
+	},
 	[4] = {
 		ID = "Rocash",
-		DisplayName = "💵 Rocash"
-	};
+		DisplayName = "💵 Rocash",
+	},
 }
 
 return ProfileData

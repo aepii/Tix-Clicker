@@ -1,4 +1,3 @@
-
 ---- Services ----
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -19,7 +18,7 @@ local typeMap = {
 	number = "NumberValue",
 	string = "StringValue",
 	boolean = "BoolValue",
-	table = "Folder"
+	table = "Folder",
 }
 
 local tableMap = {
@@ -30,6 +29,7 @@ local tableMap = {
 	["EquippedAccessories"] = "string",
 	["Materials"] = "number",
 	["Zones"] = "boolean",
+	["Achievements"] = "number",
 }
 
 ---- Private Functions ----
@@ -93,7 +93,6 @@ local function createLeaderstats(player, profile)
 		createdValue.Parent = leaderstats
 		updateLeaderstats(player, profile, createdValue, data.ID)
 	end
-
 end
 
 local function createTemporaryData(player, profile)
@@ -103,7 +102,7 @@ local function createTemporaryData(player, profile)
 	temporaryData.Parent = player
 
 	for index, data in temporaryProfile do
-		local createdValue = Instance.new(data.Type.."Value")
+		local createdValue = Instance.new(data.Type .. "Value")
 		createdValue.Name = index
 		createdValue.Value = data.Value
 		createdValue.Parent = temporaryData
@@ -136,33 +135,33 @@ function DataManager:SetValue(player, profile, path, key)
 
 	local response = "Exists"
 
-    -- Iterate through the path except for the last element
-    for i = 1, #path - 1 do
-        local pointer = path[i]
+	-- Iterate through the path except for the last element
+	for i = 1, #path - 1 do
+		local pointer = path[i]
 
-        -- If the part does not exist in profile, create an empty table for it
-        if currentProfile[pointer] == nil then
-            currentProfile[pointer] = {}
-        end
+		-- If the part does not exist in profile, create an empty table for it
+		if currentProfile[pointer] == nil then
+			currentProfile[pointer] = {}
+		end
 
-        -- Move to the next level in the path for profile
-        currentProfile = currentProfile[pointer]
-        -- Move to the next level in the path for player.ReplicatedData
-        currentReplicated = currentReplicated[pointer]
-    end
+		-- Move to the next level in the path for profile
+		currentProfile = currentProfile[pointer]
+		-- Move to the next level in the path for player.ReplicatedData
+		currentReplicated = currentReplicated[pointer]
+	end
 
 	local finalKey = path[#path]
 
 	if key == nil then
-        -- Handle deletion
-        currentProfile[finalKey] = nil
+		-- Handle deletion
+		currentProfile[finalKey] = nil
 
-        local finalValue = currentReplicated:FindFirstChild(finalKey)
-        if finalValue then
-            finalValue:Destroy()
-        end
+		local finalValue = currentReplicated:FindFirstChild(finalKey)
+		if finalValue then
+			finalValue:Destroy()
+		end
 
-        response = "Deleted"
+		response = "Deleted"
 	else
 		-- Set the value at the final path for profile
 		currentProfile[finalKey] = key
@@ -174,7 +173,7 @@ function DataManager:SetValue(player, profile, path, key)
 		if not finalValue then
 			local valueType = type(key)
 			local instanceClass = typeMap[valueType]
-			
+
 			finalValue = Instance.new(instanceClass)
 			finalValue.Name = finalKey
 			finalValue.Parent = currentReplicated
@@ -193,97 +192,97 @@ function DataManager:ArrayInsert(player, profile, path, key)
 
 	local response = "Exists"
 
-    -- Iterate through the path except for the last element
-    for i = 1, #path - 1 do
-        local pointer = path[i]
+	-- Iterate through the path except for the last element
+	for i = 1, #path - 1 do
+		local pointer = path[i]
 
-        -- If the part does not exist in profile, create an empty table for it
-        if currentProfile[pointer] == nil then
-            currentProfile[pointer] = {}
-        end
+		-- If the part does not exist in profile, create an empty table for it
+		if currentProfile[pointer] == nil then
+			currentProfile[pointer] = {}
+		end
 
-        -- Move to the next level in the path for profile
-        currentProfile = currentProfile[pointer]
-        -- Move to the next level in the path for player.ReplicatedData
-        currentReplicated = currentReplicated[pointer]
-    end
+		-- Move to the next level in the path for profile
+		currentProfile = currentProfile[pointer]
+		-- Move to the next level in the path for player.ReplicatedData
+		currentReplicated = currentReplicated[pointer]
+	end
 
 	local finalKey = path[#path]
 
-    -- Ensure the final path in profile is an array
-    if currentProfile[finalKey] == nil then
-        currentProfile[finalKey] = {}
-    end
+	-- Ensure the final path in profile is an array
+	if currentProfile[finalKey] == nil then
+		currentProfile[finalKey] = {}
+	end
 
-    -- Append the element to the array in profile
-    table.insert(currentProfile[finalKey], key)
+	-- Append the element to the array in profile
+	table.insert(currentProfile[finalKey], key)
 
-    -- Handle setting the value in player.ReplicatedData
-    local finalValue = currentReplicated:FindFirstChild(finalKey)
+	-- Handle setting the value in player.ReplicatedData
+	local finalValue = currentReplicated:FindFirstChild(finalKey)
 
-    -- If the final value does not exist, create a Folder to hold the array elements
-    if not finalValue then
-        finalValue = Instance.new("Folder")
-        finalValue.Name = finalKey
-        finalValue.Parent = currentReplicated
+	-- If the final value does not exist, create a Folder to hold the array elements
+	if not finalValue then
+		finalValue = Instance.new("Folder")
+		finalValue.Name = finalKey
+		finalValue.Parent = currentReplicated
 		response = "Created"
-    end
+	end
 
-	 -- Clear existing children in the final value
-	 for _, child in pairs(finalValue:GetChildren()) do
-        child:Destroy()
-    end
+	-- Clear existing children in the final value
+	for _, child in pairs(finalValue:GetChildren()) do
+		child:Destroy()
+	end
 
-    -- Create the appropriate value instances for each element in the array
-    for index, element in currentProfile[finalKey] do
-        local valueInstance = Instance.new("BoolValue")
-        valueInstance.Name = element
-        valueInstance.Parent = finalValue
-    end
+	-- Create the appropriate value instances for each element in the array
+	for index, element in currentProfile[finalKey] do
+		local valueInstance = Instance.new("BoolValue")
+		valueInstance.Name = element
+		valueInstance.Parent = finalValue
+	end
 
 	return response
 end
 
 function DataManager:ArrayClear(player, profile, path)
-    local currentProfile = profile.Data
-    local currentReplicated = player.ReplicatedData
+	local currentProfile = profile.Data
+	local currentReplicated = player.ReplicatedData
 
-    -- Iterate through the path except for the last element
-    for i = 1, #path - 1 do
-        local pointer = path[i]
+	-- Iterate through the path except for the last element
+	for i = 1, #path - 1 do
+		local pointer = path[i]
 
-        -- If the part does not exist in profile, exit the loop
-        if currentProfile[pointer] == nil then
-            return "Path not found"
-        end
+		-- If the part does not exist in profile, exit the loop
+		if currentProfile[pointer] == nil then
+			return "Path not found"
+		end
 
-        -- Move to the next level in the path for profile
-        currentProfile = currentProfile[pointer]
-        -- Move to the next level in the path for player.ReplicatedData
-        currentReplicated = currentReplicated[pointer]
-    end
+		-- Move to the next level in the path for profile
+		currentProfile = currentProfile[pointer]
+		-- Move to the next level in the path for player.ReplicatedData
+		currentReplicated = currentReplicated[pointer]
+	end
 
-    local finalKey = path[#path]
+	local finalKey = path[#path]
 
-    -- Ensure the final path in profile is an array
-    if currentProfile[finalKey] == nil then
-        return "Array not found"
-    end
+	-- Ensure the final path in profile is an array
+	if currentProfile[finalKey] == nil then
+		return "Array not found"
+	end
 
-    -- Clear the array in profile
-    currentProfile[finalKey] = {}
+	-- Clear the array in profile
+	currentProfile[finalKey] = {}
 
-    -- Handle clearing the replicated data
-    local finalValue = currentReplicated:FindFirstChild(finalKey)
+	-- Handle clearing the replicated data
+	local finalValue = currentReplicated:FindFirstChild(finalKey)
 
-    -- If the final value exists, clear its children
-    if finalValue then
-        for _, child in pairs(finalValue:GetChildren()) do
-            child:Destroy()
-        end
-    end
+	-- If the final value exists, clear its children
+	if finalValue then
+		for _, child in pairs(finalValue:GetChildren()) do
+			child:Destroy()
+		end
+	end
 
-    return "Cleared"
+	return "Cleared"
 end
 
 return DataManager

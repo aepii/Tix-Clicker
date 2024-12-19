@@ -52,7 +52,7 @@ local camera = workspace.CurrentCamera
 --|| CUSTOM ||--
 
 local function disableUIStrokes(instance: Instance)
-	if instance:IsA("UIStroke") and not instance.Parent:IsA("TextLabel") then
+	if instance:IsA("UIStroke") and instance.Parent.Name == "Shadow" then
 		instance.Enabled = false
 	end
 	for _, child in ipairs(instance:GetChildren()) do
@@ -183,7 +183,7 @@ CollectionService:GetInstanceAddedSignal(Billboard_Tag):Connect(function(billboa
 				else
 					if not CollectionService:HasTag(stroke, "Ignore") then
 						stroke.Thickness = originalThickness * distanceRatio * getScreenRatio() * 2
-						if not stroke.Parent:IsA("TextLabel") then
+						if stroke.Parent.Name == "Shadow" then
 							stroke.Parent.Size = UDim2.new(stroke.Parent.Size.X.Scale, stroke.Thickness, stroke.Parent.Size.Y.Scale, stroke.Thickness)
 							stroke.Enabled = false
 						end

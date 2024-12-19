@@ -70,8 +70,9 @@ function CaseOpeningUI:Init()
                     if element:IsA("Frame") then
                         element.BackgroundColor3 = color
                     end
-                    if element:IsA("UIGradient") then
-                        CaseOpeningFrame.TitleFrame.Title.UIGradient.Color = ColorSequence.new(Color3.fromRGB(255,255,255), color)
+                    if element:IsA("UIStroke") then
+                        element.Color = color
+                        print(element.Thickness)
                     end
                 end
             end

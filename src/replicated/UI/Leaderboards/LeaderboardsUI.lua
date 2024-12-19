@@ -38,6 +38,8 @@ function LeaderboardsUI:Init()
     local Networking = ReplicatedStorage.Networking
     local UpdateLeaderboard = Networking.UpdateLeaderboard
 
+    UpdateLeaderboard:FireServer()
+
     UpdateLeaderboard.OnClientEvent:Connect(function(leaderboardData)
         for stat, entries in leaderboardData do
             local scores = LeaderboardUIs[stat]:WaitForChild("Background"):WaitForChild("Main"):WaitForChild("Holder")

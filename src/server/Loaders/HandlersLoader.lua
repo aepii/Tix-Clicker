@@ -13,6 +13,7 @@ local LeaderboardHandler = require(Handlers.LeaderboardHandler)
 local HandlersLoader = {}
 
 function HandlersLoader:Init()
+  print("INIT")
   AccessoryHandler:Init()
   ConvertPerSecondHandler:Init()
   DisplayNameHandler:Init()
